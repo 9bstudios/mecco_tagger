@@ -52,9 +52,9 @@ def get_polys(connected=False):
                     result.add(p)
 
         elif get_mode() == 'ptag':
-            return False
+            return []
         else:
-            return False
+            return []
 
         if connected:
             queue = list(result)
