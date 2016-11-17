@@ -2,7 +2,13 @@
 
 import lx, lxu.command, lxifc, traceback, modo, tagger
 
-CMD_NAME = 'tagger.selectConnectedByTag'
+CMD_NAME = 'tagger.convertTags'
+
+lookup = {
+    'material': lx.symbol.i_POLYTAG_MATERIAL,
+    'part': lx.symbol.i_POLYTAG_PART,
+    'pick': lx.symbol.i_POLYTAG_PICK
+}
 
 class sPresetText(lxifc.UIValueHints):
     def __init__(self, items):
@@ -18,21 +24,28 @@ class sPresetText(lxifc.UIValueHints):
         return self._items[index]
 
     def uiv_PopInternalName (self, index):
-        return self._items[index][0]
+        return self._items[index]
 
 class CommandClass(lxu.command.BasicCommand):
 
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
 
-        self.dyna_Add('tagType', lx.symbol.sTYPE_STRING)
+        self.dyna_Add('fromTagType', lx.symbol.sTYPE_STRING)
+        self.dyna_Add('toTagType', lx.symbol.sTYPE_STRING)
+        self.dyna_Add('replace', lx.symbol.sTYPE_BOOLEAN)
+
+        self.basic_SetFlags(2, lx.symbol.fCMDARG_OPTIONAL)
 
     def cmd_Flags (self):
         return lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
 
     def CMD_EXE(self, msg, flags):
-        tagType = self.dyna_String(0) if self.dyna_IsSet(0) else None
-        tagger.selection.expand_by_pTag(tagger.selection.get_polys(), tagType)
+        fromTagType = self.dyna_String(0) if self.dyna_IsSet(0) else 'material'
+        toTagType = self.dyna_String(1) if self.dyna_IsSet(1) else 'pick'
+        replace = self.dyna_Int(2) if self.dyna_IsSet(2) else False
+
+        tagger.manage.convert_tags(tagger.selection.get_polys(), lookup[fromTagType], lookup[toTagType], replace)
 
     def basic_Execute(self, msg, flags):
         try:
@@ -44,11 +57,11 @@ class CommandClass(lxu.command.BasicCommand):
         return True
 
     def arg_UIValueHints(self, index):
-        if index == 0:
+        if index in [0, 1]:
             return sPresetText(('material', 'part', 'pick'))
 
     def arg_UIHints (self, index, hints):
-        if index == 0:
+        if index in [0, 1]:
             hints.Class ("sPresetText")
 
 lx.bless(CommandClass, CMD_NAME)

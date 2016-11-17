@@ -1,6 +1,6 @@
 #python
 
-import modo, lx, symbols, items
+import modo, lx, symbols, items, manage
 
 
 def get_mode():
@@ -95,19 +95,45 @@ def tag_polys(ptag,connected=False,i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL):
     :param ptyp: type of tag to apply (str) - e.g. lx.symbol.i_POLYTAG_MATERIAL
     """
 
-    pp = get_polys(connected)
-    if pp:
-        for p in pp:
-            if i_POLYTAG == lx.symbol.i_POLYTAG_PICK:
-                tags = p.getTag(i_POLYTAG).split(";")
-                if not ptag in tags:
-                    tags.append(ptag)
-                p.setTag(i_POLYTAG,";".join(tags))
-            else:
-                p.setTag(i_POLYTAG,ptag)
+    polys = get_polys(connected)
+    return manage.tag_polys(polys,ptag,connected,i_POLYTAG)
 
-    mm = items.get_active_layers()
-    for m in mm:
-        m.geometry.setMeshEdits()
+
+def expand_by_pTag(polys=set(), pTagKey='material', pTags=set(), ignore=set()):
+    """Expands current poly selection to include all contiguous polys with a given
+    set of pTags. Returns set() of selected polys. If no pTags are provided, uses
+    tags of the provided pTagKey on the provided polys.
+
+    :param polys: set of TD polygons to expand
+    :param pTagKey: "material", "part", or "pick"
+    :param pTags: (optional) set of tags for which to search
+    :param ignore: (for recursion) set of polygons that have already been ruled out
+    """
+
+    polys = set([i for i in polys if pTagKey in i.tags()])
+    polys = set([i for i in polys if i.tags()[pTagKey] is not None])
+
+    if not pTags:
+        for p in polys:
+            pTags = pTags.union(p.tags()[pTagKey].split(";"))
+
+    to_check = set()
+
+    for p in polys:
+        to_check = to_check.union(set(p.neighbours))
+
+    to_check = to_check.difference(ignore)
+    to_check = set([i for i in to_check if pTagKey in i.tags()])
+    to_check = set([i for i in to_check if i.tags()[pTagKey] is not None])
+    to_check = set([i for i in to_check if [t for t in pTags if t in i.tags()[pTagKey].split(";")]])
+
+    if not to_check:
+        return False
+
+    for p in to_check:
+        p.select()
+
+    ignore = ignore.union(to_check)
+    expand_by_pTag(to_check, pTagKey, pTags, ignore)
 
     return True

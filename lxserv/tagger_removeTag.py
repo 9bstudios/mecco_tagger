@@ -2,7 +2,13 @@
 
 import lx, lxu.command, lxifc, traceback, modo, tagger
 
-CMD_NAME = 'tagger.selectConnectedByTag'
+CMD_NAME = 'tagger.removeTag'
+
+lookup = {
+    'material': lx.symbol.i_POLYTAG_MATERIAL,
+    'part': lx.symbol.i_POLYTAG_PART,
+    'pick': lx.symbol.i_POLYTAG_PICK
+}
 
 class sPresetText(lxifc.UIValueHints):
     def __init__(self, items):
@@ -18,7 +24,7 @@ class sPresetText(lxifc.UIValueHints):
         return self._items[index]
 
     def uiv_PopInternalName (self, index):
-        return self._items[index][0]
+        return self._items[index]
 
 class CommandClass(lxu.command.BasicCommand):
 
@@ -32,7 +38,8 @@ class CommandClass(lxu.command.BasicCommand):
 
     def CMD_EXE(self, msg, flags):
         tagType = self.dyna_String(0) if self.dyna_IsSet(0) else None
-        tagger.selection.expand_by_pTag(tagger.selection.get_polys(), tagType)
+
+        tagger.selection.tag_polys(None, False, lookup[tagType])
 
     def basic_Execute(self, msg, flags):
         try:

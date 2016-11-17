@@ -9,6 +9,7 @@ try:
     import defaults
     import symbols
     import items
+    import manage
     import shadertree
     import selection
 except:
