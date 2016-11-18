@@ -1,6 +1,6 @@
 # python
 
-import lx, lxu.command, lxifc, traceback, modo, tagger
+import lx, lxu.command, lxifc, traceback, modo, tagger, time
 
 CMD_NAME = 'tagger.selectConnectedByTag'
 
@@ -31,8 +31,13 @@ class CommandClass(lxu.command.BasicCommand):
         return lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
 
     def CMD_EXE(self, msg, flags):
+        timer_start = time.time()
+
         tagType = self.dyna_String(0) if self.dyna_IsSet(0) else None
         tagger.selection.expand_by_pTag(tagger.selection.get_polys(), tagType)
+
+        timer_end = time.time()
+        lx.out("Time elapsed: %s" % str(timer_end - timer_start))
 
     def basic_Execute(self, msg, flags):
         try:
