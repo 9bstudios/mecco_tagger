@@ -33,9 +33,6 @@ class CommandClass(lxu.command.BasicCommand):
 
         self.dyna_Add('fromTagType', lx.symbol.sTYPE_STRING)
         self.dyna_Add('toTagType', lx.symbol.sTYPE_STRING)
-        self.dyna_Add('replace', lx.symbol.sTYPE_BOOLEAN)
-
-        self.basic_SetFlags(2, lx.symbol.fCMDARG_OPTIONAL)
 
     def cmd_Flags (self):
         return lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
@@ -43,9 +40,8 @@ class CommandClass(lxu.command.BasicCommand):
     def CMD_EXE(self, msg, flags):
         fromTagType = self.dyna_String(0) if self.dyna_IsSet(0) else 'material'
         toTagType = self.dyna_String(1) if self.dyna_IsSet(1) else 'pick'
-        replace = self.dyna_Int(2) if self.dyna_IsSet(2) else False
 
-        tagger.manage.convert_tags(tagger.selection.get_polys(), lookup[fromTagType], lookup[toTagType], replace)
+        tagger.selection.convert_tags(lookup[fromTagType], lookup[toTagType])
 
     def basic_Execute(self, msg, flags):
         try:

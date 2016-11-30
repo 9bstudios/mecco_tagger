@@ -19,7 +19,7 @@ REMOVE = tagger.symbols.OPERATIONS_REMOVE
 
 NAME_CMD = tagger.symbols.COMMAND_NAME_PTAG
 
-DEFAULT_TAG = 'Default'
+DEFAULT_TAG = ''
 
 # The UIValueHints object that returns the items in the list of commands
 # to the form.

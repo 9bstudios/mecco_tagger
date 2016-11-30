@@ -70,7 +70,6 @@ def get_polys(connected=False):
 
     return list(result)
 
-
 def get_ptags(i_POLYTAG = lx.symbol.i_POLYTAG_MATERIAL,connected=False):
     """Returns a list of all pTags for currently selected polys in all active layers.
 
@@ -95,8 +94,55 @@ def tag_polys(ptag,connected=False,i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL):
     :param ptyp: type of tag to apply (str) - e.g. lx.symbol.i_POLYTAG_MATERIAL
     """
 
-    polys = get_polys(connected)
-    return manage.tag_polys(polys,ptag,connected,i_POLYTAG)
+    for layer in items.get_active_layers():
+        with layer.geometry as geo:
+            polys = geo.polygons.selected
+            if connected:
+                polys = island(polys)
+
+            manage.tag_polys(polys, ptag, i_POLYTAG)
+
+
+
+def convert_tags(from_i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL, to_i_POLYTAG=lx.symbol.i_POLYTAG_PICK, connected=False):
+    """Converts ptags of one type to another.
+    :param from_i_POLYTAG: polygon tag type to convert from (e.g. lx.symbol.i_POLYTAG_MATERIAL)
+    :param to_i_POLYTAG: polygon tag type to convert to (e.g. lx.symbol.i_POLYTAG_PART)
+    :param connected: extend selections to convert poly islands
+    """
+
+    for layer in items.get_active_layers():
+        with layer.geometry as geo:
+            polys = geo.polygons.selected
+            if connected:
+                polys = island(polys)
+
+            for p in polys:
+                tag = "-".join(p.getTag(from_i_POLYTAG).split(";")) if p.getTag(from_i_POLYTAG) else ''
+                manage.tag_polys([p], tag, to_i_POLYTAG)
+
+        with layer.geometry as geo:
+            polys = geo.polygons.selected
+            if connected:
+                polys = island(polys)
+                
+            for p in polys:
+                manage.tag_polys([p], '', from_i_POLYTAG)
+
+
+
+def island(polys):
+    queue = list(polys)
+    island = set()
+
+    while queue:
+        poly = queue.pop()
+        if not poly in island:
+            island.add(poly)
+            queue.extend( poly.neighbours )
+
+    return island
+
 
 
 def expand_by_pTag(polys=set(), pTagKey='material', pTags=set(), ignore=set()):
