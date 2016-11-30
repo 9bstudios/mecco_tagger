@@ -13,6 +13,9 @@ def tag_polys(polys, ptag, i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL):
     :param ptyp: type of tag to apply (str) - e.g. lx.symbol.i_POLYTAG_MATERIAL
     """
 
+    if not ptag:
+        ptag = None
+
     for p in polys:
         if i_POLYTAG == lx.symbol.i_POLYTAG_PICK and ptag:
             if p.getTag(i_POLYTAG):

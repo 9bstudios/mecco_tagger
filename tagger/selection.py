@@ -122,7 +122,7 @@ def convert_tags(from_i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL, to_i_POLYTAG=lx.sy
                     tag = "-".join(p.getTag(from_i_POLYTAG).split(";")) if p.getTag(from_i_POLYTAG) else ''
                 else:
                     tag = ''
-                    
+
                 manage.tag_polys([p], tag, to_i_POLYTAG)
 
         with layer.geometry as geo:
