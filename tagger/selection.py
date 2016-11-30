@@ -118,14 +118,18 @@ def convert_tags(from_i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL, to_i_POLYTAG=lx.sy
                 polys = island(polys)
 
             for p in polys:
-                tag = "-".join(p.getTag(from_i_POLYTAG).split(";")) if p.getTag(from_i_POLYTAG) else ''
+                if p.getTag(from_i_POLYTAG):
+                    tag = "-".join(p.getTag(from_i_POLYTAG).split(";")) if p.getTag(from_i_POLYTAG) else ''
+                else:
+                    tag = ''
+                    
                 manage.tag_polys([p], tag, to_i_POLYTAG)
 
         with layer.geometry as geo:
             polys = geo.polygons.selected
             if connected:
                 polys = island(polys)
-                
+
             for p in polys:
                 manage.tag_polys([p], '', from_i_POLYTAG)
 

@@ -1,17 +1,40 @@
-# Run with `ffr.expandByMat`, it will expand the current polygon selection by the material ID of the current polygon selection.
-#
-# An optional argument, `materialID` will expand only by a given material ID, e.g.
-# `ffr.expandByMat "Default"`
-
 #!/usr/bin/env python
+
+# Adapted from James O'Hare's excellent ffr_expandByMat.py code:
+# https://gist.github.com/Farfarer/c42ebd249602542a7369b4fd205f4fb5
 
 import lx
 import lxu.command
 import lxifc
-import time
+import modo
+import traceback
+
+CMD_NAME = 'tagger.selectConnectedByTag'
+
+lookup = {
+    'material': lx.symbol.i_POLYTAG_MATERIAL,
+    'part': lx.symbol.i_POLYTAG_PART,
+    'pick': lx.symbol.i_POLYTAG_PICK
+}
+
+class sPresetText(lxifc.UIValueHints):
+    def __init__(self, items):
+        self._items = items
+
+    def uiv_Flags(self):
+        return lx.symbol.fVALHINT_POPUPS
+
+    def uiv_PopCount(self):
+        return len(self._items)
+
+    def uiv_PopUserName (self, index):
+        return self._items[index]
+
+    def uiv_PopInternalName (self, index):
+        return self._items[index][0]
 
 class PolysConnectedByMat (lxifc.Visitor):
-    def __init__ (self, polygon, edge, mark_mode_valid, materialID=None):
+    def __init__ (self, polygon, edge, mark_mode_valid, i_POLYTAG):
         self.polygon = polygon
         self.edge = edge
         self.mark_mode_valid = mark_mode_valid
@@ -21,7 +44,8 @@ class PolysConnectedByMat (lxifc.Visitor):
         self.tag = lx.object.StringTag ()
         self.tag.set (self.polygon)
 
-        self.materialID = materialID
+        self.i_POLYTAG = i_POLYTAG
+        self.tagValues = None
 
     def reset (self):
         self.polygonIDs = set ()
@@ -35,24 +59,27 @@ class PolysConnectedByMat (lxifc.Visitor):
 
         this_polygon_ID = self.polygon.ID ()
 
-        if self.materialID is None:
-            materialID = self.tag.Get (lx.symbol.i_PTAG_MATR)
+        if self.tagValues == None:
+            tagValues = self.tag.Get (self.i_POLYTAG)
         else:
-            materialID = self.materialID
+            tagValues = self.tagValues
+
+        if not tagValues:
+            tagValues = []
+
+        if not isinstance(tagValues, list):
+            tagValues = tagValues.split(";")
 
         if this_polygon_ID not in outer_list:
-
             outer_list.add (this_polygon_ID)
 
             while len(outer_list) > 0:
                 polygon_ID = outer_list.pop ()
 
                 self.polygon.Select (polygon_ID)
-
                 inner_list.add (polygon_ID)
 
                 num_points = self.polygon.VertexCount ()
-
                 polygon_points = [self.polygon.VertexByIndex (p) for p in xrange (num_points)]
 
                 for p in xrange (num_points):
@@ -63,35 +90,26 @@ class PolysConnectedByMat (lxifc.Visitor):
                             if edge_polygon_ID != polygon_ID:
                                 if edge_polygon_ID not in outer_list and edge_polygon_ID not in inner_list:
                                     self.polygon.Select (edge_polygon_ID)
-                                    if self.polygon.TestMarks (self.mark_mode_valid) and (self.tag.Get (lx.symbol.i_PTAG_MATR) == materialID):
+
+                                    tagString = self.tag.Get (self.i_POLYTAG)
+                                    if not tagString:
+                                        tagString = ''
+
+                                    if self.polygon.TestMarks (self.mark_mode_valid) and (set(tagString.split(";")).intersection(set(tagValues))):
                                         outer_list.add (edge_polygon_ID)
+
         self.polygonIDs.update (inner_list)
 
 class ExpandByMaterial_Cmd(lxu.command.BasicCommand):
     def __init__(self):
         lxu.command.BasicCommand.__init__ (self)
 
-        self.dyna_Add ('materialID', lx.symbol.sTYPE_STRING)
+        self.dyna_Add ('i_POLYTAG', lx.symbol.sTYPE_STRING)
         self.basic_SetFlags (0, lx.symbol.fCMDARG_OPTIONAL)
 
     def cmd_Interact(self):
         # Stop modo complaining.
         pass
-
-    def cmd_UserName(self):
-        return 'Expand Selection by Material'
-
-    def cmd_Desc(self):
-        return 'Expands the current polygon selection to neighbouring polygons sharing the same material tag as the current selection.'
-
-    def cmd_Tooltip(self):
-        return 'Expands the current polygon selection to neighbouring polygons sharing the same material tag as the current selection.'
-
-    def cmd_Help(self):
-        return 'http://www.farfarer.com/'
-
-    def basic_ButtonName(self):
-        return 'Expand Selection by Material'
 
     def cmd_Flags(self):
         return lx.symbol.fCMD_UNDO
@@ -99,20 +117,31 @@ class ExpandByMaterial_Cmd(lxu.command.BasicCommand):
     def basic_Enable(self, msg):
         return True
 
+    def arg_UIValueHints(self, index):
+        if index == 0:
+            return sPresetText(('material', 'part', 'pick'))
+
+    def arg_UIHints (self, index, hints):
+        if index == 0:
+            hints.Class ("sPresetText")
+
     def basic_Execute(self, msg, flags):
-        timer_start = time.time()
+        try:
+            self.CMD_EXE(msg, flags)
+        except Exception:
+            lx.out(traceback.format_exc())
+
+    def CMD_EXE(self, msg, flags):
+        i_POLYTAG = lookup[self.dyna_String(0)] if self.dyna_IsSet(0) else 'material'
 
         layer_svc = lx.service.Layer ()
         layer_scan = lx.object.LayerScan (layer_svc.ScanAllocate (lx.symbol.f_LAYERSCAN_ACTIVE | lx.symbol.f_LAYERSCAN_MARKPOLYS))
         if not layer_scan.test ():
             return
 
-        materialID = self.dyna_String (0, None)
-
         sel_svc = lx.service.Selection ()
         polygon_pkts = []
 
-        # Sort out mark modes we'll need.
         mesh_svc = lx.service.Mesh()
         mark_mode_selected = mesh_svc.ModeCompose (lx.symbol.sMARK_SELECT, None)
         mark_mode_valid = mesh_svc.ModeCompose (None, 'hide lock')
@@ -123,7 +152,7 @@ class ExpandByMaterial_Cmd(lxu.command.BasicCommand):
                 continue
 
             polygon_count = mesh.PolygonCount ()
-            if polygon_count == 0:    # Quick out if there are no polys in this layer.
+            if polygon_count == 0:
                 continue
 
             polygon = lx.object.Polygon (mesh.PolygonAccessor ())
@@ -134,7 +163,7 @@ class ExpandByMaterial_Cmd(lxu.command.BasicCommand):
             if not edge.test ():
                 continue
 
-            visitor = PolysConnectedByMat (polygon, edge, mark_mode_valid, materialID)
+            visitor = PolysConnectedByMat (polygon, edge, mark_mode_valid, i_POLYTAG)
             polygon.Enumerate (mark_mode_selected, visitor, 0)
 
             sel_type_polygon = sel_svc.LookupType (lx.symbol.sSELTYP_POLYGON)
@@ -147,7 +176,4 @@ class ExpandByMaterial_Cmd(lxu.command.BasicCommand):
 
         layer_scan.Apply ()
 
-        timer_end = time.time()
-        lx.out("Time elapsed: %s" % str(timer_end - timer_start))
-
-lx.bless (ExpandByMaterial_Cmd, 'ffr.expandByMat')
+lx.bless(ExpandByMaterial_Cmd, CMD_NAME)
