@@ -15,7 +15,10 @@ def tag_polys(polys, ptag, i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL):
 
     for p in polys:
         if i_POLYTAG == lx.symbol.i_POLYTAG_PICK and ptag:
-            tags = p.getTag(i_POLYTAG).split(";")
+            if p.getTag(i_POLYTAG):
+                tags = p.getTag(i_POLYTAG).split(";")
+            else:
+                tags = []
             if not ptag in tags:
                 tags.append(ptag)
             p.setTag(i_POLYTAG,";".join(tags))
