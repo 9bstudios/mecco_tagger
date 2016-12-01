@@ -94,12 +94,19 @@ def tag_polys(ptag,connected=False,i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL):
     :param ptyp: type of tag to apply (str) - e.g. lx.symbol.i_POLYTAG_MATERIAL
     """
 
+    polyCount = 0
     for layer in items.get_active_layers():
         with layer.geometry as geo:
-            polys = geo.polygons.selected
+            polyCount += len(geo.polygons.selected)
 
-            if connected:
-                polys = island(polys)
+    for layer in items.get_active_layers():
+        with layer.geometry as geo:
+            if polyCount == 0:
+                polys = geo.polygons
+            elif polyCount >= 1:
+                polys = geo.polygons.selected
+                if connected:
+                    polys = island(polys)
 
             manage.tag_polys(polys, ptag, i_POLYTAG)
 
