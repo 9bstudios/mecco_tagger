@@ -66,25 +66,25 @@ for p in polys:
         errors += 1
         break
 
-lx.eval('tagger.removeTag part')
+lx.eval('tagger.pTagSet part')
 for p in polys:
     if p.tags()['part'] != None:
-        lx.out('tagger.removeTag part - failed')
+        lx.out('tagger.pTagSet part - failed')
         errors += 1
         break
 
-lx.eval('tagger.removeTag pick')
+lx.eval('tagger.pTagSet pick')
 for p in polys:
     if p.tags()['pick'] != None:
-        lx.out('tagger.removeTag pick - failed')
+        lx.out('tagger.pTagSet pick - failed')
         errors += 1
         break
 
 lx.eval('tagger.setMaterial test1')
-lx.eval('tagger.removeTag material')
+lx.eval('tagger.pTagSet material')
 for p in polys:
     if p.tags()['material'] != None:
-        lx.out('tagger.removeTag material - failed')
+        lx.out('tagger.pTagSet material - failed')
         errors += 1
         break
 

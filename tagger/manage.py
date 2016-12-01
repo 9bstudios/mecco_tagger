@@ -16,17 +16,17 @@ def tag_polys(polys, ptag, i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL):
     if not ptag:
         ptag = None
 
-    for p in polys:
+    for p in set(polys):
         if i_POLYTAG == lx.symbol.i_POLYTAG_PICK and ptag:
-            ptags = ptag.split(";")
+            new_tags = ptag.split(";")
 
             if p.getTag(i_POLYTAG):
-                tags = set(p.getTag(i_POLYTAG).split(";"))
+                all_tags = set(p.getTag(i_POLYTAG).split(";"))
             else:
-                tags = set()
+                all_tags = set()
 
-            tags.update(ptags)
-            p.setTag(i_POLYTAG,";".join(tags))
+            all_tags.update(new_tags)
+            p.setTag(i_POLYTAG,";".join(all_tags))
 
         else:
             p.setTag(i_POLYTAG,ptag)

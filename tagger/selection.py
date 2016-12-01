@@ -97,6 +97,7 @@ def tag_polys(ptag,connected=False,i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL):
     for layer in items.get_active_layers():
         with layer.geometry as geo:
             polys = geo.polygons.selected
+
             if connected:
                 polys = island(polys)
 
@@ -136,16 +137,29 @@ def convert_tags(from_i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL, to_i_POLYTAG=lx.sy
 
 
 def island(polys):
-    queue = list(polys)
-    island = set()
+    polyIsland = set()
+    checked = set()
+    toCheck = set()
 
-    while queue:
-        poly = queue.pop()
-        if not poly in island:
-            island.add(poly)
-            queue.extend( poly.neighbours )
+    for poly in polys:
 
-    return island
+        if poly in polyIsland:
+            continue
+
+        polyIsland.add( poly )
+        checked.add( poly )
+        toCheck.add( poly )
+
+        while toCheck:
+            poly = toCheck.pop()
+            for polyN in poly.neighbours:
+                if not polyN in checked:
+                    checked.add( polyN )
+                    if not polyN in polyIsland:
+                        polyIsland.add( polyN )
+                        toCheck.add( polyN )
+
+    return polyIsland
 
 
 

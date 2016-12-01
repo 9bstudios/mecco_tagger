@@ -2,7 +2,8 @@
 
 import lx, lxu.command, lxifc, traceback, modo, tagger
 
-CMD_NAME = 'tagger.removeTag'
+CMD_NAME = 'tagger.pTagRemoveAll'
+DEFAULTS = ['part', '', False]
 
 lookup = {
     'material': lx.symbol.i_POLYTAG_MATERIAL,
@@ -28,6 +29,8 @@ class sPresetText(lxifc.UIValueHints):
 
 class CommandClass(lxu.command.BasicCommand):
 
+    _last_used = [None]
+
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
 
@@ -37,9 +40,26 @@ class CommandClass(lxu.command.BasicCommand):
         return lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
 
     def CMD_EXE(self, msg, flags):
-        tagType = self.dyna_String(0) if self.dyna_IsSet(0) else None
+        tagType = self.dyna_String(0) if self.dyna_IsSet(0) else 'material'
+        self.set_last_used(0, tagType)
 
-        tagger.selection.tag_polys(None, False, lookup[tagType])
+        safety = modo.dialogs.yesNo("Remove All Tags", "All %s tags will be removed from the scene. Continue?" % tagType)
+
+        if safety == 'yes':
+            for mesh in modo.Scene().meshes:
+                with mesh.geometry as geo:
+                    polys = geo.polygons
+                    tagger.manage.tag_polys(polys, None, lookup[tagType])
+
+    def cmd_DialogInit(self):
+        if self._last_used[0] == None:
+            self.attr_SetString(0, DEFAULTS[0])
+        else:
+            self.attr_SetString(0, self._last_used[0])
+
+    @classmethod
+    def set_last_used(cls, key, value):
+        cls._last_used[key] = value
 
     def basic_Execute(self, msg, flags):
         try:

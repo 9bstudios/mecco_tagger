@@ -27,28 +27,35 @@ class CMD_tagger(lxu.command.BasicCommand):
 
     def basic_Execute(self, msg, flags):
         try:
-            mode = self.dyna_String(0) if self.dyna_IsSet(0) else None
-            if not mode and self._clipboard:
-                mode = 'paste'
-            else:
-                mode = 'copy'
+            self.CMD_EXE(msg, flags)
+        except Exception:
+            lx.out(traceback.format_exc())
 
-            tagType = self.dyna_String(1) if self.dyna_IsSet(1) else 'material'
-            connected = self.dyna_String(2) if self.dyna_IsSet(2) else False
+    def CMD_EXE(self, msg, flags):
+        mode = self.dyna_String(0) if self.dyna_IsSet(0) else None
 
-            if mode == COPY:
-                self.set_clipboard(tagType, tagger.selection.get_polys()[0].tags()[tagType])
+        if not mode and self._clipboard:
+            mode = 'paste'
 
-            elif mode == PASTE:
-                args = {}
-                args[NAME] = self._clipboard[tagType]
-                args[MODE] = tagType
-                args[CONNECTED] = connected
+        if not mode:
+            mode = 'copy'
 
-                lx.eval(tagger.symbols.COMMAND_NAME_PTAG + tagger.util.build_arg_string(args))
 
-        except:
-            traceback.print_exc()
+        tagType = self.dyna_String(1) if self.dyna_IsSet(1) else 'material'
+        connected = self.dyna_String(2) if self.dyna_IsSet(2) else False
+
+
+        if mode == 'copy':
+            self.set_clipboard(tagType, tagger.selection.get_polys()[0].tags()[tagType])
+
+        elif mode == 'paste':
+            args = {}
+            args['tag'] = self._clipboard[tagType]
+            args['tagType'] = tagType
+            args['connected'] = connected
+
+            lx.eval('tagger.pTagSet' + tagger.util.build_arg_string(args))
+
 
 
 lx.bless(CMD_tagger, NAME_CMD)
