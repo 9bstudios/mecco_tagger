@@ -5,9 +5,9 @@ import lx, lxu, modo, tagger, traceback
 NAME_CMD = 'tagger.pTagClipboard'
 
 lookup = {
-    'Material': lx.symbol.i_POLYTAG_MATERIAL,
-    'Part': lx.symbol.i_POLYTAG_PART,
-    'Selection Set': lx.symbol.i_POLYTAG_PICK
+    'Material': 'material',
+    'Part': 'part',
+    'Selection Set': 'pick'
 }
 
 class CMD_tagger(lxu.command.BasicCommand):
