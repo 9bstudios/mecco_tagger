@@ -28,9 +28,9 @@ def string_to_i_POLYTAG(input_string):
         return symbol.i_POLYTAG_PICK
 
 def i_POLYTAG_to_string(i_POLYTAG):
-    if i_POLYTAG == symbol.i_POLYTAG_MATERIAL:
+    if i_POLYTAG in (symbol.i_POLYTAG_MATERIAL, 'Material'):
         return 'material'
-    elif i_POLYTAG == symbol.i_POLYTAG_PART:
+    elif i_POLYTAG in (symbol.i_POLYTAG_PART, 'Part'):
         return 'part'
-    elif i_POLYTAG == symbol.i_POLYTAG_PICK:
+    elif i_POLYTAG in (symbol.i_POLYTAG_PICK, 'Selection Set'):
         return 'pick'
