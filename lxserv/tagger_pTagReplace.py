@@ -57,7 +57,7 @@ class CommandClass(lxu.command.BasicCommand):
             with mesh.geometry as geo:
                 hitlist = set()
                 for poly in geo.polygons:
-                    
+
                     if tagType in ['material', 'part']:
                         if poly.getTag(lookup[tagType]) == replaceTag:
                             hitlist.add(poly)
@@ -99,7 +99,20 @@ class CommandClass(lxu.command.BasicCommand):
             self.attr_SetString(0, self._last_used[0])
 
         if self._last_used[1] == None:
-            self.attr_SetString(1, DEFAULTS[1])
+            active_layers = tagger.items.get_active_layers()
+            polys = []
+            if active_layers:
+                for layer in active_layers:
+                    polys.extend(layer.geometry.polygons.selected)
+                if polys:
+                    tagType = self.dyna_String(0) if self.dyna_IsSet(0) else DEFAULTS[0]
+                    lx.out(polys[0].tags())
+                    tag = polys[0].tags()[tagType]
+                    self.attr_SetString(1, tag)
+                elif not polys:
+                    self.attr_SetString(1, DEFAULTS[1])
+            elif not active:
+                self.attr_SetString(1, DEFAULTS[1])
         else:
             self.attr_SetString(1, self._last_used[1])
 
