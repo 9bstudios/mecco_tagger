@@ -1,6 +1,7 @@
 #python
 
-import modo, lx, lxu, symbols
+import modo, lx, lxu
+from var import *
 
 DEFAULTS = {
     "ptag": 'Default',

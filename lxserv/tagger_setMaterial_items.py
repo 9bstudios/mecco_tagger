@@ -2,21 +2,21 @@
 
 import lx, lxu, modo, tagger, traceback
 
-MODE = tagger.symbols.ARGS_MODE
-OPERATION = tagger.symbols.ARGS_OPERATION
-PRESET = tagger.symbols.ARGS_PRESET
+MODE = tagger.ARGS_MODE
+OPERATION = tagger.ARGS_OPERATION
+PRESET = tagger.ARGS_PRESET
 
-AUTO_FILTER = tagger.symbols.FILTER_TYPES_AUTO
-ITEM = tagger.symbols.FILTER_TYPES_ITEM
-ACTIVE = tagger.symbols.FILTER_TYPES_ACTIVE
-GLOC = tagger.symbols.FILTER_TYPES_GLOC
-GROUP = tagger.symbols.FILTER_TYPES_GROUP
+AUTO_FILTER = tagger.FILTER_TYPES_AUTO
+ITEM = tagger.FILTER_TYPES_ITEM
+ACTIVE = tagger.FILTER_TYPES_ACTIVE
+GLOC = tagger.FILTER_TYPES_GLOC
+GROUP = tagger.FILTER_TYPES_GROUP
 
-AUTO_OPERATION = tagger.symbols.OPERATIONS_AUTO
-ADD = tagger.symbols.OPERATIONS_ADD
-REMOVE = tagger.symbols.OPERATIONS_REMOVE
+AUTO_OPERATION = tagger.OPERATIONS_AUTO
+ADD = tagger.OPERATIONS_ADD
+REMOVE = tagger.OPERATIONS_REMOVE
 
-NAME_CMD = tagger.symbols.COMMAND_NAME_ITEM
+NAME_CMD = tagger.COMMAND_NAME_ITEM
 
 class CMD_tagger(lxu.command.BasicCommand):
 

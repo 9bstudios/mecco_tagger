@@ -4,12 +4,6 @@ import lx, lxu, modo, tagger, traceback
 
 NAME_CMD = 'tagger.tagWithMasked'
 
-lookup = {
-    'Material': lx.symbol.i_POLYTAG_MATERIAL,
-    'Part': lx.symbol.i_POLYTAG_PART,
-    'Selection Set': lx.symbol.i_POLYTAG_PICK
-}
-
 class CMD_tagger(lxu.command.BasicCommand):
 
     def __init__(self):
@@ -56,6 +50,6 @@ class CMD_tagger(lxu.command.BasicCommand):
         tagLabel = mask.channel(lx.symbol.sICHAN_MASK_PTYP).get()
         tag = mask.channel(lx.symbol.sICHAN_MASK_PTAG).get()
 
-        tagger.selection.tag_polys(tag, connected, lookup[tagLabel])
+        tagger.selection.tag_polys(tag, connected, tagger.util.string_to_i_POLYTAG(tagLabel))
 
 lx.bless(CMD_tagger, NAME_CMD)

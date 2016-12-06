@@ -1,6 +1,7 @@
 #python
 
-import modo, lx, defaults, symbols, util, items
+import modo, lx, defaults, util, items
+from var import *
 
 
 def build_material(
@@ -64,12 +65,12 @@ def build_material(
 
     if not preset:
         if(shader):
-            sname = ' '.join([name,symbols.SHADERNAME]) if name else None
+            sname = ' '.join([name,SHADERNAME]) if name else None
             channels = d['shader_channels']
             shdr = add_shader(sname,channels)
             shdr.setParent(mask)
 
-        mname = ' '.join([name,symbols.MATNAME]) if name else None
+        mname = ' '.join([name,MATNAME]) if name else None
         channels = d['material_channels']
         channels[lx.symbol.sICHAN_ADVANCEDMATERIAL_DIFFCOL] = color
         mat = add_material(mname,channels)
@@ -114,7 +115,7 @@ def add_mask(
         ig.AddLink(mask,item)
 
     if i_POLYTAG:
-        mask.channel(lx.symbol.sICHAN_MASK_PTYP).set(symbols.sICHAN_MASK_PTYP(i_POLYTAG))
+        mask.channel(lx.symbol.sICHAN_MASK_PTYP).set(sICHAN_MASK_PTYP(i_POLYTAG))
 
     if pTag:
         mask.channel(lx.symbol.sICHAN_MASK_PTAG).set(pTag)
@@ -232,7 +233,7 @@ def get_masks(
 
         for pTag, pTyp in pTags.iteritems():
             if (
-                m.channel(lx.symbol.sICHAN_MASK_PTYP).get() == symbols.sICHAN_MASK_PTYP(pTyp)
+                m.channel(lx.symbol.sICHAN_MASK_PTYP).get() == sICHAN_MASK_PTYP(pTyp)
                 and m.channel(lx.symbol.sICHAN_MASK_PTAG).get() == pTag
                 ):
 

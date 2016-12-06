@@ -4,12 +4,6 @@ import lx, lxu.command, lxifc, traceback, modo, tagger
 
 CMD_NAME = 'tagger.convertTags'
 
-lookup = {
-    'material': lx.symbol.i_POLYTAG_MATERIAL,
-    'part': lx.symbol.i_POLYTAG_PART,
-    'pick': lx.symbol.i_POLYTAG_PICK
-}
-
 class sPresetText(lxifc.UIValueHints):
     def __init__(self, items):
         self._items = items
@@ -41,7 +35,7 @@ class CommandClass(lxu.command.BasicCommand):
         fromTagType = self.dyna_String(0) if self.dyna_IsSet(0) else 'material'
         toTagType = self.dyna_String(1) if self.dyna_IsSet(1) else 'pick'
 
-        tagger.selection.convert_tags(lookup[fromTagType], lookup[toTagType])
+        tagger.selection.convert_tags(tagger.util.string_to_i_POLYTAG(fromTagType), tagger.util.string_to_i_POLYTAG(toTagType))
 
     def basic_Execute(self, msg, flags):
         try:

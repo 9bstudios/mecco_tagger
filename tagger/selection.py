@@ -1,7 +1,8 @@
 #python
 
-import modo, lx, symbols, items, manage
+import modo, lx, items, manage
 from PolysConnectedByTag import *
+from var import *
 
 
 def get_mode():

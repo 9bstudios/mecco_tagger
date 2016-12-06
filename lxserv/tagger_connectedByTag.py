@@ -12,12 +12,6 @@ import tagger
 
 CMD_NAME = 'tagger.selectConnectedByTag'
 
-lookup = {
-    'material': lx.symbol.i_POLYTAG_MATERIAL,
-    'part': lx.symbol.i_POLYTAG_PART,
-    'pick': lx.symbol.i_POLYTAG_PICK
-}
-
 class sPresetText(lxifc.UIValueHints):
     def __init__(self, items):
         self._items = items
@@ -66,7 +60,7 @@ class ExpandByMaterial_Cmd(lxu.command.BasicCommand):
             lx.out(traceback.format_exc())
 
     def CMD_EXE(self, msg, flags):
-        i_POLYTAG = lookup[self.dyna_String(0)] if self.dyna_IsSet(0) else 'material'
+        i_POLYTAG = tagger.util.string_to_i_POLYTAG(self.dyna_String(0)) if self.dyna_IsSet(0) else 'material'
 
         layer_svc = lx.service.Layer ()
         layer_scan = lx.object.LayerScan (layer_svc.ScanAllocate (lx.symbol.f_LAYERSCAN_ACTIVE | lx.symbol.f_LAYERSCAN_MARKPOLYS))

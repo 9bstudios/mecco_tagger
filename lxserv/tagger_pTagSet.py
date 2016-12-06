@@ -5,12 +5,6 @@ import lx, lxu.command, lxifc, traceback, modo, tagger
 CMD_NAME = 'tagger.pTagSet'
 DEFAULTS = ['material', '', False]
 
-lookup = {
-    'material': lx.symbol.i_POLYTAG_MATERIAL,
-    'part': lx.symbol.i_POLYTAG_PART,
-    'pick': lx.symbol.i_POLYTAG_PICK
-}
-
 class sPresetText(lxifc.UIValueHints):
     def __init__(self, items):
         self._items = items
@@ -54,7 +48,7 @@ class CommandClass(lxu.command.BasicCommand):
         connected = self.dyna_Int(2) if self.dyna_IsSet(2) else 0
         self.set_last_used(2, connected)
 
-        tagger.selection.tag_polys(tag, connected, lookup[tagType])
+        tagger.selection.tag_polys(tag, connected, tagger.util.string_to_i_POLYTAG(tagType))
 
     def cmd_DialogInit(self):
         if self._last_used[0] == None:

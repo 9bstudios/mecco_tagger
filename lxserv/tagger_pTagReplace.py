@@ -5,12 +5,6 @@ import lx, lxu.command, lxifc, traceback, modo, tagger
 CMD_NAME = 'tagger.pTagReplace'
 DEFAULTS = ['material', '', '']
 
-lookup = {
-    'material': lx.symbol.i_POLYTAG_MATERIAL,
-    'part': lx.symbol.i_POLYTAG_PART,
-    'pick': lx.symbol.i_POLYTAG_PICK
-}
-
 class sPresetText(lxifc.UIValueHints):
     def __init__(self, items):
         self._items = items
@@ -59,15 +53,15 @@ class CommandClass(lxu.command.BasicCommand):
                 for poly in geo.polygons:
 
                     if tagType in ['material', 'part']:
-                        if poly.getTag(lookup[tagType]) == replaceTag:
+                        if poly.getTag(tagger.util.string_to_i_POLYTAG(tagType)) == replaceTag:
                             hitlist.add(poly)
                             hitcount += 1
 
                     elif tagType == 'pick':
-                        if not poly.getTag(lookup[tagType]):
+                        if not poly.getTag(tagger.util.string_to_i_POLYTAG(tagType)):
                             continue
 
-                        pickTags = set(poly.getTag(lookup[tagType]).split(";"))
+                        pickTags = set(poly.getTag(tagger.util.string_to_i_POLYTAG(tagType)).split(";"))
                         if replaceTag in pickTags:
                             hitlist.add(poly)
                             hitcount += 1
@@ -77,13 +71,13 @@ class CommandClass(lxu.command.BasicCommand):
                 for poly in hitlist:
 
                     if tagType in ['material', 'part']:
-                        poly.setTag(lookup[tagType], withTag)
+                        poly.setTag(tagger.util.string_to_i_POLYTAG(tagType), withTag)
 
                     elif tagType == 'pick':
-                        pickTags = set(poly.getTag(lookup[tagType]).split(";"))
+                        pickTags = set(poly.getTag(tagger.util.string_to_i_POLYTAG(tagType)).split(";"))
                         pickTags.discard(replaceTag)
                         pickTags.add(withTag)
-                        poly.setTag(lookup[tagType], ";".join(pickTags))
+                        poly.setTag(tagger.util.string_to_i_POLYTAG(tagType), ";".join(pickTags))
 
 
         if hitcount == 0:

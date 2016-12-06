@@ -4,12 +4,6 @@ import lx, lxu, modo, tagger, traceback
 
 NAME_CMD = 'tagger.pTagClipboard'
 
-lookup = {
-    'Material': 'material',
-    'Part': 'part',
-    'Selection Set': 'pick'
-}
-
 class CMD_tagger(lxu.command.BasicCommand):
 
     _clipboard = {'material': None, 'part': None, 'pick': None}
@@ -69,7 +63,7 @@ class CMD_tagger(lxu.command.BasicCommand):
             mask = list(masks)[0]
 
             tagLabel = mask.channel(lx.symbol.sICHAN_MASK_PTYP).get()
-            tagType = lookup[tagLabel]
+            tagType = tagger.util.i_POLYTAG_to_string(tagLabel)
             tag = mask.channel(lx.symbol.sICHAN_MASK_PTAG).get()
 
             self.set_clipboard(tagType, tag)

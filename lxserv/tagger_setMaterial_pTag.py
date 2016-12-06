@@ -2,22 +2,22 @@
 
 import lx, lxu, lxifc, modo, tagger, traceback
 
-NAME = tagger.symbols.ARGS_NAME
-MODE = tagger.symbols.ARGS_MODE
-OPERATION = tagger.symbols.ARGS_OPERATION
-CONNECTED = tagger.symbols.ARGS_CONNECTED
-PRESET = tagger.symbols.ARGS_PRESET
+NAME = tagger.ARGS_NAME
+MODE = tagger.ARGS_MODE
+OPERATION = tagger.ARGS_OPERATION
+CONNECTED = tagger.ARGS_CONNECTED
+PRESET = tagger.ARGS_PRESET
 
-AUTO_FILTER = tagger.symbols.FILTER_TYPES_AUTO
-MATERIAL = tagger.symbols.FILTER_TYPES_MATERIAL
-PART = tagger.symbols.FILTER_TYPES_PART
-PICK = tagger.symbols.FILTER_TYPES_PICK
+AUTO_FILTER = tagger.FILTER_TYPES_AUTO
+MATERIAL = tagger.FILTER_TYPES_MATERIAL
+PART = tagger.FILTER_TYPES_PART
+PICK = tagger.FILTER_TYPES_PICK
 
-AUTO_OPERATION = tagger.symbols.OPERATIONS_AUTO
-ADD = tagger.symbols.OPERATIONS_ADD
-REMOVE = tagger.symbols.OPERATIONS_REMOVE
+AUTO_OPERATION = tagger.OPERATIONS_AUTO
+ADD = tagger.OPERATIONS_ADD
+REMOVE = tagger.OPERATIONS_REMOVE
 
-NAME_CMD = tagger.symbols.COMMAND_NAME_PTAG
+NAME_CMD = tagger.COMMAND_NAME_PTAG
 
 DEFAULT_TAG = ''
 

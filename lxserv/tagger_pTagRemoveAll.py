@@ -5,12 +5,6 @@ import lx, lxu.command, lxifc, traceback, modo, tagger
 CMD_NAME = 'tagger.pTagRemoveAll'
 DEFAULTS = ['part', '', False]
 
-lookup = {
-    'material': lx.symbol.i_POLYTAG_MATERIAL,
-    'part': lx.symbol.i_POLYTAG_PART,
-    'pick': lx.symbol.i_POLYTAG_PICK
-}
-
 class sPresetText(lxifc.UIValueHints):
     def __init__(self, items):
         self._items = items
@@ -49,7 +43,7 @@ class CommandClass(lxu.command.BasicCommand):
             for mesh in modo.Scene().meshes:
                 with mesh.geometry as geo:
                     polys = geo.polygons
-                    tagger.manage.tag_polys(polys, None, lookup[tagType])
+                    tagger.manage.tag_polys(polys, None, tagger.util.string_to_i_POLYTAG(tagType))
 
     def cmd_DialogInit(self):
         if self._last_used[0] == None:

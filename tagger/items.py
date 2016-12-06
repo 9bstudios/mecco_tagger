@@ -1,6 +1,7 @@
 #python
 
 import modo, lx, lxu, defaults, selection
+from util import *
 
 def group_selected_and_maskable(name):
     scene = modo.Scene()
@@ -97,12 +98,6 @@ def get_all_masked_tags():
     """see https://gist.github.com/mattcox/6147502"""
     ptags = set()
 
-    lookup = {
-        'Material': 'material',
-        'Part': 'part',
-        'Selection Set': 'pick'
-    }
-
     scn_svc = lx.service.Scene()
     scene = lxu.select.SceneSelection().current()
 
@@ -112,7 +107,7 @@ def get_all_masked_tags():
     for i in range (scene.ItemCount(mask_type)):
         mask = scene.ItemByIndex(mask_type, i)
 
-        tagType = lookup[chan_read.String(mask, mask.ChannelLookup(lx.symbol.sICHAN_MASK_PTYP))]
+        tagType = i_POLYTAG_to_string(chan_read.String(mask, mask.ChannelLookup(lx.symbol.sICHAN_MASK_PTYP)))
         tag = chan_read.String(mask, mask.ChannelLookup(lx.symbol.sICHAN_MASK_PTAG))
         ptags.add((tagType, tag))
 
