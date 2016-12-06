@@ -36,7 +36,7 @@ class CommandClass(lxu.command.BasicCommand):
 
         self.dyna_Add('tagType', lx.symbol.sTYPE_STRING)
         self.dyna_Add('tag', lx.symbol.sTYPE_STRING)
-        self.dyna_Add('connected', lx.symbol.sTYPE_BOOLEAN)
+        self.dyna_Add('connected', lx.symbol.sTYPE_INTEGER)
 
         for i in [1,2]:
             self.basic_SetFlags (i, lx.symbol.fCMDARG_OPTIONAL)
@@ -51,7 +51,7 @@ class CommandClass(lxu.command.BasicCommand):
         tag = self.dyna_String(1) if self.dyna_IsSet(1) else None
         self.set_last_used(1, tag)
 
-        connected = self.dyna_Bool(2) if self.dyna_IsSet(2) else False
+        connected = self.dyna_Int(2) if self.dyna_IsSet(2) else 0
         self.set_last_used(2, connected)
 
         tagger.selection.tag_polys(tag, connected, lookup[tagType])
@@ -84,6 +84,12 @@ class CommandClass(lxu.command.BasicCommand):
 
     def basic_Enable(self,msg):
         return True
+
+    def basic_ButtonName(self):
+        if self.dyna_IsSet(0) and self.dyna_IsSet(1):
+            tagType = self.dyna_String(0)
+            tag = self.dyna_String(1)
+            return "%s (%s)" % (tag, tagType)
 
     def arg_UIValueHints(self, index):
         if index == 0:

@@ -12,5 +12,6 @@ try:
     import manage
     import shadertree
     import selection
+    from PolysConnectedByTag import *
 except:
     traceback.print_exc()

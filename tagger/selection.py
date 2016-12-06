@@ -1,6 +1,7 @@
 #python
 
 import modo, lx, symbols, items, manage
+from PolysConnectedByTag import *
 
 
 def get_mode():
@@ -15,7 +16,7 @@ def get_mode():
     return False
 
 
-def get_polys(connected=False):
+def get_polys(connected=0):
     """Returns a list of all implicitly selected polys in all active layers.
     If in poly mode, returns selected polys. If in edge or vertex mode,
     returns all polys adjacent to all selected components.
@@ -56,21 +57,14 @@ def get_polys(connected=False):
         else:
             return []
 
-        if connected:
-            queue = list(result)
-            island = set()
-
-            while queue:
-                poly = queue.pop()
-                if not poly in island:
-                    island.add(poly)
-                    queue.extend( poly.neighbours )
-
-            result = island
+        if connected == 1:
+            result = island(result)
+        elif connected == 2:
+            result = flood(result)
 
     return list(result)
 
-def get_ptags(i_POLYTAG = lx.symbol.i_POLYTAG_MATERIAL,connected=False):
+def get_ptags(i_POLYTAG = lx.symbol.i_POLYTAG_MATERIAL,connected=0):
     """Returns a list of all pTags for currently selected polys in all active layers.
 
     :param i_POLYTAG: type of tag to return (str), e.g. lx.symbol.i_POLYTAG_MATERIAL
@@ -86,7 +80,7 @@ def get_ptags(i_POLYTAG = lx.symbol.i_POLYTAG_MATERIAL,connected=False):
 
 
 
-def tag_polys(ptag,connected=False,i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL):
+def tag_polys(ptag,connected=0,i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL):
     """Assigns a pTag of type ptyp to all selected polys in all active layers.
 
     :param ptag: tag to apply (str)
@@ -105,14 +99,16 @@ def tag_polys(ptag,connected=False,i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL):
                 polys = geo.polygons
             elif polyCount >= 1:
                 polys = geo.polygons.selected
-                if connected:
+                if connected == 1:
                     polys = island(polys)
+                if connected == 2:
+                    polys = flood(polys, i_POLYTAG)
 
             manage.tag_polys(polys, ptag, i_POLYTAG)
 
 
 
-def convert_tags(from_i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL, to_i_POLYTAG=lx.symbol.i_POLYTAG_PICK, connected=False):
+def convert_tags(from_i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL, to_i_POLYTAG=lx.symbol.i_POLYTAG_PICK, connected=0):
     """Converts ptags of one type to another.
     :param from_i_POLYTAG: polygon tag type to convert from (e.g. lx.symbol.i_POLYTAG_MATERIAL)
     :param to_i_POLYTAG: polygon tag type to convert to (e.g. lx.symbol.i_POLYTAG_PART)
@@ -122,8 +118,11 @@ def convert_tags(from_i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL, to_i_POLYTAG=lx.sy
     for layer in items.get_active_layers():
         with layer.geometry as geo:
             polys = geo.polygons.selected
-            if connected:
+
+            if connected == 1:
                 polys = island(polys)
+            if connected == 2:
+                polys = flood(polys)
 
             for p in polys:
                 if p.getTag(from_i_POLYTAG):
@@ -143,12 +142,12 @@ def convert_tags(from_i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL, to_i_POLYTAG=lx.sy
 
 
 
-def island(polys):
+def island(seed_polys):
     polyIsland = set()
     checked = set()
     toCheck = set()
 
-    for poly in polys:
+    for poly in seed_polys:
 
         if poly in polyIsland:
             continue
@@ -160,6 +159,38 @@ def island(polys):
         while toCheck:
             poly = toCheck.pop()
             for polyN in poly.neighbours:
+                if not polyN in checked:
+                    checked.add( polyN )
+                    if not polyN in polyIsland:
+                        polyIsland.add( polyN )
+                        toCheck.add( polyN )
+
+    return polyIsland
+
+
+def flood(seed_polys, i_POLYTAG):
+    seed_polys = set(seed_polys)
+
+    polyIsland = set()
+    checked = set()
+    toCheck = set()
+
+    for poly in seed_polys:
+        tags = set(poly.getTag(i_POLYTAG).split(";"))
+
+        if poly in polyIsland:
+            continue
+
+        polyIsland.add( poly )
+        checked.add( poly )
+        toCheck.add( poly )
+
+        while toCheck:
+            poly = toCheck.pop()
+
+            for polyN in poly.neighbours:
+                if not tags.intersection(set(polyN.getTag(i_POLYTAG).split(";"))):
+                    continue
                 if not polyN in checked:
                     checked.add( polyN )
                     if not polyN in polyIsland:

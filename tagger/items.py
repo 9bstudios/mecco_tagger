@@ -91,8 +91,10 @@ def get_active_layers():
 
     return items
 
-# see https://gist.github.com/mattcox/6147502
+
+
 def get_all_material_tags():
+    """see https://gist.github.com/mattcox/6147502"""
     ptags = []
 
     scn_svc = lx.service.Scene()
