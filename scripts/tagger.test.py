@@ -23,6 +23,8 @@ lx.eval('select.subItem Cube set')
 lx.eval('select.polygon add material face m1')
 polys = tagger.selection.get_polys()
 
+# Set Material
+
 lx.eval('tagger.setMaterial test1')
 for p in polys:
     if p.tags()['material'] != 'test1':
@@ -36,6 +38,8 @@ for p in polys:
         lx.out('tagger.setMaterial {} auto remove - failed')
         errors += 1
         break
+
+# Convert Tags
 
 lx.eval('tagger.convertTags part material')
 for p in polys:
@@ -66,6 +70,8 @@ for p in polys:
         errors += 1
         break
 
+# pTag Set
+
 lx.eval('tagger.pTagSet part')
 for p in polys:
     if p.tags()['part'] != None:
@@ -87,6 +93,35 @@ for p in polys:
         lx.out('tagger.pTagSet material - failed')
         errors += 1
         break
+
+
+# pTag Clipboard
+# Copy and paste material tags using connected:0, 1, and 2.
+# Test to ensure that all of the proper tags were applied.
+
+
+# pTag Replace
+# Replace a tag globally in the file.
+# Test to ensure that the tag is gone from the scene.
+
+
+# pTag Select All By Tag
+# Run the command to make sure no errors are thrown. Do not test.
+
+
+# pTag Tag With Masked
+# Tag a polygon selection with a mask selection.
+# Test to ensure that the proper tag was applied.
+
+
+# pTag Connected By Tag
+# Run the command to make sure no errors are thrown. Do not test.
+
+
+# pTag Remove All
+# Remove a given tag type from the scene entirely. (e.g. remove all part tags)
+# Test to ensure that all polys in scene are tagged "None" for the given tag type.
+
 
 
 if not errors:
