@@ -93,9 +93,15 @@ def get_active_layers():
 
 
 
-def get_all_material_tags():
+def get_all_masked_tags():
     """see https://gist.github.com/mattcox/6147502"""
-    ptags = []
+    ptags = set()
+
+    lookup = {
+        'Material': 'material',
+        'Part': 'part',
+        'Selection Set': 'pick'
+    }
 
     scn_svc = lx.service.Scene()
     scene = lxu.select.SceneSelection().current()
@@ -106,12 +112,11 @@ def get_all_material_tags():
     for i in range (scene.ItemCount(mask_type)):
         mask = scene.ItemByIndex(mask_type, i)
 
-        if chan_read.String(mask, mask.ChannelLookup(lx.symbol.sICHAN_MASK_PTYP)) == 'Material':
-            ptag_value = chan_read.String(mask, mask.ChannelLookup(lx.symbol.sICHAN_MASK_PTAG))
-            if ptags.count(ptag_value) == 0:
-                ptags.append(ptag_value)
+        tagType = lookup[chan_read.String(mask, mask.ChannelLookup(lx.symbol.sICHAN_MASK_PTYP))]
+        tag = chan_read.String(mask, mask.ChannelLookup(lx.symbol.sICHAN_MASK_PTAG))
+        ptags.add((tagType, tag))
 
-    return ptags
+    return list(ptags)
 
 
 

@@ -7,10 +7,10 @@ CMD_NAME = 'tagger.tagWithMaskedFCL'
 def list_commands():
     fcl = []
 
-    material_tags = tagger.items.get_all_material_tags()
+    material_tags = tagger.items.get_all_masked_tags()
 
     for tag in material_tags:
-        fcl.append('tagger.pTagSet material %s' % tag)
+        fcl.append('tagger.pTagSet %s %s' % tag)
 
     return fcl
 

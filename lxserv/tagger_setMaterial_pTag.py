@@ -61,12 +61,12 @@ class CMD_tagger(lxu.command.BasicCommand):
     def cmd_DialogInit(self):
         if self._last_used != '':
             self.attr_SetString(0, self._last_used)
-        elif len(tagger.items.get_all_material_tags()) > 0:
-            self.attr_SetString(0, tagger.items.get_all_material_tags()[0])
+        elif len(tagger.items.get_all_masked_tags()) > 0:
+            self.attr_SetString(0, tagger.items.get_all_masked_tags()[0][1])
 
     def arg_UIValueHints(self, index):
         if index == 0:
-            return sPresetText(tagger.items.get_all_material_tags())
+            return sPresetText([t[1] for t in tagger.items.get_all_masked_tags()])
 
     def arg_UIHints (self, index, hints):
         if index == 0:

@@ -8,7 +8,11 @@ CMD_NAME = "tagger.tagWithMaskedPopup"
 
 class ThePopup(lxifc.UIValueHints):
     def __init__(self, items):
-        self._items = items
+        # Weird hack. uiv_PopInternalName() was inexplicably returning
+        # unrelated method names (as strings?) when I tried to concatenate
+        # these tuples there. To get around it, I combine them into a single
+        # string here, then split them back out for the pretty print.
+        self._items = ["__".join(i) for i in items]
 
     def uiv_Flags(self):
         return lx.symbol.fVALHINT_POPUPS
@@ -17,7 +21,11 @@ class ThePopup(lxifc.UIValueHints):
         return len(self._items)
 
     def uiv_PopUserName(self,index):
-        return self._items[index]
+        tag = self._items[index].split("__")
+        if tag[0] == 'material':
+            return tag[1]
+        else:
+            return "%s (%s)" % (tag[1], tag[0])
 
     def uiv_PopInternalName(self,index):
         return self._items[index]
@@ -35,12 +43,13 @@ class TheCommand(lxu.command.BasicCommand):
 
     def arg_UIValueHints(self, index):
         if index == 0:
-            return ThePopup(tagger.items.get_all_material_tags())
+            return ThePopup(tagger.items.get_all_masked_tags())
 
     def cmd_Execute(self,flags):
+        tag = self.dyna_String(0).split("__")
         connected = self.dyna_Int(1) if self.dyna_IsSet(1) else 0
-        if self.dyna_IsSet(0):
-            lx.eval('tagger.pTagSet material %s %s' % (self.dyna_String(0), connected))
+
+        lx.eval('tagger.pTagSet %s %s %s' % (tag[0], tag[1], connected))
 
     def cmd_Query(self,index,vaQuery):
         va = lx.object.ValueArray()
