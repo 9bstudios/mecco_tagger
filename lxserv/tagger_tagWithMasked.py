@@ -9,7 +9,7 @@ class CMD_tagger(lxu.command.BasicCommand):
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
 
-        self.dyna_Add('connected', lx.symbol.sTYPE_INTEGER)
+        self.dyna_Add(tagger.CONNECTED, lx.symbol.sTYPE_INTEGER)
         self.basic_SetFlags(0, lx.symbol.fCMDARG_OPTIONAL)
 
     def cmd_Flags(self):

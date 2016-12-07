@@ -10,29 +10,13 @@ import modo
 import traceback
 import tagger
 
-CMD_NAME = 'tagger.selectConnectedByTag'
-
-class sPresetText(lxifc.UIValueHints):
-    def __init__(self, items):
-        self._items = items
-
-    def uiv_Flags(self):
-        return lx.symbol.fVALHINT_POPUPS
-
-    def uiv_PopCount(self):
-        return len(self._items)
-
-    def uiv_PopUserName (self, index):
-        return self._items[index]
-
-    def uiv_PopInternalName (self, index):
-        return self._items[index][0]
+CMD_NAME = tagger.CMD_SELECT_CONNECTED_BY_TAG
 
 class ExpandByMaterial_Cmd(lxu.command.BasicCommand):
     def __init__(self):
         lxu.command.BasicCommand.__init__ (self)
 
-        self.dyna_Add ('i_POLYTAG', lx.symbol.sTYPE_STRING)
+        self.dyna_Add (tagger.i_POLYTAG, lx.symbol.sTYPE_STRING)
         self.basic_SetFlags (0, lx.symbol.fCMDARG_OPTIONAL)
 
     def cmd_Interact(self):
@@ -47,11 +31,11 @@ class ExpandByMaterial_Cmd(lxu.command.BasicCommand):
 
     def arg_UIValueHints(self, index):
         if index == 0:
-            return sPresetText(('material', 'part', 'pick'))
+            return tagger.PopupClass(tagger.POPUPS_TAGTYPES)
 
     def arg_UIHints (self, index, hints):
         if index == 0:
-            hints.Class ("sPresetText")
+            hints.Label(tagger.LABEL_TAGTYPE)
 
     def basic_Execute(self, msg, flags):
         try:
@@ -60,7 +44,7 @@ class ExpandByMaterial_Cmd(lxu.command.BasicCommand):
             lx.out(traceback.format_exc())
 
     def CMD_EXE(self, msg, flags):
-        i_POLYTAG = tagger.util.string_to_i_POLYTAG(self.dyna_String(0)) if self.dyna_IsSet(0) else 'material'
+        i_POLYTAG = tagger.util.string_to_i_POLYTAG(self.dyna_String(0)) if self.dyna_IsSet(0) else tagger.MATERIAL
 
         layer_svc = lx.service.Layer ()
         layer_scan = lx.object.LayerScan (layer_svc.ScanAllocate (lx.symbol.f_LAYERSCAN_ACTIVE | lx.symbol.f_LAYERSCAN_MARKPOLYS))

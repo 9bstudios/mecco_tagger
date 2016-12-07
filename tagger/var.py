@@ -2,10 +2,19 @@
 
 import lx
 
-COMMAND_NAME_BASE = 'tagger.setMaterial'
-COMMAND_NAME_PTAG = 'tagger.setMaterial_pTag'
-COMMAND_NAME_ITEM = 'tagger.setMaterial_item'
-COMMAND_NAME_GROUP = 'tagger.setMaterial_group'
+CMD_SET_MATERIAL = 'tagger.setMaterial'
+CMD_SET_PTAG = 'tagger.setMaterial_pTag'
+CMD_SET_ITEM = 'tagger.setMaterial_item'
+CMD_SET_GROUP = 'tagger.setMaterial_group'
+CMD_APPLY_PRESET = 'tagger.applyPreset'
+CMD_SELECT_CONNECTED_BY_TAG = 'tagger.selectConnectedByTag'
+CMD_PTAG_SET = 'tagger.pTagSet'
+CMD_PTAG_CLIPBOARD = 'tagger.pTagClipboard'
+CMD_PTAG_INSPECT = 'tagger.pTagInspect'
+CMD_PTAG_REMOVEALL = 'tagger.pTagRemoveAll'
+CMD_PTAG_REPLACE = 'tagger.pTagReplace'
+CMD_PTAG_SELECTION_FCL = 'tagger.pTagSelectionFCL'
+CMD_SELECT_ALL_BY_TAG = 'tagger.selectAllByTag'
 
 GROUPNAME = "group"
 MATNAME = "material"
@@ -18,13 +27,36 @@ GTYP = "GTYP"
 GROUP_TYPES_STANDARD = ''
 GROUP_TYPES_ASSEMBLY = 'assembly'
 
-ARGS_NAME = 'name'
-ARGS_MODE = 'mode'
-ARGS_OPERATION = 'operation'
-ARGS_CONNECTED = 'connected'
-ARGS_PRESET = 'preset'
-ARGS_COPY = 'copy'
-ARGS_PASTE = 'paste'
+NAME = 'name'
+MODE = 'mode'
+OPERATION = 'operation'
+CONNECTED = 'connected'
+PRESET = 'preset'
+TAGTYPE = 'tagType'
+COPY = 'copy'
+PASTE = 'paste'
+MATERIAL = 'material'
+PICK = 'pick'
+PART = 'part'
+TAG = 'tag'
+i_POLYTAG = 'i_POLYTAG'
+MASK = 'mask'
+COPYMASK = 'copyMask'
+REPLACETAG = 'replaceTag'
+WITHTAG = 'withTag'
+QUERY = 'query'
+
+LABEL_TAGTYPE = "Tag Type"
+LABEL_TAG = "Tag"
+LABEL_TAGS = "Tags"
+LABEL_PRESET = "Preset"
+LABEL_CONNECTED = "Connected"
+LABEL_NONE = "(none)"
+LABEL_REPLACE_TAG = "Replace Tag"
+LABEL_WITH_TAG = "With Tag"
+
+POPUPS_CONNECTED = [(0,'Selected'), (1,'Connected'), (2,'Flood')]
+POPUPS_TAGTYPES = [('material','Material'), ('part','Part'), ('pick','Selection Set')]
 
 FILTER_TYPES_AUTO = 'auto'
 FILTER_TYPES_MATERIAL = 'material'

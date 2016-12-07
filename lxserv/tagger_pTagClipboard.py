@@ -2,17 +2,17 @@
 
 import lx, lxu, modo, tagger, traceback
 
-NAME_CMD = 'tagger.pTagClipboard'
+NAME_CMD = tagger.CMD_PTAG_CLIPBOARD
 
 class CMD_tagger(lxu.command.BasicCommand):
 
-    _clipboard = {'material': None, 'part': None, 'pick': None}
+    _clipboard = {tagger.MATERIAL: None, tagger.PART: None, tagger.PICK: None}
 
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
-        self.dyna_Add('mode', lx.symbol.sTYPE_STRING)
-        self.dyna_Add('tagType', lx.symbol.sTYPE_STRING)
-        self.dyna_Add('connected', lx.symbol.sTYPE_INTEGER)
+        self.dyna_Add(tagger.MODE, lx.symbol.sTYPE_STRING)
+        self.dyna_Add(tagger.TAGTYPE, lx.symbol.sTYPE_STRING)
+        self.dyna_Add(tagger.CONNECTED, lx.symbol.sTYPE_INTEGER)
 
         self.basic_SetFlags(0, lx.symbol.fCMDARG_OPTIONAL)
         self.basic_SetFlags(1, lx.symbol.fCMDARG_OPTIONAL)
@@ -35,21 +35,21 @@ class CMD_tagger(lxu.command.BasicCommand):
         mode = self.dyna_String(0) if self.dyna_IsSet(0) else None
 
         if not mode:
-            mode = 'copy'
+            mode = tagger.COPY
 
 
-        tagType = self.dyna_String(1) if self.dyna_IsSet(1) else 'material'
+        tagType = self.dyna_String(1) if self.dyna_IsSet(1) else tagger.MATERIAL
         connected = self.dyna_Int(2) if self.dyna_IsSet(2) else 0
 
 
-        if mode == 'copy':
+        if mode == tagger.COPY:
             self.set_clipboard(tagType, tagger.selection.get_polys()[0].tags()[tagType])
 
-        elif mode == 'copyMask':
+        elif mode == tagger.COPYMASK:
             masks = set()
 
             for i in modo.Scene().selected:
-                if i.type == 'mask':
+                if i.type == tagger.MASK:
                     masks.add(i)
 
             if len(masks) < 1:
@@ -68,13 +68,13 @@ class CMD_tagger(lxu.command.BasicCommand):
 
             self.set_clipboard(tagType, tag)
 
-        elif mode == 'paste':
+        elif mode == tagger.PASTE:
             args = {}
-            args['tag'] = self._clipboard[tagType]
-            args['tagType'] = tagType
-            args['connected'] = connected
+            args[tagger.TAG] = self._clipboard[tagType]
+            args[tagger.TAGTYPE] = tagType
+            args[tagger.CONNECTED] = connected
 
-            lx.eval('tagger.pTagSet' + tagger.util.build_arg_string(args))
+            lx.eval(tagger.CMD_PTAG_SET + tagger.util.build_arg_string(args))
 
 
 

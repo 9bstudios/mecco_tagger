@@ -2,15 +2,15 @@
 
 import lx, lxifc, lxu.command, modo, tagger
 
-CMD_NAME = 'tagger.pTagSelectionFCL'
+CMD_NAME = tagger.CMD_PTAG_SELECTION_FCL
 
 def list_commands():
     fcl = []
 
     tags = {
-        "material":set(),
-        "part":set(),
-        "pick":set()
+        tagger.MATERIAL:set(),
+        tagger.PART:set(),
+        tagger.PICK:set()
     }
 
     polys_are_selected = False
@@ -22,18 +22,18 @@ def list_commands():
             polys_are_selected = True
 
         for p in polys:
-            if p.tags()["material"]:
-                tags["material"].add(p.tags()["material"])
-            if p.tags()["part"]:
-                tags["part"].add(p.tags()["part"])
-            if p.tags()["pick"]:
-                tags["pick"] = tags["pick"].union(set(p.tags()["pick"].split(";")))
+            if p.tags()[tagger.MATERIAL]:
+                tags[tagger.MATERIAL].add(p.tags()[tagger.MATERIAL])
+            if p.tags()[tagger.PART]:
+                tags[tagger.PART].add(p.tags()[tagger.PART])
+            if p.tags()[tagger.PICK]:
+                tags[tagger.PICK] = tags[tagger.PICK].union(set(p.tags()[tagger.PICK].split(";")))
 
     if polys_are_selected:
         for tagType in tags:
             fcl.append('- %s: %s' % (tagType, ", ".join(tags[tagType])))
             if tags[tagType]:
-                fcl.append("tagger.selectAllByTag %s" % tagType)
+                fcl.append("%s %s" % (tagger.CMD_SELECT_ALL_BY_TAG, tagType))
                 # fcl.append("tagger.connectedByTag %s" % tagType)
 
     return fcl
@@ -56,7 +56,7 @@ class tagger_fcl(lxifc.UIValueHints):
 class cmd_tagger_fcl(lxu.command.BasicCommand):
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
-        self.dyna_Add('query', lx.symbol.sTYPE_INTEGER)
+        self.dyna_Add(tagger.QUERY, lx.symbol.sTYPE_INTEGER)
         self.basic_SetFlags(0, lx.symbol.fCMDARG_QUERY)
 
         self.not_svc = lx.service.NotifySys()

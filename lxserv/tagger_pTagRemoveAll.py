@@ -2,24 +2,8 @@
 
 import lx, lxu.command, lxifc, traceback, modo, tagger
 
-CMD_NAME = 'tagger.pTagRemoveAll'
-DEFAULTS = ['part', '', False]
-
-class sPresetText(lxifc.UIValueHints):
-    def __init__(self, items):
-        self._items = items
-
-    def uiv_Flags(self):
-        return lx.symbol.fVALHINT_POPUPS
-
-    def uiv_PopCount(self):
-        return len(self._items)
-
-    def uiv_PopUserName (self, index):
-        return self._items[index]
-
-    def uiv_PopInternalName (self, index):
-        return self._items[index]
+CMD_NAME = tagger.CMD_PTAG_REMOVEALL
+DEFAULTS = [tagger.PART, '', False]
 
 class CommandClass(lxu.command.BasicCommand):
 
@@ -28,13 +12,13 @@ class CommandClass(lxu.command.BasicCommand):
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
 
-        self.dyna_Add('tagType', lx.symbol.sTYPE_STRING)
+        self.dyna_Add(tagger.TAGTYPE, lx.symbol.sTYPE_STRING)
 
     def cmd_Flags (self):
         return lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
 
     def CMD_EXE(self, msg, flags):
-        tagType = self.dyna_String(0) if self.dyna_IsSet(0) else 'material'
+        tagType = self.dyna_String(0) if self.dyna_IsSet(0) else tagger.MATERIAL
         self.set_last_used(0, tagType)
 
         safety = modo.dialogs.yesNo("Remove All Tags", "All %s tags will be removed from the scene. Continue?" % tagType)
@@ -66,10 +50,10 @@ class CommandClass(lxu.command.BasicCommand):
 
     def arg_UIValueHints(self, index):
         if index == 0:
-            return sPresetText(('material', 'part', 'pick'))
+            return tagger.PopupClass(tagger.POPUPS_TAGTYPES)
 
     def arg_UIHints (self, index, hints):
         if index == 0:
-            hints.Class ("sPresetText")
+            hints.Label(tagger.LABEL_TAGTYPE)
 
 lx.bless(CommandClass, CMD_NAME)

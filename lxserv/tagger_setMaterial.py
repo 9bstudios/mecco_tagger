@@ -2,11 +2,11 @@
 
 import lx, lxu, modo, tagger, traceback
 
-NAME = tagger.ARGS_NAME
-MODE = tagger.ARGS_MODE
-OPERATION = tagger.ARGS_OPERATION
-CONNECTED = tagger.ARGS_CONNECTED
-PRESET = tagger.ARGS_PRESET
+NAME = tagger.NAME
+MODE = tagger.MODE
+OPERATION = tagger.OPERATION
+CONNECTED = tagger.CONNECTED
+PRESET = tagger.PRESET
 
 AUTO_FILTER = tagger.FILTER_TYPES_AUTO
 MATERIAL = tagger.FILTER_TYPES_MATERIAL
@@ -22,7 +22,7 @@ OVERRIDE = tagger.OPERATIONS_OVERRIDE
 ADD = tagger.OPERATIONS_ADD
 REMOVE = tagger.OPERATIONS_REMOVE
 
-NAME_CMD = tagger.COMMAND_NAME_BASE
+NAME_CMD = tagger.CMD_SET_MATERIAL
 
 
 class CMD_tagger(lxu.command.BasicCommand):
@@ -77,17 +77,17 @@ class CMD_tagger(lxu.command.BasicCommand):
             if args[MODE] in (MATERIAL,PART,PICK):
                 if args[OPERATION] == REMOVE:
                     args[NAME] = REMOVE
-                lx.eval(tagger.COMMAND_NAME_PTAG + tagger.util.build_arg_string(args))
+                lx.eval(tagger.CMD_SET_PTAG + tagger.util.build_arg_string(args))
 
             elif args[MODE] in (ITEM,ACTIVE):
                 del args[NAME]
                 del args[CONNECTED]
-                lx.eval(tagger.COMMAND_NAME_ITEM + tagger.util.build_arg_string(args))
+                lx.eval(tagger.CMD_SET_ITEM + tagger.util.build_arg_string(args))
 
             elif args[MODE] == GROUP:
                 del args[MODE]
                 del args[CONNECTED]
-                lx.eval(tagger.COMMAND_NAME_GROUP + tagger.util.build_arg_string(args))
+                lx.eval(tagger.CMD_SET_GROUP + tagger.util.build_arg_string(args))
 
 
         except:

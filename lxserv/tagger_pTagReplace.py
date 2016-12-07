@@ -2,24 +2,8 @@
 
 import lx, lxu.command, lxifc, traceback, modo, tagger
 
-CMD_NAME = 'tagger.pTagReplace'
-DEFAULTS = ['material', '', '']
-
-class sPresetText(lxifc.UIValueHints):
-    def __init__(self, items):
-        self._items = items
-
-    def uiv_Flags(self):
-        return lx.symbol.fVALHINT_POPUPS
-
-    def uiv_PopCount(self):
-        return len(self._items)
-
-    def uiv_PopUserName (self, index):
-        return self._items[index]
-
-    def uiv_PopInternalName (self, index):
-        return self._items[index]
+CMD_NAME = tagger.CMD_PTAG_REPLACE
+DEFAULTS = [tagger.MATERIAL, '', '']
 
 class CommandClass(lxu.command.BasicCommand):
 
@@ -28,9 +12,9 @@ class CommandClass(lxu.command.BasicCommand):
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
 
-        self.dyna_Add('tagType', lx.symbol.sTYPE_STRING)
-        self.dyna_Add('replaceTag', lx.symbol.sTYPE_STRING)
-        self.dyna_Add('withTag', lx.symbol.sTYPE_STRING)
+        self.dyna_Add(tagger.TAGTYPE, lx.symbol.sTYPE_STRING)
+        self.dyna_Add(tagger.REPLACETAG, lx.symbol.sTYPE_STRING)
+        self.dyna_Add(tagger.WITHTAG, lx.symbol.sTYPE_STRING)
 
     def cmd_Flags (self):
         return lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
@@ -52,12 +36,12 @@ class CommandClass(lxu.command.BasicCommand):
                 hitlist = set()
                 for poly in geo.polygons:
 
-                    if tagType in ['material', 'part']:
+                    if tagType in [tagger.MATERIAL, tagger.PART]:
                         if poly.getTag(tagger.util.string_to_i_POLYTAG(tagType)) == replaceTag:
                             hitlist.add(poly)
                             hitcount += 1
 
-                    elif tagType == 'pick':
+                    elif tagType == tagger.PICK:
                         if not poly.getTag(tagger.util.string_to_i_POLYTAG(tagType)):
                             continue
 
@@ -70,10 +54,10 @@ class CommandClass(lxu.command.BasicCommand):
             with mesh.geometry as geo:
                 for poly in hitlist:
 
-                    if tagType in ['material', 'part']:
+                    if tagType in [tagger.MATERIAL, tagger.PART]:
                         poly.setTag(tagger.util.string_to_i_POLYTAG(tagType), withTag)
 
-                    elif tagType == 'pick':
+                    elif tagType == tagger.PICK:
                         pickTags = set(poly.getTag(tagger.util.string_to_i_POLYTAG(tagType)).split(";"))
                         pickTags.discard(replaceTag)
                         pickTags.add(withTag)
@@ -130,10 +114,21 @@ class CommandClass(lxu.command.BasicCommand):
 
     def arg_UIValueHints(self, index):
         if index == 0:
-            return sPresetText(('material', 'part', 'pick'))
+            return tagger.PopupClass(tagger.POPUPS_TAGTYPES)
+
+        if index in [1,2]:
+            return tagger.PopupClass(tagger.scene.all_tags(x.symbol.i_POLYTAG_MATERIAL))
 
     def arg_UIHints (self, index, hints):
         if index == 0:
+            hints.Label(tagger.LABEL_TAGTYPE)
+
+        if index == 1:
+            hints.Label(tagger.LABEL_REPLACE_TAG)
+            hints.Class ("sPresetText")
+
+        if index == 2:
+            hints.Label(tagger.LABEL_WITH_TAG)
             hints.Class ("sPresetText")
 
 lx.bless(CommandClass, CMD_NAME)

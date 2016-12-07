@@ -2,11 +2,11 @@
 
 import lx, lxu, lxifc, modo, tagger, traceback
 
-NAME = tagger.ARGS_NAME
-MODE = tagger.ARGS_MODE
-OPERATION = tagger.ARGS_OPERATION
-CONNECTED = tagger.ARGS_CONNECTED
-PRESET = tagger.ARGS_PRESET
+NAME = tagger.NAME
+MODE = tagger.MODE
+OPERATION = tagger.OPERATION
+CONNECTED = tagger.CONNECTED
+PRESET = tagger.PRESET
 
 AUTO_FILTER = tagger.FILTER_TYPES_AUTO
 MATERIAL = tagger.FILTER_TYPES_MATERIAL
@@ -17,32 +17,14 @@ AUTO_OPERATION = tagger.OPERATIONS_AUTO
 ADD = tagger.OPERATIONS_ADD
 REMOVE = tagger.OPERATIONS_REMOVE
 
-NAME_CMD = tagger.COMMAND_NAME_PTAG
+NAME_CMD = tagger.CMD_SET_PTAG
 
 DEFAULT_TAG = ''
-
-# The UIValueHints object that returns the items in the list of commands
-# to the form.
-class sPresetText(lxifc.UIValueHints):
-    def __init__(self, items):
-        self._items = items
-
-    def uiv_Flags(self):
-        return lx.symbol.fVALHINT_POPUPS
-
-    def uiv_PopCount(self):
-        return len(self._items)
-
-    def uiv_PopUserName (self, index):
-        return self._items[index]
-
-    def uiv_PopInternalName (self, index):
-        return self._items[index]
-
 
 class CMD_tagger(lxu.command.BasicCommand):
 
     _last_used = ''
+    _last_used_mode = tagger.MATERIAL
 
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
@@ -52,7 +34,9 @@ class CMD_tagger(lxu.command.BasicCommand):
         self.dyna_Add(CONNECTED, lx.symbol.sTYPE_BOOLEAN)
         self.dyna_Add(PRESET, lx.symbol.sTYPE_STRING)
 
-        for i in range(1,5):
+        self.basic_SetFlags(1, lx.symbol.fCMDARG_OPTIONAL)
+
+        for i in range(2,5):
             self.basic_SetFlags(i, lx.symbol.fCMDARG_OPTIONAL | lx.symbol.fCMDARG_HIDDEN)
 
     def cmd_Flags(self):
@@ -64,17 +48,30 @@ class CMD_tagger(lxu.command.BasicCommand):
         elif len(tagger.items.get_all_masked_tags()) > 0:
             self.attr_SetString(0, tagger.items.get_all_masked_tags()[0][1])
 
+        self.attr_SetString(1, self._last_used_mode)
+
     def arg_UIValueHints(self, index):
         if index == 0:
-            return sPresetText([t[1] for t in tagger.items.get_all_masked_tags()])
+            return tagger.PopupClass(tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL))
+
+        if index == 1:
+            return tagger.PopupClass(tagger.POPUPS_TAGTYPES)
 
     def arg_UIHints (self, index, hints):
         if index == 0:
-            hints.Class ("sPresetText")
+            hints.Class("sPresetText")
+            hints.Label("Tag")
+
+        if index == 1:
+            hints.Label(tagger.LABEL_TAGTYPE)
 
     @classmethod
     def set_last_used(cls, value):
         cls._last_used = value
+
+    @classmethod
+    def set_last_used_mode(cls, value):
+        cls._last_used_mode = value
 
     def basic_Execute(self, msg, flags):
         try:
@@ -88,29 +85,26 @@ class CMD_tagger(lxu.command.BasicCommand):
             if args[OPERATION] != REMOVE:
                 self.set_last_used(args[NAME])
 
+            self.set_last_used_mode(args[NAME])
+
             if args[NAME] == '':
                 args[NAME] = DEFAULT_TAG
 
-            if args[MODE] == MATERIAL:
-                LXi_POLYTAG = lx.symbol.i_POLYTAG_MATERIAL
-            elif args[MODE] == PICK:
-                LXi_POLYTAG = lx.symbol.i_POLYTAG_PICK
-            else:
-                LXi_POLYTAG = lx.symbol.i_POLYTAG_PART
+            i_POLYTAG = tagger.util.string_to_i_POLYTAG(args[MODE])
 
             if args[OPERATION] == AUTO_OPERATION:
                 if args[CONNECTED]:
-                    tagger.selection.tag_polys( args[NAME], True, LXi_POLYTAG )
+                    tagger.selection.tag_polys( args[NAME], True, i_POLYTAG )
                 else:
-                    tagger.selection.tag_polys( args[NAME], False, LXi_POLYTAG )
+                    tagger.selection.tag_polys( args[NAME], False, i_POLYTAG )
 
                 if (
-                    not tagger.shadertree.get_masks(pTags = {args[NAME]:LXi_POLYTAG})
+                    not tagger.shadertree.get_masks(pTags = {args[NAME]:i_POLYTAG})
                     and not args[NAME] == DEFAULT_TAG
                     ):
 
                     mask = tagger.shadertree.build_material(
-                        i_POLYTAG = LXi_POLYTAG,
+                        i_POLYTAG = i_POLYTAG,
                         pTag = args[NAME],
                         preset = args[PRESET]
                     )
@@ -120,12 +114,12 @@ class CMD_tagger(lxu.command.BasicCommand):
 
             if args[OPERATION] == ADD:
                 if args[CONNECTED]:
-                    tagger.selection.tag_polys( args[NAME], True, LXi_POLYTAG )
+                    tagger.selection.tag_polys( args[NAME], True, i_POLYTAG )
                 else:
-                    tagger.selection.tag_polys( args[NAME], False, LXi_POLYTAG )
+                    tagger.selection.tag_polys( args[NAME], False, i_POLYTAG )
 
                 mask = tagger.shadertree.build_material(
-                    i_POLYTAG = LXi_POLYTAG,
+                    i_POLYTAG = i_POLYTAG,
                     pTag = args[NAME],
                     preset = args[PRESET]
                 )
@@ -135,9 +129,9 @@ class CMD_tagger(lxu.command.BasicCommand):
 
             if args[OPERATION] == REMOVE:
                 if args[CONNECTED]:
-                    tagger.selection.tag_polys( DEFAULT_TAG, True, LXi_POLYTAG )
+                    tagger.selection.tag_polys( DEFAULT_TAG, True, i_POLYTAG )
                 else:
-                    tagger.selection.tag_polys( DEFAULT_TAG, False, LXi_POLYTAG )
+                    tagger.selection.tag_polys( DEFAULT_TAG, False, i_POLYTAG )
 
                 # tagger.shadertree.cleanup()
 

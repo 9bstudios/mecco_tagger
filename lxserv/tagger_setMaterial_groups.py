@@ -2,15 +2,15 @@
 
 import lx, lxu, modo, tagger, traceback
 
-NAME = tagger.ARGS_NAME
-OPERATION = tagger.ARGS_OPERATION
-PRESET = tagger.ARGS_PRESET
+NAME = tagger.NAME
+OPERATION = tagger.OPERATION
+PRESET = tagger.PRESET
 
 AUTO_OPERATION = tagger.OPERATIONS_AUTO
 ADD = tagger.OPERATIONS_ADD
 REMOVE = tagger.OPERATIONS_REMOVE
 
-NAME_CMD = tagger.COMMAND_NAME_GROUP
+NAME_CMD = tagger.CMD_SET_GROUP
 
 class CMD_tagger(lxu.command.BasicCommand):
 
