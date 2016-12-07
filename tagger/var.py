@@ -15,6 +15,7 @@ CMD_PTAG_REMOVEALL = 'tagger.pTagRemoveAll'
 CMD_PTAG_REPLACE = 'tagger.pTagReplace'
 CMD_PTAG_SELECTION_FCL = 'tagger.pTagSelectionFCL'
 CMD_SELECT_ALL_BY_TAG = 'tagger.selectAllByTag'
+CMD_TAG_WITH_MASKED = 'tagger.tagWithMasked'
 
 GROUPNAME = "group"
 MATNAME = "material"

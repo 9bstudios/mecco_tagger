@@ -2,7 +2,7 @@
 
 import lx, lxu, modo, tagger, traceback
 
-NAME_CMD = 'tagger.tagWithMasked'
+NAME_CMD = tagger.CMD_TAG_WITH_MASKED
 
 class CMD_tagger(lxu.command.BasicCommand):
 
