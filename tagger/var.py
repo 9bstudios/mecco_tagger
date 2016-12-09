@@ -7,11 +7,12 @@ DEFAULT_RANDOM_COLOR_SATURATION = .7
 DEFAULT_RANDOM_COLOR_VALUE = .95
 DEFAULT_MATERIAL_NAME = 'material'
 
-CMD_SET_MATERIAL = 'tagger.setMaterial'
+CMD_SET_MATERIAL = 'tagger.setMaterial_auto'
+CMD_REMOVE_MATERIAL = 'tagger.removeMaterial_auto'
 CMD_SET_PTAG = 'tagger.setMaterial_pTag'
+CMD_REMOVE_PTAG = 'tagger.removeMaterial_pTag'
 CMD_SET_ITEM = 'tagger.setMaterial_item'
 CMD_SET_GROUP = 'tagger.setMaterial_group'
-CMD_APPLY_PRESET = 'tagger.applyPreset'
 CMD_SELECT_CONNECTED_BY_TAG = 'tagger.selectConnectedByTag'
 CMD_PTAG_SET = 'tagger.pTagSet'
 CMD_PTAG_CLIPBOARD = 'tagger.pTagClipboard'
@@ -37,6 +38,7 @@ NAME = 'name'
 MODE = 'mode'
 OPERATION = 'operation'
 CONNECTED = 'connected'
+REMOVE_SCOPE = 'scope'
 PRESET = 'preset'
 TAGTYPE = 'tagType'
 COPY = 'copy'
@@ -52,25 +54,34 @@ REPLACETAG = 'replaceTag'
 WITHTAG = 'withTag'
 QUERY = 'query'
 RANDOM = 'random'
+DELETE_UNUSED_MASKS = 'delete_unused'
 WITH_EXISTING = 'withExisting'
 GET_MORE_PRESETS = 'getMorePresets'
 GET_MORE_PRESETS_URL = 'http://www.mechanicalcolor.com/coming-soon'
+OPERATION = 'operation'
+REMOVE = 'remove'
+ADD = 'add'
 
 LABEL_TAGTYPE = "Tag Type"
 LABEL_TAG = "Tag"
 LABEL_TAGS = "Tags"
 LABEL_PRESET = "Preset"
 LABEL_CONNECTED = "Connected"
+LABEL_REMOVE_SCOPE = "Remove From"
 LABEL_NONE = "(none)"
 LABEL_REPLACE_TAG = "Replace Tag"
 LABEL_WITH_TAG = "With Tag"
 LABEL_RANDOM_COLOR = "Random Color"
 LABEL_GET_MORE_PRESETS = "Get more presets..."
 LABEL_WITH_EXISTING = "With Existing"
+LABEL_DELETE_UNUSED_MASKS = "Cleanup unused masks"
+LABEL_OPERATION = "Operation"
 
-POPUPS_CONNECTED = [(0,'Selected'), (1,'Connected'), (2,'Flood')]
+POPUPS_CONNECTED = [(0,'Selected Polys'), (1,'Connected Polys'), (2,'Flood Polys')]
+POPUPS_REMOVE_SCOPE = [(0,'Selected Polys'), (1,'Connected Polys'), (2,'Flood Polys'), (3,'Entire Scene')]
 POPUPS_TAGTYPES = [('material','Material'), ('part','Part'), ('pick','Selection Set')]
-POPUPS_WITH_EXISTING = [('keep','Keep'), ('remove','Remove'), ('consolidate','Consolidate')]
+POPUPS_WITH_EXISTING = [('use','Use'), ('keep','Keep and add'), ('remove','Remove and add'), ('consolidate','Consolidate and add')]
+POPUPS_ADD_REMOVE = [(ADD, ADD.title()), (REMOVE, REMOVE.title())]
 
 FILTER_TYPES_AUTO = 'auto'
 FILTER_TYPES_MATERIAL = 'material'
@@ -81,10 +92,8 @@ FILTER_TYPES_ACTIVE = 'active'
 FILTER_TYPES_GLOC = 'folder'
 FILTER_TYPES_GROUP = 'group'
 
-OPERATIONS_AUTO = 'auto'
-OPERATIONS_OVERRIDE = 'override'
-OPERATIONS_ADD = 'add'
-OPERATIONS_REMOVE = 'remove'
+OPERATIONS_ADD = ADD
+OPERATIONS_REMOVE = REMOVE
 
 def sICHAN_MASK_PTYP(i_POLYTAG):
     """Returns a suitable string for a mask item's lx.symbol.sICHAN_MASK_PTYP channel

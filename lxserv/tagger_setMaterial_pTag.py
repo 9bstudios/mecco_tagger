@@ -1,142 +1,179 @@
-#python
+# python
 
-import lx, lxu, lxifc, modo, tagger, traceback
+import lx, lxifc, lxu, modo
+import tagger
+from os import listdir, sep
+from os.path import isfile, join, basename, splitext, dirname
 
-NAME = tagger.NAME
-MODE = tagger.MODE
-OPERATION = tagger.OPERATION
-CONNECTED = tagger.CONNECTED
-PRESET = tagger.PRESET
+CMD_NAME = tagger.CMD_SET_PTAG
 
-AUTO_FILTER = tagger.FILTER_TYPES_AUTO
-MATERIAL = tagger.FILTER_TYPES_MATERIAL
-PART = tagger.FILTER_TYPES_PART
-PICK = tagger.FILTER_TYPES_PICK
-
-AUTO_OPERATION = tagger.OPERATIONS_AUTO
-ADD = tagger.OPERATIONS_ADD
-REMOVE = tagger.OPERATIONS_REMOVE
-
-NAME_CMD = tagger.CMD_SET_PTAG
-
-DEFAULT_TAG = ''
-
-class CMD_tagger(lxu.command.BasicCommand):
-
-    _last_used = ''
-    _last_used_mode = tagger.MATERIAL
+class CommandClass(lxu.command.BasicCommand):
+    _last_used = [
+        "",
+        tagger.RANDOM,
+        tagger.POPUPS_CONNECTED[2][0],
+        tagger.POPUPS_TAGTYPES[0][0],
+        tagger.POPUPS_WITH_EXISTING[0][0]
+    ]
 
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
-        self.dyna_Add(NAME, lx.symbol.sTYPE_STRING)
-        self.dyna_Add(MODE, lx.symbol.sTYPE_STRING)
-        self.dyna_Add(OPERATION, lx.symbol.sTYPE_STRING)
-        self.dyna_Add(CONNECTED, lx.symbol.sTYPE_BOOLEAN)
-        self.dyna_Add(PRESET, lx.symbol.sTYPE_STRING)
 
-        self.basic_SetFlags(1, lx.symbol.fCMDARG_OPTIONAL)
+        self.dyna_Add(tagger.TAG, lx.symbol.sTYPE_STRING)
+        self.basic_SetFlags(0, lx.symbol.fCMDARG_QUERY | lx.symbol.fCMDARG_OPTIONAL)
 
-        for i in range(2,5):
-            self.basic_SetFlags(i, lx.symbol.fCMDARG_OPTIONAL | lx.symbol.fCMDARG_HIDDEN)
+        self.dyna_Add(tagger.PRESET, lx.symbol.sTYPE_STRING)
+        self.basic_SetFlags(1, lx.symbol.fCMDARG_QUERY)
+
+        self.dyna_Add(tagger.CONNECTED, lx.symbol.sTYPE_INTEGER)
+        self.basic_SetFlags(2, lx.symbol.fCMDARG_OPTIONAL)
+
+        self.dyna_Add(tagger.TAGTYPE, lx.symbol.sTYPE_STRING)
+        self.basic_SetFlags(3, lx.symbol.fCMDARG_OPTIONAL)
+
+        self.dyna_Add(tagger.WITH_EXISTING, lx.symbol.sTYPE_STRING)
+        self.basic_SetFlags(4, lx.symbol.fCMDARG_OPTIONAL)
 
     def cmd_Flags(self):
         return lx.symbol.fCMD_POSTCMD | lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
 
-    def cmd_DialogInit(self):
-        if self._last_used != '':
-            self.attr_SetString(0, self._last_used)
-        elif len(tagger.items.get_all_masked_tags()) > 0:
-            self.attr_SetString(0, tagger.items.get_all_masked_tags()[0][1])
+    def arg_UIHints(self, index, hints):
+        if index == 0:
+            hints.Label(tagger.LABEL_TAG)
+            hints.Class("sPresetText")
 
-        self.attr_SetString(1, self._last_used_mode)
+        if index == 1:
+            hints.Label(tagger.LABEL_PRESET)
+
+        if index == 2:
+            hints.Label(tagger.LABEL_CONNECTED)
+
+        if index == 3:
+            hints.Label(tagger.LABEL_TAGTYPE)
+
+        if index == 4:
+            hints.Label(tagger.LABEL_WITH_EXISTING)
 
     def arg_UIValueHints(self, index):
         if index == 0:
             return tagger.PopupClass(tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL))
 
         if index == 1:
+            popup_list = [(tagger.RANDOM, tagger.LABEL_RANDOM_COLOR)]
+            popup_list.extend(tagger.presets.list_presets())
+            return tagger.PopupClass(popup_list)
+
+        if index == 2:
+            return tagger.PopupClass(tagger.POPUPS_CONNECTED)
+
+        if index == 3:
             return tagger.PopupClass(tagger.POPUPS_TAGTYPES)
 
-    def arg_UIHints (self, index, hints):
-        if index == 0:
-            hints.Class("sPresetText")
-            hints.Label("Tag")
+        if index == 4:
+            return tagger.PopupClass(tagger.POPUPS_WITH_EXISTING)
 
-        if index == 1:
-            hints.Label(tagger.LABEL_TAGTYPE)
-
-    @classmethod
-    def set_last_used(cls, value):
-        cls._last_used = value
+    def cmd_DialogInit(self):
+        self.attr_SetString(0, self._last_used[0])
+        self.attr_SetString(1, self._last_used[1])
+        self.attr_SetInt(2, self._last_used[2])
+        self.attr_SetString(3, self._last_used[3])
+        self.attr_SetString(4, self._last_used[4])
 
     @classmethod
-    def set_last_used_mode(cls, value):
-        cls._last_used_mode = value
+    def set_last_used(cls, key, value):
+        cls._last_used[key] = value
 
     def basic_Execute(self, msg, flags):
-        try:
-            args = {}
-            args[NAME] = self.dyna_String(0) if self.dyna_IsSet(0) else DEFAULT_TAG
-            args[MODE] = self.dyna_String(1) if self.dyna_IsSet(1) else AUTO_FILTER
-            args[OPERATION] = self.dyna_String(2) if self.dyna_IsSet(2) else AUTO_OPERATION
-            args[CONNECTED] = self.dyna_Bool(3) if self.dyna_IsSet(3) else False
-            args[PRESET] = self.dyna_String(4) if self.dyna_IsSet(4) else None
+        pTag = self.dyna_String(0) if self.dyna_IsSet(0) else ''
+        self.set_last_used(0, pTag)
 
-            if args[OPERATION] != REMOVE:
-                self.set_last_used(args[NAME])
+        preset = self.dyna_String(1)
+        self.set_last_used(1, preset)
 
-            self.set_last_used_mode(args[NAME])
+        connected = self.dyna_Int(2) if self.dyna_IsSet(2) else self._last_used[2]
+        self.set_last_used(2, self.dyna_Int(2))
 
-            if args[NAME] == '':
-                args[NAME] = DEFAULT_TAG
+        i_POLYTAG = self.dyna_String(3) if self.dyna_IsSet(3) else self._last_used[3]
+        self.set_last_used(3, self.dyna_String(3))
+        i_POLYTAG = tagger.util.string_to_i_POLYTAG(i_POLYTAG)
 
-            i_POLYTAG = tagger.util.string_to_i_POLYTAG(args[MODE])
+        withExisting = self.dyna_String(4) if self.dyna_IsSet(4) else self._last_used[4]
+        self.set_last_used(4, self.dyna_String(4))
 
-            if args[OPERATION] == AUTO_OPERATION:
-                if args[CONNECTED]:
-                    tagger.selection.tag_polys( args[NAME], True, i_POLYTAG )
-                else:
-                    tagger.selection.tag_polys( args[NAME], False, i_POLYTAG )
+        if preset == tagger.RANDOM:
+            preset = None
 
-                if (
-                    not tagger.shadertree.get_masks(pTags = {args[NAME]:i_POLYTAG})
-                    and not args[NAME] == DEFAULT_TAG
-                    ):
+        if not pTag:
+            if not preset:
+                pTag = tagger.DEFAULT_MATERIAL_NAME
 
-                    mask = tagger.shadertree.build_material(
-                        i_POLYTAG = i_POLYTAG,
-                        pTag = args[NAME],
-                        preset = args[PRESET]
-                    )
+            elif preset.endswith(".lxp"):
+                pTag = splitext(basename(preset))[0]
 
-                    # tagger.shadertree.cleanup()
-                    tagger.shadertree.move_to_base_shader(mask)
+            else:
+                pTag = tagger.DEFAULT_MATERIAL_NAME
 
-            if args[OPERATION] == ADD:
-                if args[CONNECTED]:
-                    tagger.selection.tag_polys( args[NAME], True, i_POLYTAG )
-                else:
-                    tagger.selection.tag_polys( args[NAME], False, i_POLYTAG )
+        # find any existing masks for this pTag
+        existing_masks = set()
+        for mask in modo.Scene().items('mask'):
+            maskType = tagger.util.string_to_i_POLYTAG(mask.channel(lx.symbol.sICHAN_MASK_PTYP).get())
+            maskTag = mask.channel(lx.symbol.sICHAN_MASK_PTAG).get()
+            if maskType == i_POLYTAG and maskTag == pTag:
+                existing_masks.add(mask)
 
-                mask = tagger.shadertree.build_material(
-                    i_POLYTAG = i_POLYTAG,
-                    pTag = args[NAME],
-                    preset = args[PRESET]
-                )
+        # tag the polys
+        tagger.selection.tag_polys(pTag, connected, i_POLYTAG)
 
-                # tagger.shadertree.cleanup()
-                tagger.shadertree.move_to_base_shader(mask)
+        # build a new mask if we need one
+        if not existing_masks or (existing_masks and withExisting != tagger.POPUPS_WITH_EXISTING[0][0]):
+            new_mask = tagger.shadertree.build_material(i_POLYTAG = i_POLYTAG, pTag = pTag, preset = preset)
 
-            if args[OPERATION] == REMOVE:
-                if args[CONNECTED]:
-                    tagger.selection.tag_polys( DEFAULT_TAG, True, i_POLYTAG )
-                else:
-                    tagger.selection.tag_polys( DEFAULT_TAG, False, i_POLYTAG )
+        # remove existing
+        if existing_masks and withExisting == tagger.POPUPS_WITH_EXISTING[1][0]:
+            for i in existing_masks:
 
-                # tagger.shadertree.cleanup()
+                # make sure item exists before trying to delete it
+                # (lest ye crash)
+                try:
+                    modo.Scene().item(i.id)
+                except:
+                    continue
 
-        except:
-            traceback.print_exc()
+                modo.Scene().removeItems(i, True)
+
+        # consolidate existing
+        elif existing_masks and withExisting == tagger.POPUPS_WITH_EXISTING[2][0]:
+            consolidation_mask = tagger.shadertree.add_mask(i_POLYTAG = i_POLYTAG, pTag = pTag)
+            above_base_shader = False
+
+            hitlist = set()
+            for mask in existing_masks:
+                if len(mask.children() == 0):
+                    hitlist.add(mask)
+                    continue
+
+                mask.setParent(consolidation_mask)
+                if [c for c in mask.children() if c.type == 'defaultShader']:
+                    above_base_shader = True
+
+            # delete any empty masks in consolidation
+            for hit in hitlist:
+                modo.Scene().removeItems(hit)
+
+            new_mask.setParent(consolidation_mask)
+            tagger.shadertree.move_to_top(new_mask)
+
+            tagger.shadertree.move_to_base_shader(consolidation_mask, above_base_shader)
 
 
-lx.bless(CMD_tagger, NAME_CMD)
+    def cmd_Query(self,index,vaQuery):
+        pass
+        va = lx.object.ValueArray()
+        va.set(vaQuery)
+        if index == 1:
+            va.AddString(self._last_used[1])
+
+        return lx.result.OK
+
+
+lx.bless(CommandClass, CMD_NAME)

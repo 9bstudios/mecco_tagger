@@ -16,3 +16,16 @@ def all_tags():
             for i in range(n):
                 tags.add(m.geometry.internalMesh.PTagByIndex(i_POLYTAG, i))
     return list(tags)
+
+def meshes_with_pTag(pTag, i_POLYTAG):
+    meshes = set()
+
+    for m in modo.Scene().meshes:
+        tags = set()
+        n = m.geometry.internalMesh.PTagCount(i_POLYTAG)
+        for i in range(n):
+            tags.add(m.geometry.internalMesh.PTagByIndex(i_POLYTAG, i))
+        if pTag in tags:
+            meshes.add(m)
+
+    return list(meshes)

@@ -22,6 +22,7 @@ class CommandClass(lxu.command.BasicCommand):
     def CMD_EXE(self, msg, flags):
         tagType = self.dyna_String(0)
         self.set_last_used(0, tagType)
+        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
 
         replaceTag = self.dyna_String(1)
         self.set_last_used(1, replaceTag)
@@ -31,21 +32,23 @@ class CommandClass(lxu.command.BasicCommand):
 
         hitcount = 0
 
-        for mesh in modo.Scene().meshes:
+        meshes_with_pTag = tagger.scene.meshes_with_pTag(replaceTag, i_POLYTAG)
+
+        for mesh in meshes_with_pTag:
             with mesh.geometry as geo:
                 hitlist = set()
                 for poly in geo.polygons:
 
                     if tagType in [tagger.MATERIAL, tagger.PART]:
-                        if poly.getTag(tagger.util.string_to_i_POLYTAG(tagType)) == replaceTag:
+                        if poly.getTag(i_POLYTAG) == replaceTag:
                             hitlist.add(poly)
                             hitcount += 1
 
                     elif tagType == tagger.PICK:
-                        if not poly.getTag(tagger.util.string_to_i_POLYTAG(tagType)):
+                        if not poly.getTag(i_POLYTAG):
                             continue
 
-                        pickTags = set(poly.getTag(tagger.util.string_to_i_POLYTAG(tagType)).split(";"))
+                        pickTags = set(poly.getTag(i_POLYTAG).split(";"))
                         if replaceTag in pickTags:
                             hitlist.add(poly)
                             hitcount += 1
@@ -55,13 +58,13 @@ class CommandClass(lxu.command.BasicCommand):
                 for poly in hitlist:
 
                     if tagType in [tagger.MATERIAL, tagger.PART]:
-                        poly.setTag(tagger.util.string_to_i_POLYTAG(tagType), withTag)
+                        poly.setTag(i_POLYTAG, withTag)
 
                     elif tagType == tagger.PICK:
-                        pickTags = set(poly.getTag(tagger.util.string_to_i_POLYTAG(tagType)).split(";"))
+                        pickTags = set(poly.getTag(i_POLYTAG).split(";"))
                         pickTags.discard(replaceTag)
                         pickTags.add(withTag)
-                        poly.setTag(tagger.util.string_to_i_POLYTAG(tagType), ";".join(pickTags))
+                        poly.setTag(i_POLYTAG, ";".join(pickTags))
 
 
         if hitcount == 0:
