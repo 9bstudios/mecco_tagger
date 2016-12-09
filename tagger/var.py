@@ -2,6 +2,10 @@
 
 import lx
 
+DEFAULT_PTAG = lx.symbol.i_POLYTAG_MATERIAL
+DEFAULT_RANDOM_COLOR_SATURATION = .7
+DEFAULT_RANDOM_COLOR_VALUE = .95
+
 CMD_SET_MATERIAL = 'tagger.setMaterial'
 CMD_SET_PTAG = 'tagger.setMaterial_pTag'
 CMD_SET_ITEM = 'tagger.setMaterial_item'
@@ -46,6 +50,9 @@ COPYMASK = 'copyMask'
 REPLACETAG = 'replaceTag'
 WITHTAG = 'withTag'
 QUERY = 'query'
+RANDOM = 'random'
+GET_MORE_PRESETS = 'getMorePresets'
+GET_MORE_PRESETS_URL = 'http://www.mechanicalcolor.com/coming-soon'
 
 LABEL_TAGTYPE = "Tag Type"
 LABEL_TAG = "Tag"
@@ -55,6 +62,8 @@ LABEL_CONNECTED = "Connected"
 LABEL_NONE = "(none)"
 LABEL_REPLACE_TAG = "Replace Tag"
 LABEL_WITH_TAG = "With Tag"
+LABEL_RANDOM_COLOR = "Random Color"
+LABEL_GET_MORE_PRESETS = "Get more presets..."
 
 POPUPS_CONNECTED = [(0,'Selected'), (1,'Connected'), (2,'Flood')]
 POPUPS_TAGTYPES = [('material','Material'), ('part','Part'), ('pick','Selection Set')]

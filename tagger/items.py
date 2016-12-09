@@ -1,7 +1,8 @@
 #python
 
-import modo, lx, lxu, defaults, selection
+import modo, lx, lxu, selection
 from util import *
+from var import *
 
 def group_selected_and_maskable(name):
     scene = modo.Scene()
@@ -31,7 +32,7 @@ def get_groups(items=[]):
     return list(groups)
 
 
-def ptag_replace(layers,pTags,default = defaults.get('ptag'),i_POLYTAG = lx.symbol.i_POLYTAG_MATERIAL):
+def ptag_replace(layers, pTags, default = DEFAULT_PTAG, i_POLYTAG = lx.symbol.i_POLYTAG_MATERIAL):
     """Replaces all instances of supplied pTag(s) in suplied layer(s) with a default tag.
 
     :param layers: modo.item.Item() object or list of objects to search

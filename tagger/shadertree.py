@@ -1,8 +1,26 @@
 #python
 
-import modo, lx, defaults, util, items
+import modo, lx, util, items
 from var import *
 
+def do_preset(preset_path):
+    """Drops a material preset, deletes the cruft, and returns the good stuff."""
+
+    lx.eval('preset.do {%s}' % preset_path)
+
+    preset_group = modo.Scene().groups[-1]
+    preset_parent_mask = preset_group.itemGraph('itemGroups').forward()[0]
+    preset_contents = preset_parent_mask.children()
+
+    modo.Scene().removeItems(preset_parent_mask)
+    modo.Scene().removeItems(preset_group)
+
+    if len(preset_contents) == 1 and preset_contents[0].type == 'mask':
+        parent_mask = preset_contents[0]
+        preset_contents = parent_mask.children()
+        modo.Scene().removeItems(parent_mask)
+
+    return preset_contents
 
 def build_material(
         item = None,
@@ -10,7 +28,6 @@ def build_material(
         pTag = None,
         parent = None,
         name = None,
-        overrides={},
         preset=None,
         shader=False
         ):
@@ -32,9 +49,6 @@ def build_material(
     :param name: name (optional)
     :type name: str
 
-    :param name: overrides to merge with defaults (optional). For keys, see defaults.DEFAULTS
-    :type name: dict
-
     :param preset: path to modo preset file (.lxp)
     :type preset: str
 
@@ -44,8 +58,7 @@ def build_material(
 
     scene = modo.Scene()
 
-    d = defaults.merge(overrides)
-    color = util.random_color() if not 'color' in d else d['color']
+    color = util.random_color()
 
     mask = add_mask(
         item,
@@ -61,20 +74,25 @@ def build_material(
             mask.setParent(parent,parent.childCount())
 
     if preset:
-        pass
+        preset_contents = do_preset(preset)
+        for i in preset_contents:
+            i.setParent(mask)
 
-    if not preset:
+    elif not preset:
         if(shader):
             sname = ' '.join([name,SHADERNAME]) if name else None
-            channels = d['shader_channels']
-            shdr = add_shader(sname,channels)
+            shdr = add_shader(sname)
             shdr.setParent(mask)
 
         mname = ' '.join([name,MATNAME]) if name else None
-        channels = d['material_channels']
-        channels[lx.symbol.sICHAN_ADVANCEDMATERIAL_DIFFCOL] = color
+        channels = {lx.symbol.sICHAN_ADVANCEDMATERIAL_DIFFCOL:color}
         mat = add_material(mname,channels)
         mat.setParent(mask)
+
+    if [i for i in mask.children() if i.type == 'defaultShader']:
+        move_to_base_shader(mask, True)
+    else:
+        move_to_base_shader(mask, False)
 
     return mask
 
@@ -187,7 +205,7 @@ def seek_and_destroy(
                         p.setTag(i_POLYTAG,";".join(tags))
                     else:
                         if p.getTag(i_POLYTAG) == pTag:
-                            p.setTag(i_POLYTAG,defaults.get('ptag'))
+                            p.setTag(i_POLYTAG, DEFAULT_PTAG)
 
     for i in get_masks(maskedItems,pTags,names):
         scene.removeItems(i,True)

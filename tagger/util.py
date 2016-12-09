@@ -1,14 +1,14 @@
 #python
 
-import defaults
 from lx import symbol
+from var import *
 
 def random_color():
     import colorsys, random
     return colorsys.hsv_to_rgb(
         random.random(),
-        defaults.get('random_color_saturation'),
-        defaults.get('random_color_value')
+        DEFAULT_RANDOM_COLOR_SATURATION,
+        DEFAULT_RANDOM_COLOR_VALUE
     )
 
 def build_arg_string(arg_dict):

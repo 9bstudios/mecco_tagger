@@ -7,7 +7,6 @@ DEBUG = True
 try:
     import util
     import presets
-    import defaults
     import items
     import manage
     import shadertree

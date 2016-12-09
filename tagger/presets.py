@@ -5,6 +5,15 @@ from os.path import isfile, join, basename, splitext, dirname
 def string_beautify(string):
     return string.title().replace("_", " ")
 
+def first_preset():
+    presets = list_presets()
+
+    if presets:
+        return presets[0]
+
+    elif not presets:
+        return (None, None)
+
 def list_presets():
     presets_paths = [
         "kit_mecco_tagger:basics"
@@ -13,7 +22,16 @@ def list_presets():
     raw_presets_list = []
     for path in presets_paths:
         presets_folder = lx.eval("query platformservice alias ? {%s}" % path)
-        raw_presets_list += [join(presets_folder, f) for f in listdir(presets_folder) if isfile(join(presets_folder, f))]
+
+        for f in listdir(presets_folder):
+            if f.startswith('.'):
+                continue
+            if splitext(f)[1] != '.lxp':
+                continue
+            if not isfile(join(presets_folder, f)):
+                continue
+
+            raw_presets_list.append(join(presets_folder, f))
 
     if not raw_presets_list:
         return []
