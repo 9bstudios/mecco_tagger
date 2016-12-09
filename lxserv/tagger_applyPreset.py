@@ -2,17 +2,25 @@
 
 import lx, lxifc, lxu, modo
 import tagger
+from os import listdir, sep
+from os.path import isfile, join, basename, splitext, dirname
 
 CMD_NAME = tagger.CMD_APPLY_PRESET
 
 class CommandClass(lxu.command.BasicCommand):
-    _last_used = ["", tagger.RANDOM, 2, tagger.MATERIAL]
+    _last_used = [
+        "",
+        tagger.RANDOM,
+        2,
+        tagger.POPUPS_TAGTYPES[0][0],
+        tagger.POPUPS_WITH_EXISTING[0][0]
+    ]
 
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
 
         self.dyna_Add(tagger.TAG, lx.symbol.sTYPE_STRING)
-        self.basic_SetFlags(0, lx.symbol.fCMDARG_QUERY)
+        self.basic_SetFlags(0, lx.symbol.fCMDARG_QUERY | lx.symbol.fCMDARG_OPTIONAL)
 
         self.dyna_Add(tagger.PRESET, lx.symbol.sTYPE_STRING)
         self.basic_SetFlags(1, lx.symbol.fCMDARG_QUERY)
@@ -22,6 +30,9 @@ class CommandClass(lxu.command.BasicCommand):
 
         self.dyna_Add(tagger.TAGTYPE, lx.symbol.sTYPE_STRING)
         self.basic_SetFlags(3, lx.symbol.fCMDARG_OPTIONAL)
+
+        self.dyna_Add(tagger.WITH_EXISTING, lx.symbol.sTYPE_STRING)
+        self.basic_SetFlags(4, lx.symbol.fCMDARG_OPTIONAL)
 
     def cmd_Flags(self):
         return lx.symbol.fCMD_POSTCMD | lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
@@ -40,6 +51,9 @@ class CommandClass(lxu.command.BasicCommand):
         if index == 3:
             hints.Label(tagger.LABEL_TAGTYPE)
 
+        if index == 4:
+            hints.Label(tagger.LABEL_WITH_EXISTING)
+
     def arg_UIValueHints(self, index):
         if index == 0:
             return tagger.PopupClass(tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL))
@@ -47,7 +61,6 @@ class CommandClass(lxu.command.BasicCommand):
         if index == 1:
             popup_list = [(tagger.RANDOM, tagger.LABEL_RANDOM_COLOR)]
             popup_list.extend(tagger.presets.list_presets())
-            popup_list.extend([(tagger.GET_MORE_PRESETS, tagger.LABEL_GET_MORE_PRESETS)])
             return tagger.PopupClass(popup_list)
 
         if index == 2:
@@ -56,19 +69,23 @@ class CommandClass(lxu.command.BasicCommand):
         if index == 3:
             return tagger.PopupClass(tagger.POPUPS_TAGTYPES)
 
+        if index == 4:
+            return tagger.PopupClass(tagger.POPUPS_WITH_EXISTING)
+
     def cmd_DialogInit(self):
         self.attr_SetString(0, self._last_used[0])
         self.attr_SetString(1, self._last_used[1])
         self.attr_SetInt(2, self._last_used[2])
         self.attr_SetString(3, self._last_used[3])
+        self.attr_SetString(4, self._last_used[4])
 
     @classmethod
     def set_last_used(cls, key, value):
         cls._last_used[key] = value
 
     def basic_Execute(self, msg, flags):
-        tag = self.dyna_String(0)
-        self.set_last_used(0, tag)
+        pTag = self.dyna_String(0) if self.dyna_IsSet(0) else ''
+        self.set_last_used(0, pTag)
 
         preset = self.dyna_String(1)
         self.set_last_used(1, preset)
@@ -76,26 +93,75 @@ class CommandClass(lxu.command.BasicCommand):
         connected = self.dyna_Int(2) if self.dyna_IsSet(2) else self._last_used[2]
         self.set_last_used(2, self.dyna_Int(2))
 
-        tagType = self.dyna_Int(3) if self.dyna_IsSet(3) else self._last_used[3]
-        self.set_last_used(3, self.dyna_Int(3))
+        i_POLYTAG = self.dyna_String(3) if self.dyna_IsSet(3) else self._last_used[3]
+        self.set_last_used(3, self.dyna_String(3))
+        i_POLYTAG = tagger.util.string_to_i_POLYTAG(i_POLYTAG)
 
-        if preset == tagger.GET_MORE_PRESETS:
-            lx.eval('openURL {%s}' % tagger.GET_MORE_PRESETS_URL)
-            return
+        withExisting = self.dyna_String(4) if self.dyna_IsSet(4) else self._last_used[4]
+        self.set_last_used(4, self.dyna_String(4))
 
         if preset == tagger.RANDOM:
             preset = None
 
-        tagger.selection.tag_polys(tag, connected, lx.symbol.i_POLYTAG_MATERIAL)
-        tagger.shadertree.build_material(
-                item = None,
-                i_POLYTAG = tagger.string_to_i_POLYTAG(tagType),
-                pTag = tag,
-                parent = None,
-                name = None,
-                preset = preset,
-                shader = False
-                )
+        if not pTag:
+            if not preset:
+                pTag = tagger.DEFAULT_MATERIAL_NAME
+
+            elif preset.endswith(".lxp"):
+                pTag = splitext(basename(preset))[0]
+
+            else:
+                pTag = tagger.DEFAULT_MATERIAL_NAME
+
+        # find any existing masks for this pTag
+        existing_masks = set()
+        for mask in modo.Scene().items('mask'):
+            maskType = tagger.util.string_to_i_POLYTAG(mask.channel(lx.symbol.sICHAN_MASK_PTYP).get())
+            maskTag = mask.channel(lx.symbol.sICHAN_MASK_PTAG).get()
+            if maskType == i_POLYTAG and maskTag == pTag:
+                existing_masks.add(mask)
+
+        # build the new mask
+        tagger.selection.tag_polys(pTag, connected, i_POLYTAG)
+        new_mask = tagger.shadertree.build_material(i_POLYTAG = i_POLYTAG, pTag = pTag, preset = preset)
+
+        # remove existing
+        if existing_masks and withExisting == tagger.POPUPS_WITH_EXISTING[1][0]:
+            for i in existing_masks:
+
+                # make sure item exists before trying to delete it
+                # (lest ye crash)
+                try:
+                    modo.Scene().item(i.id)
+                except:
+                    continue
+
+                modo.Scene().removeItems(i, True)
+
+        # consolidate existing
+        elif existing_masks and withExisting == tagger.POPUPS_WITH_EXISTING[2][0]:
+            consolidation_mask = tagger.shadertree.add_mask(i_POLYTAG = i_POLYTAG, pTag = pTag)
+            above_base_shader = False
+
+            hitlist = set()
+            for mask in existing_masks:
+                if len(mask.children() == 0):
+                    hitlist.add(mask)
+                    continue
+
+                mask.setParent(consolidation_mask)
+                if [c for c in mask.children() if c.type == 'defaultShader']:
+                    above_base_shader = True
+
+            # delete any empty masks in consolidation
+            for hit in hitlist:
+                modo.Scene().removeItems(hit)
+
+            new_mask.setParent(consolidation_mask)
+            tagger.shadertree.move_to_top(new_mask)
+
+            tagger.shadertree.move_to_base_shader(consolidation_mask, above_base_shader)
+
 
     def cmd_Query(self,index,vaQuery):
         pass

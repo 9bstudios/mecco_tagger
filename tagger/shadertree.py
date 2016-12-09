@@ -295,11 +295,6 @@ def get_masked_items(
 
     return r
 
-
-
-
-
-
 def move_to_top(items):
     """Moves the supplied items to the top slot in their respective parents."""
 
@@ -308,9 +303,6 @@ def move_to_top(items):
 
     for item in items:
         item.setParent(item.parent,item.parent.childCount())
-
-
-
 
 def get_shaders(mask):
     """Return a list of all shaders anywhere inside the supplied mask item."""

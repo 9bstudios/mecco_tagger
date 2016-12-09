@@ -177,7 +177,13 @@ def flood(seed_polys, i_POLYTAG):
     toCheck = set()
 
     for poly in seed_polys:
-        tags = set(poly.getTag(i_POLYTAG).split(";"))
+        tag = poly.getTag(i_POLYTAG)
+        if not tag:
+            return island(seed_polys)
+            
+        tags = set(tag.split(";"))
+        if not tags:
+            return island(seed_polys)
 
         if poly in polyIsland:
             continue
