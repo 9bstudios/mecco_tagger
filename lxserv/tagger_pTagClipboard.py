@@ -10,16 +10,43 @@ class CMD_tagger(lxu.command.BasicCommand):
 
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
-        self.dyna_Add(tagger.MODE, lx.symbol.sTYPE_STRING)
-        self.dyna_Add(tagger.TAGTYPE, lx.symbol.sTYPE_STRING)
-        self.dyna_Add(tagger.CONNECTED, lx.symbol.sTYPE_INTEGER)
 
+        self.dyna_Add(tagger.MODE, lx.symbol.sTYPE_STRING)
         self.basic_SetFlags(0, lx.symbol.fCMDARG_OPTIONAL)
+
+        self.dyna_Add(tagger.TAGTYPE, lx.symbol.sTYPE_STRING)
         self.basic_SetFlags(1, lx.symbol.fCMDARG_OPTIONAL)
+
+        self.dyna_Add(tagger.CONNECTED, lx.symbol.sTYPE_INTEGER)
         self.basic_SetFlags(2, lx.symbol.fCMDARG_OPTIONAL)
 
     def cmd_Flags(self):
         return lx.symbol.fCMD_POSTCMD | lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
+
+    def arg_UIHints(self, index, hints):
+        if index == 0:
+            hints.Label(tagger.LABEL_MODE)
+
+        if index == 1:
+            hints.Label(tagger.LABEL_TAGTYPE)
+
+        if index == 2:
+            hints.Label(tagger.LABEL_CONNECTED)
+
+    def arg_UIValueHints(self, index):
+        if index == 0:
+            return tagger.PopupClass(tagger.POPUPS_CLIPBOARD)
+
+        if index == 1:
+            return tagger.PopupClass(tagger.POPUPS_TAGTYPES)
+
+        if index == 2:
+            return tagger.PopupClass(tagger.POPUPS_CONNECTED)
+
+    def cmd_DialogInit(self):
+        self.attr_SetString(0, self._last_used[0])
+        self.attr_SetString(1, self._last_used[1])
+        self.attr_SetInt(2, self._last_used[2])
 
     @classmethod
     def set_clipboard(cls, key, value):
@@ -32,15 +59,17 @@ class CMD_tagger(lxu.command.BasicCommand):
             lx.out(traceback.format_exc())
 
     def CMD_EXE(self, msg, flags):
-        mode = self.dyna_String(0) if self.dyna_IsSet(0) else None
+        mode = self.dyna_String(0) if self.dyna_IsSet(0) else self._last_used[0]
+        self.set_last_used(0, mode)
+
+        tagType = self.dyna_String(1) if self.dyna_IsSet(1) else self._last_used[1]
+        self.set_last_used(1, tagType)
+
+        connected = self.dyna_String(2) if self.dyna_IsSet(2) else self._last_used[2]
+        self.set_last_used(2, connected)
 
         if not mode:
             mode = tagger.COPY
-
-
-        tagType = self.dyna_String(1) if self.dyna_IsSet(1) else tagger.MATERIAL
-        connected = self.dyna_Int(2) if self.dyna_IsSet(2) else 0
-
 
         if mode == tagger.COPY:
             self.set_clipboard(tagType, tagger.selection.get_polys()[0].tags()[tagType])
@@ -53,11 +82,11 @@ class CMD_tagger(lxu.command.BasicCommand):
                     masks.add(i)
 
             if len(masks) < 1:
-                modo.dialogs.alert("No Mask Selected", "Select a mask to apply.")
+                modo.dialogs.alert(tagger.DIALOGS_NO_MASK_SELECTED)
                 return
 
             if len(masks) > 1:
-                modo.dialogs.alert("Too Many Masks", "Select only one mask to apply.")
+                modo.dialogs.alert(tagger.DIALOGS_TOO_MANY_MASKS)
                 return
 
             mask = list(masks)[0]

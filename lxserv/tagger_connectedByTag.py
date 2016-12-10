@@ -3,25 +3,20 @@
 # Adapted from James O'Hare's excellent ffr_expandByMat.py code:
 # https://gist.github.com/Farfarer/c42ebd249602542a7369b4fd205f4fb5
 
-import lx
-import lxu.command
-import lxifc
-import modo
-import traceback
-import tagger
+import lx, lxu.command, lxifc, modo, traceback, tagger
 
 CMD_NAME = tagger.CMD_SELECT_CONNECTED_BY_TAG
 
 class ExpandByMaterial_Cmd(lxu.command.BasicCommand):
+    _last_used = [
+        tagger.POPUPS_TAGTYPES[0][0]
+    ]
+
     def __init__(self):
         lxu.command.BasicCommand.__init__ (self)
 
-        self.dyna_Add (tagger.i_POLYTAG, lx.symbol.sTYPE_STRING)
+        self.dyna_Add (tagger.TAGTYPE, lx.symbol.sTYPE_STRING)
         self.basic_SetFlags (0, lx.symbol.fCMDARG_OPTIONAL)
-
-    def cmd_Interact(self):
-        # Stop modo complaining.
-        pass
 
     def cmd_Flags(self):
         return lx.symbol.fCMD_UNDO
@@ -37,6 +32,13 @@ class ExpandByMaterial_Cmd(lxu.command.BasicCommand):
         if index == 0:
             hints.Label(tagger.LABEL_TAGTYPE)
 
+    def cmd_DialogInit(self):
+        self.attr_SetString(0, self._last_used[0])
+
+    @classmethod
+    def set_last_used(cls, key, value):
+        cls._last_used[key] = value
+
     def basic_Execute(self, msg, flags):
         try:
             self.CMD_EXE(msg, flags)
@@ -44,7 +46,9 @@ class ExpandByMaterial_Cmd(lxu.command.BasicCommand):
             lx.out(traceback.format_exc())
 
     def CMD_EXE(self, msg, flags):
-        i_POLYTAG = tagger.util.string_to_i_POLYTAG(self.dyna_String(0)) if self.dyna_IsSet(0) else tagger.MATERIAL
+        tagType = self.dyna_String(0) if self.dyna_IsSet(0) else self._last_used[0]
+        self.set_last_used(0, tagType)
+        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
 
         layer_svc = lx.service.Layer ()
         layer_scan = lx.object.LayerScan (layer_svc.ScanAllocate (lx.symbol.f_LAYERSCAN_ACTIVE | lx.symbol.f_LAYERSCAN_MARKPOLYS))

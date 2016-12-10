@@ -1,11 +1,12 @@
 #python
 
-import lx
+from lx import symbol
 
-DEFAULT_PTAG = lx.symbol.i_POLYTAG_MATERIAL
+DEFAULT_PTAG = symbol.i_POLYTAG_MATERIAL
 DEFAULT_RANDOM_COLOR_SATURATION = .7
 DEFAULT_RANDOM_COLOR_VALUE = .95
 DEFAULT_MATERIAL_NAME = 'material'
+DEFAULT_GROUP_NAME = 'tagger_group'
 
 CMD_SET_MATERIAL = 'tagger.setMaterial_auto'
 CMD_REMOVE_MATERIAL = 'tagger.removeMaterial_auto'
@@ -26,8 +27,6 @@ CMD_TAG_WITH_MASKED = 'tagger.tagWithMasked'
 GROUPNAME = "group"
 MATNAME = "material"
 SHADERNAME = "shader"
-BASE_SHADER = 'Base Shader'
-BASE_MATERIAL = 'Base Material'
 
 GTYP = "GTYP"
 
@@ -61,7 +60,17 @@ GET_MORE_PRESETS_URL = 'http://www.mechanicalcolor.com/coming-soon'
 OPERATION = 'operation'
 REMOVE = 'remove'
 ADD = 'add'
+USE = 'use'
+KEEP = 'keep'
+REMOVE = 'remove'
+CONSOLIDATE = 'consolidate'
+SCOPE_SELECTED = 0
+SCOPE_CONNECTED = 1
+SCOPE_FLOOD = 2
+SCOPE_SCENE = 3
 
+# These should probably be pulled from message tables
+LABEL_MODE = "Mode"
 LABEL_TAGTYPE = "Tag Type"
 LABEL_TAG = "Tag"
 LABEL_TAGS = "Tags"
@@ -76,42 +85,60 @@ LABEL_GET_MORE_PRESETS = "Get more presets..."
 LABEL_WITH_EXISTING = "With Existing"
 LABEL_DELETE_UNUSED_MASKS = "Cleanup unused masks"
 LABEL_OPERATION = "Operation"
+LABEL_GROUP_NAME = "Group Name"
+LABEL_TAG_WITH_MASKED = "Tag With Masked"
+LABEL_MATERIAL = "Material"
+LABEL_PART = "Part"
+LABEL_PICK = "Selection Set"
+LABEL_SCOPE_SELECTED = 'Selected Polys'
+LABEL_SCOPE_CONNECTED = 'Connected Polys'
+LABEL_SCOPE_FLOOD = 'Flood Polys'
+LABEL_SCOPE_SCENE = 'Entire Scene'
+LABEL_USE = 'Use'
+LABEL_KEEP = 'Keep and add'
+LABEL_REMOVE = 'Remove and add'
+LABEL_CONSOLIDATE = 'Consolidate and add'
+LABEL_FROM_TAGTYPE = 'From Tag Type'
+LABEL_TO_TAGTYPE = 'To Tag Type'
+LABEL_COPY = 'Copy'
+LABEL_PASTE = 'Paste'
+DIALOGS_NO_MASK_SELECTED = ("No Mask Selected", "Select a mask to apply.")
+DIALOGS_TOO_MANY_MASKS = ("Too Many Masks", "Select only one mask to apply.")
+DIALOGS_NO_PTAG_FILTER = ("No pTag Filter", "The selected mask applies to all polygons. No tag to apply.")
+DIALOGS_NONE_PTAG_FILTER = ("(none) pTag Filter", "The selected mask applies to nothing. No tag to apply.")
 
-POPUPS_CONNECTED = [(0,'Selected Polys'), (1,'Connected Polys'), (2,'Flood Polys')]
-POPUPS_REMOVE_SCOPE = [(0,'Selected Polys'), (1,'Connected Polys'), (2,'Flood Polys'), (3,'Entire Scene')]
-POPUPS_TAGTYPES = [('material','Material'), ('part','Part'), ('pick','Selection Set')]
-POPUPS_WITH_EXISTING = [('use','Use'), ('keep','Keep and add'), ('remove','Remove and add'), ('consolidate','Consolidate and add')]
+POPUPS_CLIPBOARD = [
+        (COPY, LABEL_COPY),
+        (PASTE, LABEL_PASTE)
+    ]
+
+POPUPS_CONNECTED = [
+        (SCOPE_SELECTED, LABEL_SCOPE_SELECTED),
+        (SCOPE_CONNECTED, LABEL_SCOPE_CONNECTED),
+        (SCOPE_FLOOD, LABEL_SCOPE_FLOOD)
+    ]
+
+POPUPS_REMOVE_SCOPE = [
+        (SCOPE_SELECTED, LABEL_SCOPE_SELECTED),
+        (SCOPE_CONNECTED, LABEL_SCOPE_CONNECTED),
+        (SCOPE_FLOOD, LABEL_SCOPE_FLOOD),
+        (SCOPE_SCENE, LABEL_SCOPE_SCENE)
+    ]
+
+POPUPS_TAGTYPES = [
+        (MATERIAL, LABEL_MATERIAL),
+        (PART, LABEL_PART),
+        (PICK, LABEL_PICK)
+    ]
+
+POPUPS_WITH_EXISTING = [
+        (USE, LABEL_USE),
+        (KEEP, LABEL_KEEP),
+        (REMOVE, LABEL_REMOVE),
+        (CONSOLIDATE, LABEL_CONSOLIDATE)
+    ]
+
 POPUPS_ADD_REMOVE = [(ADD, ADD.title()), (REMOVE, REMOVE.title())]
-
-FILTER_TYPES_AUTO = 'auto'
-FILTER_TYPES_MATERIAL = 'material'
-FILTER_TYPES_PART = 'part'
-FILTER_TYPES_PICK = 'selection'
-FILTER_TYPES_ITEM = 'item'
-FILTER_TYPES_ACTIVE = 'active'
-FILTER_TYPES_GLOC = 'folder'
-FILTER_TYPES_GROUP = 'group'
 
 OPERATIONS_ADD = ADD
 OPERATIONS_REMOVE = REMOVE
-
-def sICHAN_MASK_PTYP(i_POLYTAG):
-    """Returns a suitable string for a mask item's lx.symbol.sICHAN_MASK_PTYP channel
-    based on an lx.symbol.i_POLYTAG_* symbol."""
-
-    return {
-        lx.symbol.i_POLYTAG_MATERIAL:'Material',
-        lx.symbol.i_POLYTAG_PICK:'Selection Set',
-        lx.symbol.i_POLYTAG_PART:'Part'
-    }[i_POLYTAG]
-
-def i_POLYTAG(sICHAN_MASK_PTYP):
-    """Returns an lx.symbol.i_POLYTAG_* symbol based on a mask
-    item's lx.symbol.sICHAN_MASK_PTYP channel string."""
-
-    return {
-        '':lx.symbol.i_POLYTAG_MATERIAL,
-        'Material':lx.symbol.i_POLYTAG_MATERIAL,
-        'Selection Set':lx.symbol.i_POLYTAG_PICK,
-        'Part':lx.symbol.i_POLYTAG_PART
-    }[sICHAN_MASK_PTYP]

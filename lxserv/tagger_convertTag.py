@@ -36,9 +36,9 @@ class CommandClass(lxu.command.BasicCommand):
 
     def arg_UIHints (self, index, hints):
         if index == 0:
-            hints.Label("From Tag Type")
+            hints.Label(tagger.LABEL_FROM_TAGTYPE)
 
         if index == 1:
-            hints.Label("To Tag Type")
+            hints.Label(tagger.LABEL_TO_TAGTYPE)
 
 lx.bless(CommandClass, CMD_NAME)

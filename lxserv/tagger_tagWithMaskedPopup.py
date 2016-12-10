@@ -53,7 +53,7 @@ class TheCommand(lxu.command.BasicCommand):
         va = lx.object.ValueArray()
         va.set(vaQuery)
         if index == 0:
-            va.AddString("Tag With Masked...")
+            va.AddString(tagger.LABEL_TAG_WITH_MASKED)
         return lx.result.OK
 
 lx.bless(TheCommand, CMD_NAME)
