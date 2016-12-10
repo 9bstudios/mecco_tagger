@@ -89,10 +89,7 @@ def build_material(
         mat = add_material(mname,channels)
         mat.setParent(mask)
 
-    if [i for i in mask.children() if i.type == 'defaultShader']:
-        move_to_base_shader(mask, True)
-    else:
-        move_to_base_shader(mask, False)
+    move_to_base_shader(mask)
 
     return mask
 
@@ -210,8 +207,32 @@ def seek_and_destroy(
     for i in get_masks(maskedItems,pTags,names):
         scene.removeItems(i,True)
 
+def consolidate(
+    maskedItems = [],
+    pTags = {}
+    ):
 
+    """Consolidates all shader tree masks with supplied criteria into a single parent mask."""
 
+    for pTag, i_POLYTAG in pTags:
+        existing_masks = get_masks(pTags={ pTag: i_POLYTAG })
+        consolidation_mask = tagger.shadertree.add_mask(i_POLYTAG = i_POLYTAG, pTag = pTag)
+
+        hitlist = set()
+        for mask in existing_masks:
+            if len(mask.children() == 0):
+                hitlist.add(mask)
+                continue
+
+            mask.setParent(consolidation_mask)
+
+        for hit in hitlist:
+            modo.Scene().removeItems(hit)
+
+        new_mask.setParent(consolidation_mask)
+        tagger.shadertree.move_to_top(new_mask)
+
+        tagger.shadertree.move_to_base_shader(consolidation_mask)
 
 
 
@@ -314,7 +335,7 @@ def get_shaders(mask):
 
     return list(shaders)
 
-def move_to_base_shader(items, above_base_shader=False):
+def move_to_base_shader(items, force_above_base_shader=False):
     """Places supplied item(s) above or below Base Shader as appropriate.
 
     :param items: Item(s) to re-order
@@ -330,12 +351,8 @@ def move_to_base_shader(items, above_base_shader=False):
     	if i.type == 'defaultShader':
     		target_index = n - 1
 
-    if above_base_shader:
-    	for n, i in enumerate(modo.Scene().renderItem.children()):
-    		print n, i.name
-    		if i.type == 'mask':
-    			target_index = n if n > target_index else target_index + 1
-
     for item in items:
+        if force_above_base_shader or [i for i in item.children(True) if i.type == 'defaultShader']:
+            target_index = target_index + 1
         item.setParent(modo.Scene().renderItem, target_index)
         return target_index

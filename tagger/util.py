@@ -34,3 +34,15 @@ def i_POLYTAG_to_string(i_POLYTAG):
         return 'part'
     elif i_POLYTAG in (symbol.i_POLYTAG_PICK, 'Selection Set'):
         return 'pick'
+
+def safe_removeItems(items, children = False):
+    for i in items:
+
+        # make sure item exists before trying to delete it
+        # (lest ye crash)
+        try:
+            modo.Scene().item(i.id)
+        except:
+            continue
+
+        modo.Scene().removeItems(i, children)

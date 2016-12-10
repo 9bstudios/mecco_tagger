@@ -89,37 +89,26 @@ class CommandClass(lxu.command.BasicCommand):
 
         preset = self.dyna_String(1)
         self.set_last_used(1, preset)
+        preset = None if preset == tagger.RANDOM else preset
 
         connected = self.dyna_Int(2) if self.dyna_IsSet(2) else self._last_used[2]
-        self.set_last_used(2, self.dyna_Int(2))
+        self.set_last_used(2, connected)
 
-        i_POLYTAG = self.dyna_String(3) if self.dyna_IsSet(3) else self._last_used[3]
-        self.set_last_used(3, self.dyna_String(3))
-        i_POLYTAG = tagger.util.string_to_i_POLYTAG(i_POLYTAG)
+        tagType = self.dyna_String(3) if self.dyna_IsSet(3) else self._last_used[3]
+        self.set_last_used(3, tagType)
+        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
 
         withExisting = self.dyna_String(4) if self.dyna_IsSet(4) else self._last_used[4]
-        self.set_last_used(4, self.dyna_String(4))
+        self.set_last_used(4, withExisting)
 
-        if preset == tagger.RANDOM:
-            preset = None
+        if not pTag and (not preset or not preset.endswith(".lxp")):
+            pTag = tagger.DEFAULT_MATERIAL_NAME
 
-        if not pTag:
-            if not preset:
-                pTag = tagger.DEFAULT_MATERIAL_NAME
-
-            elif preset.endswith(".lxp"):
-                pTag = splitext(basename(preset))[0]
-
-            else:
-                pTag = tagger.DEFAULT_MATERIAL_NAME
+        elif not pTag and preset.endswith(".lxp"):
+            pTag = splitext(basename(preset))[0]
 
         # find any existing masks for this pTag
-        existing_masks = set()
-        for mask in modo.Scene().items('mask'):
-            maskType = tagger.util.string_to_i_POLYTAG(mask.channel(lx.symbol.sICHAN_MASK_PTYP).get())
-            maskTag = mask.channel(lx.symbol.sICHAN_MASK_PTAG).get()
-            if maskType == i_POLYTAG and maskTag == pTag:
-                existing_masks.add(mask)
+        existing_masks = tagger.shadertree.get_masks( pTags = { pTag: i_POLYTAG })
 
         # tag the polys
         tagger.selection.tag_polys(pTag, connected, i_POLYTAG)
@@ -128,42 +117,11 @@ class CommandClass(lxu.command.BasicCommand):
         if not existing_masks or (existing_masks and withExisting != tagger.POPUPS_WITH_EXISTING[0][0]):
             new_mask = tagger.shadertree.build_material(i_POLYTAG = i_POLYTAG, pTag = pTag, preset = preset)
 
-        # remove existing
         if existing_masks and withExisting == tagger.POPUPS_WITH_EXISTING[1][0]:
-            for i in existing_masks:
+            tagger.util.safe_removeItems(existing_masks, True)
 
-                # make sure item exists before trying to delete it
-                # (lest ye crash)
-                try:
-                    modo.Scene().item(i.id)
-                except:
-                    continue
-
-                modo.Scene().removeItems(i, True)
-
-        # consolidate existing
         elif existing_masks and withExisting == tagger.POPUPS_WITH_EXISTING[2][0]:
-            consolidation_mask = tagger.shadertree.add_mask(i_POLYTAG = i_POLYTAG, pTag = pTag)
-            above_base_shader = False
-
-            hitlist = set()
-            for mask in existing_masks:
-                if len(mask.children() == 0):
-                    hitlist.add(mask)
-                    continue
-
-                mask.setParent(consolidation_mask)
-                if [c for c in mask.children() if c.type == 'defaultShader']:
-                    above_base_shader = True
-
-            # delete any empty masks in consolidation
-            for hit in hitlist:
-                modo.Scene().removeItems(hit)
-
-            new_mask.setParent(consolidation_mask)
-            tagger.shadertree.move_to_top(new_mask)
-
-            tagger.shadertree.move_to_base_shader(consolidation_mask, above_base_shader)
+            tagger.shadertree.consolidate(pTags = { pTag: i_POLYTAG })
 
 
     def cmd_Query(self,index,vaQuery):

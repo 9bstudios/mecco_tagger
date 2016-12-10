@@ -57,14 +57,14 @@ class CommandClass(lxu.command.BasicCommand):
 
     def basic_Execute(self, msg, flags):
         tagType = self.dyna_String(0) if self.dyna_IsSet(0) else self._last_used[0]
-        self.set_last_used(0, self.dyna_Int(0))
+        self.set_last_used(0, tagType)
         i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
 
         scope = self.dyna_Int(1) if self.dyna_IsSet(1) else self._last_used[1]
-        self.set_last_used(1, self.dyna_Int(1))
+        self.set_last_used(1, scope)
 
         delete_unused = self.dyna_Int(2) if self.dyna_IsSet(2) else self._last_used[2]
-        self.set_last_used(2, self.dyna_Int(2))
+        self.set_last_used(2, delete_unused)
 
         pTags_to_remove = tagger.selection.get_ptags(i_POLYTAG)
 
