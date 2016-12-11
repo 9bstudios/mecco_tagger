@@ -1,6 +1,12 @@
 import lx
 from os import listdir, sep
 from os.path import isfile, join, basename, splitext, dirname
+from var import *
+
+def presets_popup():
+    popup_list = [(RANDOM, LABEL_RANDOM_COLOR)]
+    popup_list.extend(list_presets())
+    return popup_list
 
 def string_beautify(string):
     return string.title().replace("_", " ")

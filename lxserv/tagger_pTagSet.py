@@ -14,7 +14,7 @@ class CommandClass(lxu.command.BasicCommand):
 
         self.dyna_Add(tagger.TAGTYPE, lx.symbol.sTYPE_STRING)
         self.dyna_Add(tagger.TAG, lx.symbol.sTYPE_STRING)
-        self.dyna_Add(tagger.CONNECTED, lx.symbol.sTYPE_INTEGER)
+        self.dyna_Add(tagger.SCOPE, lx.symbol.sTYPE_STRING)
 
         for i in [1,2]:
             self.basic_SetFlags (i, lx.symbol.fCMDARG_OPTIONAL)
@@ -29,7 +29,7 @@ class CommandClass(lxu.command.BasicCommand):
         tag = self.dyna_String(1) if self.dyna_IsSet(1) else None
         self.set_last_used(1, tag)
 
-        connected = self.dyna_Int(2) if self.dyna_IsSet(2) else 0
+        connected = self.dyna_String(2) if self.dyna_IsSet(2) else tagger.SCOPE_SELECTED
         self.set_last_used(2, connected)
 
         tagger.selection.tag_polys(tag, connected, tagger.util.string_to_i_POLYTAG(tagType))
@@ -46,9 +46,9 @@ class CommandClass(lxu.command.BasicCommand):
             self.attr_SetString(1, self._last_used[1])
 
         if self._last_used[2] == None:
-            self.attr_SetInt(2, DEFAULTS[2])
+            self.attr_SetString(2, DEFAULTS[2])
         else:
-            self.attr_SetInt(2, self._last_used[2])
+            self.attr_SetString(2, self._last_used[2])
 
     @classmethod
     def set_last_used(cls, key, value):
@@ -67,17 +67,22 @@ class CommandClass(lxu.command.BasicCommand):
         if self.dyna_IsSet(0) and self.dyna_IsSet(1):
             tagType = self.dyna_String(0)
             tag = self.dyna_String(1)
-            return "%s (%s)" % (tag, tagType)
+            return "%s (%s)" % (tag, tagger.util.i_POLYTAG_to_label(tagType))
 
     def arg_UIValueHints(self, index):
         if index == 0:
             return tagger.PopupClass(tagger.POPUPS_TAGTYPES)
+        if index == 1:
+            return tagger.PopupClass(tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL))
+        if index == 2:
+            return tagger.PopupClass(tagger.POPUPS_SCOPE)
 
     def arg_UIHints (self, index, hints):
         if index == 0:
             hints.Label(tagger.LABEL_TAGTYPE)
-
-        if index == 0:
-            hints.Label(tagger.LABEL_TAGTYPE)
+        if index == 1:
+            hints.Label(tagger.LABEL_TAG)
+        if index == 2:
+            hints.Label(tagger.LABEL_SCOPE)
 
 lx.bless(CommandClass, CMD_NAME)

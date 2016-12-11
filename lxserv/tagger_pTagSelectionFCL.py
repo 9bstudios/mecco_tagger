@@ -34,7 +34,6 @@ def list_commands():
             fcl.append('- %s: %s' % (tagType, ", ".join(tags[tagType])))
             if tags[tagType]:
                 fcl.append("%s %s" % (tagger.CMD_SELECT_ALL_BY_TAG, tagType))
-                # fcl.append("tagger.connectedByTag %s" % tagType)
 
     return fcl
 

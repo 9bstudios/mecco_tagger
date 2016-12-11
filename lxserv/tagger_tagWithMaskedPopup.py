@@ -32,20 +32,21 @@ class ThePopup(lxifc.UIValueHints):
 class TheCommand(lxu.command.BasicCommand):
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
-        self.dyna_Add('masks', lx.symbol.sTYPE_STRING)
+        self.dyna_Add(tagger.QUERY, lx.symbol.sTYPE_STRING)
         self.basic_SetFlags(0, lx.symbol.fCMDARG_QUERY)
 
-        self.dyna_Add(tagger.CONNECTED, lx.symbol.sTYPE_INTEGER)
+        self.dyna_Add(tagger.SCOPE, lx.symbol.sTYPE_STRING)
         self.basic_SetFlags(1, lx.symbol.fCMDARG_OPTIONAL)
-
 
     def arg_UIValueHints(self, index):
         if index == 0:
             return ThePopup(tagger.items.get_all_masked_tags())
+        if index == 1:
+            return tagger.PopupClass(tagger.POPUPS_SCOPE)
 
     def cmd_Execute(self,flags):
         tag = self.dyna_String(0).split("__")
-        connected = self.dyna_Int(1) if self.dyna_IsSet(1) else 0
+        connected = self.dyna_String(1) if self.dyna_IsSet(1) else tagger.POPUPS_SCOPE[0][0]
 
         lx.eval('%s %s %s %s' % (tagger.CMD_PTAG_SET, tag[0], tag[1], connected))
 

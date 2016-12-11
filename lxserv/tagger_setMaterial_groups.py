@@ -14,12 +14,12 @@ class CMD_tagger(lxu.command.BasicCommand):
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
         self.dyna_Add(tagger.NAME, lx.symbol.sTYPE_STRING)
+
         self.dyna_Add(tagger.OPERATION, lx.symbol.sTYPE_STRING)
+        self.basic_SetFlags(1, lx.symbol.fCMDARG_OPTIONAL)
+
         self.dyna_Add(tagger.PRESET, lx.symbol.sTYPE_STRING)
-
-        for i in range(3):
-            self.basic_SetFlags(i, lx.symbol.fCMDARG_OPTIONAL)
-
+        self.basic_SetFlags(2, lx.symbol.fCMDARG_OPTIONAL)
 
     def cmd_Flags(self):
         return lx.symbol.fCMD_POSTCMD | lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
@@ -55,13 +55,13 @@ class CMD_tagger(lxu.command.BasicCommand):
 
     def basic_Execute(self, msg, flags):
         try:
-            group_name = self.dyna_Int(0) if self.dyna_IsSet(0) else self._last_used[0]
+            group_name = self.dyna_String(0) if self.dyna_IsSet(0) else self._last_used[0]
             self.set_last_used(0, group_name)
 
-            operation = self.dyna_Int(1) if self.dyna_IsSet(1) else self._last_used[1]
+            operation = self.dyna_String(1) if self.dyna_IsSet(1) else self._last_used[1]
             self.set_last_used(1, operation)
 
-            preset = self.dyna_Int(2) if self.dyna_IsSet(2) else self._last_used[2]
+            preset = self.dyna_String(2) if self.dyna_IsSet(2) else self._last_used[2]
             self.set_last_used(2, preset)
 
             preset = None if preset == tagger.RANDOM else preset

@@ -21,7 +21,7 @@ class CommandClass(lxu.command.BasicCommand):
         tagType = self.dyna_String(0) if self.dyna_IsSet(0) else tagger.MATERIAL
         self.set_last_used(0, tagType)
 
-        safety = modo.dialogs.yesNo("Remove All Tags", "All %s tags will be removed from the scene. Continue?" % tagType)
+        safety = modo.dialogs.yesNo(tagger.DIALOGS_REMOVE_ALL_TAGS[0], tagger.DIALOGS_REMOVE_ALL_TAGS[1] % tagType)
 
         if safety == 'yes':
             for mesh in modo.Scene().meshes:

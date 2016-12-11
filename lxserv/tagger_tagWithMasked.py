@@ -6,13 +6,13 @@ NAME_CMD = tagger.CMD_TAG_WITH_MASKED
 
 class CMD_tagger(lxu.command.BasicCommand):
     _last_used = [
-        tagger.POPUPS_CONNECTED[0][0]
+        tagger.POPUPS_SCOPE[0][0]
     ]
 
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
 
-        self.dyna_Add(tagger.CONNECTED, lx.symbol.sTYPE_INTEGER)
+        self.dyna_Add(tagger.SCOPE, lx.symbol.sTYPE_STRING)
         self.basic_SetFlags(0, lx.symbol.fCMDARG_OPTIONAL)
 
     def cmd_Flags(self):
@@ -20,11 +20,11 @@ class CMD_tagger(lxu.command.BasicCommand):
 
     def arg_UIHints(self, index, hints):
         if index == 0:
-            hints.Label(tagger.LABEL_CONNECTED)
+            hints.Label(tagger.LABEL_SCOPE)
 
     def arg_UIValueHints(self, index):
         if index == 0:
-            return tagger.PopupClass(tagger.POPUPS_CONNECTED)
+            return tagger.PopupClass(tagger.POPUPS_SCOPE)
 
     def cmd_DialogInit(self):
         self.attr_SetString(0, self._last_used[0])
@@ -40,7 +40,7 @@ class CMD_tagger(lxu.command.BasicCommand):
             lx.out(traceback.format_exc())
 
     def CMD_EXE(self, msg, flags):
-        connected = self.dyna_Int(0) if self.dyna_IsSet(0) else self._last_used[0]
+        connected = self.dyna_String(0) if self.dyna_IsSet(0) else self._last_used[0]
         self.set_last_used(0, connected)
 
         masks = set()

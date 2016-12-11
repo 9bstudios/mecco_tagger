@@ -87,7 +87,6 @@ class CommandClass(lxu.command.BasicCommand):
                     polys.extend(layer.geometry.polygons.selected)
                 if polys:
                     tagType = self.dyna_String(0) if self.dyna_IsSet(0) else DEFAULTS[0]
-                    lx.out(polys[0].tags())
                     tag = polys[0].tags()[tagType]
                     self.attr_SetString(1, tag)
                 elif not polys:

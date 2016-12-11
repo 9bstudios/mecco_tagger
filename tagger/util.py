@@ -35,6 +35,22 @@ def i_POLYTAG_to_string(i_POLYTAG):
     elif i_POLYTAG in (symbol.i_POLYTAG_PICK, 'Selection Set'):
         return 'pick'
 
+def i_POLYTAG_to_label(i_POLYTAG):
+    if i_POLYTAG in (symbol.i_POLYTAG_MATERIAL, 'Material'):
+        return LABEL_MATERIAL
+    elif i_POLYTAG in (symbol.i_POLYTAG_PART, 'Part'):
+        return LABEL_PART
+    elif i_POLYTAG in (symbol.i_POLYTAG_PICK, 'Selection Set'):
+        return LABEL_PICK
+
+def sICHAN_MASK_PTYP(string_or_int):
+    if string_or_int in (symbol.i_POLYTAG_MATERIAL, 'material'):
+        return 'Material'
+    elif string_or_int in (symbol.i_POLYTAG_PART, 'part'):
+        return 'Part'
+    elif string_or_int in (symbol.i_POLYTAG_PICK, 'pick'):
+        return 'Selection Set'
+
 def safe_removeItems(items, children = False):
     for i in items:
 

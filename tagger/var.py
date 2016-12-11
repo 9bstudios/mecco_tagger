@@ -36,7 +36,7 @@ GROUP_TYPES_ASSEMBLY = 'assembly'
 NAME = 'name'
 MODE = 'mode'
 OPERATION = 'operation'
-CONNECTED = 'connected'
+SCOPE = 'scope'
 REMOVE_SCOPE = 'scope'
 PRESET = 'preset'
 TAGTYPE = 'tagType'
@@ -64,10 +64,10 @@ USE = 'use'
 KEEP = 'keep'
 REMOVE = 'remove'
 CONSOLIDATE = 'consolidate'
-SCOPE_SELECTED = 0
-SCOPE_CONNECTED = 1
-SCOPE_FLOOD = 2
-SCOPE_SCENE = 3
+SCOPE_SELECTED = 'selected'
+SCOPE_CONNECTED = 'connected'
+SCOPE_FLOOD = 'flood'
+SCOPE_SCENE = 'scene'
 
 # These should probably be pulled from message tables
 LABEL_MODE = "Mode"
@@ -75,7 +75,7 @@ LABEL_TAGTYPE = "Tag Type"
 LABEL_TAG = "Tag"
 LABEL_TAGS = "Tags"
 LABEL_PRESET = "Preset"
-LABEL_CONNECTED = "Connected"
+LABEL_SCOPE = "Scope"
 LABEL_REMOVE_SCOPE = "Remove From"
 LABEL_NONE = "(none)"
 LABEL_REPLACE_TAG = "Replace Tag"
@@ -106,13 +106,14 @@ DIALOGS_NO_MASK_SELECTED = ("No Mask Selected", "Select a mask to apply.")
 DIALOGS_TOO_MANY_MASKS = ("Too Many Masks", "Select only one mask to apply.")
 DIALOGS_NO_PTAG_FILTER = ("No pTag Filter", "The selected mask applies to all polygons. No tag to apply.")
 DIALOGS_NONE_PTAG_FILTER = ("(none) pTag Filter", "The selected mask applies to nothing. No tag to apply.")
+DIALOGS_REMOVE_ALL_TAGS = ("Remove All Tags", "All %s tags will be removed from the scene. Continue?")
 
 POPUPS_CLIPBOARD = [
         (COPY, LABEL_COPY),
         (PASTE, LABEL_PASTE)
     ]
 
-POPUPS_CONNECTED = [
+POPUPS_SCOPE = [
         (SCOPE_SELECTED, LABEL_SCOPE_SELECTED),
         (SCOPE_CONNECTED, LABEL_SCOPE_CONNECTED),
         (SCOPE_FLOOD, LABEL_SCOPE_FLOOD)

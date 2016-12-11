@@ -7,6 +7,7 @@ NAME_CMD = tagger.CMD_PTAG_CLIPBOARD
 class CMD_tagger(lxu.command.BasicCommand):
 
     _clipboard = {tagger.MATERIAL: None, tagger.PART: None, tagger.PICK: None}
+    _last_used = [tagger.COPY, tagger.MATERIAL, tagger.SCOPE_SELECTED]
 
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
@@ -17,7 +18,7 @@ class CMD_tagger(lxu.command.BasicCommand):
         self.dyna_Add(tagger.TAGTYPE, lx.symbol.sTYPE_STRING)
         self.basic_SetFlags(1, lx.symbol.fCMDARG_OPTIONAL)
 
-        self.dyna_Add(tagger.CONNECTED, lx.symbol.sTYPE_INTEGER)
+        self.dyna_Add(tagger.SCOPE, lx.symbol.sTYPE_STRING)
         self.basic_SetFlags(2, lx.symbol.fCMDARG_OPTIONAL)
 
     def cmd_Flags(self):
@@ -31,7 +32,7 @@ class CMD_tagger(lxu.command.BasicCommand):
             hints.Label(tagger.LABEL_TAGTYPE)
 
         if index == 2:
-            hints.Label(tagger.LABEL_CONNECTED)
+            hints.Label(tagger.LABEL_SCOPE)
 
     def arg_UIValueHints(self, index):
         if index == 0:
@@ -41,16 +42,20 @@ class CMD_tagger(lxu.command.BasicCommand):
             return tagger.PopupClass(tagger.POPUPS_TAGTYPES)
 
         if index == 2:
-            return tagger.PopupClass(tagger.POPUPS_CONNECTED)
+            return tagger.PopupClass(tagger.POPUPS_SCOPE)
 
     def cmd_DialogInit(self):
         self.attr_SetString(0, self._last_used[0])
         self.attr_SetString(1, self._last_used[1])
-        self.attr_SetInt(2, self._last_used[2])
+        self.attr_SetString(2, self._last_used[2])
 
     @classmethod
     def set_clipboard(cls, key, value):
         cls._clipboard[key] = value
+
+    @classmethod
+    def set_last_used(cls, key, value):
+        cls._last_used[key] = value
 
     def basic_Execute(self, msg, flags):
         try:
@@ -101,7 +106,7 @@ class CMD_tagger(lxu.command.BasicCommand):
             args = {}
             args[tagger.TAG] = self._clipboard[tagType]
             args[tagger.TAGTYPE] = tagType
-            args[tagger.CONNECTED] = connected
+            args[tagger.SCOPE] = connected
 
             lx.eval(tagger.CMD_PTAG_SET + tagger.util.build_arg_string(args))
 

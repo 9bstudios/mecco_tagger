@@ -20,7 +20,7 @@ class CommandClass(lxu.command.BasicCommand):
         self.dyna_Add(tagger.TAGTYPE, lx.symbol.sTYPE_STRING)
         self.basic_SetFlags(0, lx.symbol.fCMDARG_OPTIONAL)
 
-        self.dyna_Add(tagger.REMOVE_SCOPE, lx.symbol.sTYPE_INTEGER)
+        self.dyna_Add(tagger.REMOVE_SCOPE, lx.symbol.sTYPE_STRING)
         self.basic_SetFlags(1, lx.symbol.fCMDARG_OPTIONAL)
 
         self.dyna_Add(tagger.DELETE_UNUSED_MASKS, lx.symbol.sTYPE_BOOLEAN)
@@ -60,7 +60,7 @@ class CommandClass(lxu.command.BasicCommand):
         self.set_last_used(0, tagType)
         i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
 
-        scope = self.dyna_Int(1) if self.dyna_IsSet(1) else self._last_used[1]
+        scope = self.dyna_String(1) if self.dyna_IsSet(1) else self._last_used[1]
         self.set_last_used(1, scope)
 
         delete_unused = self.dyna_Int(2) if self.dyna_IsSet(2) else self._last_used[2]

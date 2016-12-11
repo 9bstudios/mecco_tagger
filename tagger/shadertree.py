@@ -2,6 +2,7 @@
 
 import modo, lx, util, items
 from var import *
+from util import *
 
 def do_preset(preset_path):
     """Drops a material preset, deletes the cruft, and returns the good stuff."""
