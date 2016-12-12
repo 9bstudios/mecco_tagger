@@ -107,6 +107,7 @@ LABEL_FROM_TAGTYPE = 'From Tag Type'
 LABEL_TO_TAGTYPE = 'To Tag Type'
 LABEL_COPY = 'Copy'
 LABEL_PASTE = 'Paste'
+LABEL_QUERY = 'Query'
 DIALOGS_NO_MASK_SELECTED = ("No Mask Selected", "Select a mask to apply.")
 DIALOGS_TOO_MANY_MASKS = ("Too Many Masks", "Select only one mask to apply.")
 DIALOGS_NO_PTAG_FILTER = ("No pTag Filter", "The selected mask applies to all polygons. No tag to apply.")

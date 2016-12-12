@@ -3,57 +3,59 @@ import lx, lxifc, lxu.command, tagger
 
 CMD_NAME = tagger.CMD_TAG_WITH_MASKED_POPUP
 
-class ThePopup(lxifc.UIValueHints):
-    def __init__(self, items):
-        for i in items:
-            if i[0] == tagger.MATERIAL:
-                self._user = i[1]
-            else:
-                self._user = "%s (%s)" % (tag[1], tag[0])
+def tagsHack(tags):
+    hackedTags = []
 
-        self._internal = ["__".join(i) for i in items]
+    if not tags:
+        hackedTags.append((None, tagger.LABEL_NONE))
 
-    def uiv_Flags(self):
-        return lx.symbol.fVALHINT_POPUPS
+    for tag in tags:
+        tag_internal = "__".join((tag[0], tag[1]))
+        tag_user = "%s (%s)" % (tag[1], tag[0])
+        hackedTags.append((tag_internal, tag_user))
 
-    def uiv_PopCount(self):
-        return len(self._internal)
+    return hackedTags
 
-    def uiv_PopUserName(self,index):
-        if len(self._user) > index:
-            return self._user[index]
+class CommandClass(tagger.Commander):
+    _commander_last_used = []
 
-    def uiv_PopInternalName(self,index):
-        if len(self._user) > index:
-            return self._internal[index]
+    def commander_arguments(self):
+        return [
+                {
+                    'name': tagger.TAG,
+                    'label': tagger.LABEL_TAG,
+                    'datatype': 'string',
+                    'value': '',
+                    'popup': tagsHack(tagger.items.get_all_masked_tags()),
+                    'flags': ['query'],
+                }, {
+                    'name': tagger.SCOPE,
+                    'label': tagger.LABEL_SCOPE,
+                    'datatype': 'string',
+                    'value': tagger.SCOPE_SELECTED,
+                    'popup': tagger.POPUPS_SCOPE,
+                    'flags': ['optional'],
+                    'sPresetText': True
+                }
+            ]
+
+    def commander_execute(self, msg, flags):
+        if not self.commander_arg_value(0):
+            return
+
+        tag = self.commander_arg_value( 0).split("__")
+        connected = self.commander_arg_value(1)
+
+        args = tagger.util.build_arg_string({
+            tagger.TAGTYPE: tag[0],
+            tagger.TAG: tag[1],
+            tagger.SCOPE: connected
+        })
+
+        lx.eval(tagger.CMD_PTAG_SET + args)
+
+    def commander_notifiers(self):
+        return [("select.event", "polygon +ldt"),("select.event", "item +ldt")]
 
 
-class TheCommand(lxu.command.BasicCommand):
-    def __init__(self):
-        lxu.command.BasicCommand.__init__(self)
-        self.dyna_Add(tagger.QUERY, lx.symbol.sTYPE_STRING)
-        self.basic_SetFlags(0, lx.symbol.fCMDARG_QUERY)
-
-        self.dyna_Add(tagger.SCOPE, lx.symbol.sTYPE_STRING)
-        self.basic_SetFlags(1, lx.symbol.fCMDARG_OPTIONAL)
-
-    def arg_UIValueHints(self, index):
-        if index == 0:
-            return ThePopup(tagger.items.get_all_masked_tags())
-        if index == 1:
-            return tagger.PopupClass(tagger.POPUPS_SCOPE)
-
-    def cmd_Execute(self,flags):
-        tag = self.dyna_String(0).split("__")
-        connected = self.dyna_String(1) if self.dyna_IsSet(1) else tagger.POPUPS_SCOPE[0][0]
-
-        lx.eval('%s %s %s %s' % (tagger.CMD_PTAG_SET, tag[0], tag[1], connected))
-
-    def cmd_Query(self,index,vaQuery):
-        va = lx.object.ValueArray()
-        va.set(vaQuery)
-        if index == 0:
-            va.AddString(tagger.LABEL_TAG_WITH_MASKED)
-        return lx.result.OK
-
-lx.bless(TheCommand, CMD_NAME)
+lx.bless(CommandClass, CMD_NAME)
