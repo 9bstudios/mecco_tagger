@@ -2,7 +2,7 @@
 
 import lx, lxu, lxifc, modo, tagger, traceback
 
-NAME_CMD = tagger.CMD_SELECT_ALL_BY_TAG
+CMD_NAME = tagger.CMD_SELECT_ALL_BY_TAG
 
 class CommandClass(tagger.Commander):
     _commander_last_used = []

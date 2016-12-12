@@ -2,7 +2,7 @@
 
 import lx, lxu, modo, tagger, traceback
 
-NAME_CMD = tagger.CMD_PTAG_INSPECT
+CMD_NAME = tagger.CMD_PTAG_INSPECT
 
 class CommandClass(tagger.Commander):
 
