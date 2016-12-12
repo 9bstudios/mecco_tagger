@@ -16,22 +16,35 @@ class CommandClass(tagger.Commander):
                     'value': tagger.MATERIAL,
                     'popup': tagger.POPUPS_TAGTYPES,
                     'flags': [],
+                }, {
+                    'name': tagger.TAG,
+                    'label': tagger.LABEL_TAG,
+                    'datatype': 'string',
+                    'value': '',
+                    'popup': tagger.scene.all_tags(),
+                    'flags': ['optional'],
                 }
             ]
 
     def commander_execute(self, msg, flags):
         tagType = self.commander_arg_value(0)
+        tag = self.commander_arg_value(1)
 
-        tags = set()
-        for p in tagger.selection.get_polys():
-            tag = p.tags()[tagType]
-            if tag:
-                tag = tag.split(";")
-            if not tag:
-                tag = []
-            tags.update(tag)
+        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
+
+        if tag:
+            tags = tag.split(";")
+
+        elif not tag:
+            tags = tagger.selection.get_ptags(i_POLYTAG)
 
         for tag in tags:
-            lx.eval("select.polygon add %s face %s" % (tagType, tag))
+            lx.eval("select.polygon add %s face {%s}" % (tagType, tag))
+
+    def basic_ButtonName(self):
+        tagType = self.commander_arg_value(0)
+        tag = self.commander_arg_value(1)
+        if tag:
+            return "%s (%s)" % (tag, tagger.util.i_POLYTAG_to_label(tagType))
 
 lx.bless(CommandClass, CMD_NAME)

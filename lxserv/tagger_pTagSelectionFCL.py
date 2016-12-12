@@ -31,9 +31,14 @@ def list_commands():
 
     if polys_are_selected:
         for tagType in tags:
-            fcl.append('- %s: %s' % (tagType, ", ".join(tags[tagType])))
             if tags[tagType]:
-                fcl.append("%s %s" % (tagger.CMD_SELECT_ALL_BY_TAG, tagType))
+                fcl.append('- ')
+                for tag in tags[tagType]:
+                    args = tagger.util.build_arg_string({
+                        tagger.TAGTYPE: tagType,
+                        tagger.TAG: tag
+                    })
+                    fcl.append(tagger.CMD_SELECT_ALL_BY_TAG + args)
 
     return fcl
 
@@ -60,6 +65,7 @@ class cmd_tagger_fcl(lxu.command.BasicCommand):
 
         self.not_svc = lx.service.NotifySys()
         self.notifier = None
+        self.notifier2 = None
 
     def cmd_NotifyAddClient (self, argument, object):
         if self.notifier is None:
@@ -82,11 +88,5 @@ class cmd_tagger_fcl(lxu.command.BasicCommand):
     def arg_UIValueHints(self, index):
         if index == 0:
             return tagger_fcl(list_commands())
-
-    def cmd_Execute(self,flags):
-        pass
-
-    def cmd_Query(self,index,vaQuery):
-        pass
 
 lx.bless(cmd_tagger_fcl, CMD_NAME)

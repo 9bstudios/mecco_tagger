@@ -36,11 +36,11 @@ def i_POLYTAG_to_string(i_POLYTAG):
         return 'pick'
 
 def i_POLYTAG_to_label(i_POLYTAG):
-    if i_POLYTAG in (symbol.i_POLYTAG_MATERIAL, 'Material'):
+    if i_POLYTAG in (symbol.i_POLYTAG_MATERIAL, 'Material', 'material'):
         return LABEL_MATERIAL
-    elif i_POLYTAG in (symbol.i_POLYTAG_PART, 'Part'):
+    elif i_POLYTAG in (symbol.i_POLYTAG_PART, 'Part', 'part'):
         return LABEL_PART
-    elif i_POLYTAG in (symbol.i_POLYTAG_PICK, 'Selection Set'):
+    elif i_POLYTAG in (symbol.i_POLYTAG_PICK, 'Selection Set', 'pick'):
         return LABEL_PICK
 
 def sICHAN_MASK_PTYP(string_or_int):

@@ -76,7 +76,8 @@ def get_ptags(i_POLYTAG = lx.symbol.i_POLYTAG_MATERIAL,connected=SCOPE_SELECTED)
     pp = get_polys(connected)
     if pp:
         for p in pp:
-            r.add(p.getTag(i_POLYTAG))
+            tags = set(p.getTag(i_POLYTAG).split(";"))
+            r.update(tags)
     return list(r)
 
 

@@ -20,10 +20,12 @@ class ThePopup(lxifc.UIValueHints):
         return len(self._internal)
 
     def uiv_PopUserName(self,index):
-        return self._user[index]
+        if len(self._user) > index:
+            return self._user[index]
 
     def uiv_PopInternalName(self,index):
-        return self._internal[index]
+        if len(self._user) > index:
+            return self._internal[index]
 
 
 class TheCommand(lxu.command.BasicCommand):

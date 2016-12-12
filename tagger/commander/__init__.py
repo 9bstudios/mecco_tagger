@@ -1,36 +1,40 @@
 # python
 
-# Allows you to write typical MODO commands with much less boilerplate,
-# less redundant code, and fewer common mistakes. The following is a
-# blessed modo command using Commander:
+""" Allows you to write typical MODO commands with much less boilerplate,
+less redundant code, and fewer common mistakes. The following is a
+blessed modo command using Commander:
 
-# class CommandClass(tagger.Commander):
-#     _commander_last_used = []
-#
-#     def commander_arguments(self):
-#         return [
-#                 {
-#                     'name': 'myGreatString',
-#                     'label': 'Input String Here'
-#                     'datatype': 'string',
-#                     'value': "default string goes here",
-#                     'popup': function_that_returns_list_of_possible_strings(),
-#                     'flags': [],
-#                     'sPresetText': True
-#                 }, {
-#                     'name': 'greeting',
-#                     'datatype': 'string',
-#                     'value': 'hello',
-#                     'popup': ['hello', 'greetings', 'how ya doin\'?'],
-#                     'flags': ['optional']
-#                 }
-#             ]
-#
-#     def commander_execute(self, msg, flags):
-#         myGreatString = self.commander_arg_value(0)
-#         greeting = self.commander_arg_value(1)
-#
-#         lx.out("%s, %s" (greeting, myGreatString))
+class CommandClass(tagger.Commander):
+    _commander_last_used = []
+
+    def commander_arguments(self):
+        return [
+                {
+                    'name': 'myGreatString',
+                    'label': 'Input String Here',
+                    'datatype': 'string',
+                    'value': "default string goes here",
+                    'popup': function_that_returns_list_of_possible_strings(),
+                    'flags': [],
+                    'sPresetText': True
+                }, {
+                    'name': 'greeting',
+                    'datatype': 'string',
+                    'value': 'hello',
+                    'popup': ['hello', 'greetings', 'how ya doin\'?'],
+                    'flags': ['optional']
+                }
+            ]
+
+    def commander_execute(self, msg, flags):
+        myGreatString = self.commander_arg_value(0)
+        greeting = self.commander_arg_value(1)
+
+        lx.out("%s, %s" (greeting, myGreatString))
+"""
+
+__version__ = "0.1"
+__author__ = "Adam"
 
 import lx, lxu, traceback
 from lxifc import UIValueHints
@@ -48,6 +52,7 @@ sTYPE_FLOATs = [
         'acceleration',
         'angle',
         'axis',
+        'color1',
         'float',
         'force',
         'light',
@@ -59,16 +64,18 @@ sTYPE_FLOATs = [
     ]
 
 sTYPE_STRINGs = [
-        'angle3',
-        'color',
-        'color1',
         'date',
         'datetime',
         'filepath',
-        'float3',
-        'percent3',
         'string',
         'vertmapname'
+    ]
+
+sTYPE_STRING_vectors = [
+        'angle3',
+        'color',
+        'float3',
+        'percent3'
     ]
 
 sTYPE_INTEGERs = [
@@ -139,6 +146,9 @@ class Commander(lxu.command.BasicCommand):
             if self.commander_arguments()[index][ARG_DATATYPE].lower() in sTYPE_STRINGs:
                 return self.dyna_String(index)
 
+            elif self.commander_arguments()[index][ARG_DATATYPE].lower() in sTYPE_STRING_vectors:
+                return [float(i) for i in self.dyna_String(index).split(" ")]
+
             elif self.commander_arguments()[index][ARG_DATATYPE].lower() in sTYPE_INTEGERs:
                 return self.dyna_Int(index)
 
@@ -179,6 +189,9 @@ class Commander(lxu.command.BasicCommand):
             if self._commander_last_used[n] != None and ARG_DATATYPE in argument:
 
                 if argument[ARG_DATATYPE].lower() in sTYPE_STRINGs:
+                    self.attr_SetString(n, str(self._commander_last_used[n]))
+
+                elif argument[ARG_DATATYPE].lower() in sTYPE_STRING_vectors:
                     self.attr_SetString(n, str(self._commander_last_used[n]))
 
                 elif argument[ARG_DATATYPE].lower() in sTYPE_INTEGERs:
