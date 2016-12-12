@@ -1,14 +1,14 @@
 # python
 
 import lx, lxifc, lxu, modo
-import commander
 import tagger
-from os import listdir, sep
-from os.path import isfile, join, basename, splitext, dirname
+from os.path import basename, splitext
 
 CMD_NAME = tagger.CMD_SET_PTAG
 
-class CommandClass(commander.Commander):
+class CommandClass(tagger.Commander):
+    _commander_last_used = []
+
     def commander_arguments(self):
         return [
                 {
