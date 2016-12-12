@@ -1,10 +1,7 @@
 
-import lx
-import lxifc
-import lxu.command
-import tagger
+import lx, lxifc, lxu.command, tagger
 
-CMD_NAME = "tagger.tagWithMaskedPopup"
+CMD_NAME = tagger.CMD_TAG_WITH_MASKED_POPUP
 
 class ThePopup(lxifc.UIValueHints):
     def __init__(self, items):

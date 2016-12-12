@@ -4,21 +4,9 @@ import lx, lxu, modo, tagger, traceback
 
 NAME_CMD = tagger.CMD_PTAG_INSPECT
 
-class CMD_tagger(lxu.command.BasicCommand):
+class CommandClass(tagger.Commander):
 
-    def __init__(self):
-        lxu.command.BasicCommand.__init__(self)
-
-    def cmd_Flags(self):
-        return lx.symbol.fCMD_POSTCMD | lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
-
-    def basic_Execute(self, msg, flags):
-        try:
-            self.CMD_EXE(msg, flags)
-        except Exception:
-            lx.out(traceback.format_exc())
-
-    def CMD_EXE(self, msg, flags):
+    def commander_execute(self, msg, flags):
         tags = {
             tagger.MATERIAL:set(),
             tagger.PART:set(),
@@ -47,6 +35,4 @@ class CMD_tagger(lxu.command.BasicCommand):
 
         modo.dialogs.alert(tagger.LABEL_TAGS, output)
 
-
-
-lx.bless(CMD_tagger, NAME_CMD)
+lx.bless(CommandClass, CMD_NAME)

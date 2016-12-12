@@ -7,47 +7,23 @@ import lx, lxu.command, lxifc, modo, traceback, tagger
 
 CMD_NAME = tagger.CMD_SELECT_CONNECTED_BY_TAG
 
-class ExpandByMaterial_Cmd(lxu.command.BasicCommand):
-    _last_used = [
-        tagger.POPUPS_TAGTYPES[0][0]
-    ]
+class CommandClass(tagger.Commander):
+    _commander_last_used = []
 
-    def __init__(self):
-        lxu.command.BasicCommand.__init__ (self)
+    def commander_arguments(self):
+        return [
+                {
+                    'name': tagger.TAGTYPE,
+                    'label': tagger.LABEL_TAGTYPE,
+                    'datatype': 'string',
+                    'value': tagger.MATERIAL,
+                    'popup': tagger.POPUPS_TAGTYPES,
+                    'flags': ['optional']
+                }
+            ]
 
-        self.dyna_Add (tagger.TAGTYPE, lx.symbol.sTYPE_STRING)
-        self.basic_SetFlags (0, lx.symbol.fCMDARG_OPTIONAL)
-
-    def cmd_Flags(self):
-        return lx.symbol.fCMD_UNDO
-
-    def basic_Enable(self, msg):
-        return True
-
-    def arg_UIValueHints(self, index):
-        if index == 0:
-            return tagger.PopupClass(tagger.POPUPS_TAGTYPES)
-
-    def arg_UIHints (self, index, hints):
-        if index == 0:
-            hints.Label(tagger.LABEL_TAGTYPE)
-
-    def cmd_DialogInit(self):
-        self.attr_SetString(0, self._last_used[0])
-
-    @classmethod
-    def set_last_used(cls, key, value):
-        cls._last_used[key] = value
-
-    def basic_Execute(self, msg, flags):
-        try:
-            self.CMD_EXE(msg, flags)
-        except Exception:
-            lx.out(traceback.format_exc())
-
-    def CMD_EXE(self, msg, flags):
-        tagType = self.dyna_String(0) if self.dyna_IsSet(0) else self._last_used[0]
-        self.set_last_used(0, tagType)
+    def commander_execute(self, msg, flags):
+        tagType = self.commander_arg_value(0)
         i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
 
         layer_svc = lx.service.Layer ()
@@ -92,4 +68,4 @@ class ExpandByMaterial_Cmd(lxu.command.BasicCommand):
 
         layer_scan.Apply ()
 
-lx.bless(ExpandByMaterial_Cmd, CMD_NAME)
+lx.bless(CommandClass, CMD_NAME)

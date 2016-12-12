@@ -5,30 +5,54 @@ import lx, lxu.command, lxifc, traceback, modo, tagger
 CMD_NAME = tagger.CMD_PTAG_REPLACE
 DEFAULTS = [tagger.MATERIAL, '', '']
 
-class CommandClass(lxu.command.BasicCommand):
+def selected_tag(tagType):
+    active_layers = tagger.items.get_active_layers()
+    polys = []
+    if active_layers:
+        for layer in active_layers:
+            polys.extend(layer.geometry.polygons.selected)
+        if polys:
+            return polys[0].tags()[tagType]
+        elif not polys:
+            return DEFAULTS[1]
+    elif not active:
+        return DEFAULTS[1]
 
-    _last_used = [None, None, None]
+class CommandClass(tagger.Commander):
+    _commander_last_used = []
 
-    def __init__(self):
-        lxu.command.BasicCommand.__init__(self)
+    def commander_arguments(self):
+        return [
+                {
+                    'name': tagger.TAGTYPE,
+                    'label': tagger.LABEL_TAGTYPE,
+                    'datatype': 'string',
+                    'value': tagger.MATERIAL,
+                    'popup': tagger.POPUPS_TAGTYPES,
+                    'flags': [],
+                }, {
+                    'name': tagger.REPLACETAG,
+                    'label': tagger.LABEL_REPLACE_TAG,
+                    'datatype': 'string',
+                    'value': selected_tag(tagger.MATERIAL),
+                    'popup': tagger.scene.all_tags(x.symbol.i_POLYTAG_MATERIAL),
+                    'flags': [],
+                    'sPresetText': True
+                }, {
+                    'name': tagger.WITHTAG,
+                    'label': tagger.LABEL_WITH_TAG,
+                    'datatype': 'string',
+                    'value': "",
+                    'popup': tagger.scene.all_tags(x.symbol.i_POLYTAG_MATERIAL),
+                    'flags': [],
+                    'sPresetText': True
+                }
+            ]
 
-        self.dyna_Add(tagger.TAGTYPE, lx.symbol.sTYPE_STRING)
-        self.dyna_Add(tagger.REPLACETAG, lx.symbol.sTYPE_STRING)
-        self.dyna_Add(tagger.WITHTAG, lx.symbol.sTYPE_STRING)
-
-    def cmd_Flags (self):
-        return lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
-
-    def CMD_EXE(self, msg, flags):
-        tagType = self.dyna_String(0)
-        self.set_last_used(0, tagType)
-        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
-
-        replaceTag = self.dyna_String(1)
-        self.set_last_used(1, replaceTag)
-
-        withTag = self.dyna_String(2)
-        self.set_last_used(2, withTag)
+    def commander_execute(self, msg, flags):
+        tagType = self.commander_arg_value(0)
+        replaceTag = self.commander_arg_value(1)
+        withTag = self.commander_arg_value(2)
 
         hitcount = 0
 
@@ -68,69 +92,10 @@ class CommandClass(lxu.command.BasicCommand):
 
 
         if hitcount == 0:
-            modo.dialogs.alert("Tag Not Found", "No instances of %s tag '%s' were found in the scene." % (tagType, replaceTag))
+            modo.dialogs.alert(tagger.DIALOGS_TAG_NOT_FOUND[0], tagger.DIALOGS_TAG_NOT_FOUND[1] % (tagType, replaceTag))
 
         elif hitcount >= 1:
-            modo.dialogs.alert("Tag Replaced", "Replaced %s instances of %s tag '%s'." % (hitcount, tagType, replaceTag))
+            modo.dialogs.alert(tagger.DIALOGS_TAG_REPLACED[0], tagger.DIALOGS_TAG_REPLACED[1] % (hitcount, tagType, replaceTag))
 
-    def cmd_DialogInit(self):
-        if self._last_used[0] == None:
-            self.attr_SetString(0, DEFAULTS[0])
-        else:
-            self.attr_SetString(0, self._last_used[0])
-
-        if self._last_used[1] == None:
-            active_layers = tagger.items.get_active_layers()
-            polys = []
-            if active_layers:
-                for layer in active_layers:
-                    polys.extend(layer.geometry.polygons.selected)
-                if polys:
-                    tagType = self.dyna_String(0) if self.dyna_IsSet(0) else DEFAULTS[0]
-                    tag = polys[0].tags()[tagType]
-                    self.attr_SetString(1, tag)
-                elif not polys:
-                    self.attr_SetString(1, DEFAULTS[1])
-            elif not active:
-                self.attr_SetString(1, DEFAULTS[1])
-        else:
-            self.attr_SetString(1, self._last_used[1])
-
-        if self._last_used[2] == None:
-            self.attr_SetString(2, DEFAULTS[2])
-        else:
-            self.attr_SetString(2, self._last_used[2])
-
-    @classmethod
-    def set_last_used(cls, key, value):
-        cls._last_used[key] = value
-
-    def basic_Execute(self, msg, flags):
-        try:
-            self.CMD_EXE(msg, flags)
-        except Exception:
-            lx.out(traceback.format_exc())
-
-    def basic_Enable(self,msg):
-        return True
-
-    def arg_UIValueHints(self, index):
-        if index == 0:
-            return tagger.PopupClass(tagger.POPUPS_TAGTYPES)
-
-        if index in [1,2]:
-            return tagger.PopupClass(tagger.scene.all_tags(x.symbol.i_POLYTAG_MATERIAL))
-
-    def arg_UIHints (self, index, hints):
-        if index == 0:
-            hints.Label(tagger.LABEL_TAGTYPE)
-
-        if index == 1:
-            hints.Label(tagger.LABEL_REPLACE_TAG)
-            hints.Class ("sPresetText")
-
-        if index == 2:
-            hints.Label(tagger.LABEL_WITH_TAG)
-            hints.Class ("sPresetText")
 
 lx.bless(CommandClass, CMD_NAME)

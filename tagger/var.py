@@ -8,6 +8,7 @@ DEFAULT_RANDOM_COLOR_VALUE = .95
 DEFAULT_MATERIAL_NAME = 'material'
 DEFAULT_GROUP_NAME = 'tagger_group'
 
+CMD_CONVERT_PTAGS = 'tagger.convertTags'
 CMD_SET_MATERIAL = 'tagger.setMaterial_auto'
 CMD_REMOVE_MATERIAL = 'tagger.removeMaterial_auto'
 CMD_SET_PTAG = 'tagger.setMaterial_pTag'
@@ -23,6 +24,8 @@ CMD_PTAG_REPLACE = 'tagger.pTagReplace'
 CMD_PTAG_SELECTION_FCL = 'tagger.pTagSelectionFCL'
 CMD_SELECT_ALL_BY_TAG = 'tagger.selectAllByTag'
 CMD_TAG_WITH_MASKED = 'tagger.tagWithMasked'
+CMD_TAG_WITH_MASKED_FCL = 'tagger.tagWithMaskedFCL'
+CMD_TAG_WITH_MASKED_POPUP = 'tagger.tagWithMaskedPopup'
 
 GROUPNAME = "group"
 MATNAME = "material"
@@ -68,6 +71,8 @@ SCOPE_SELECTED = 'selected'
 SCOPE_CONNECTED = 'connected'
 SCOPE_FLOOD = 'flood'
 SCOPE_SCENE = 'scene'
+FROM_TAG_TYPE = 'fromTagType'
+TO_TAG_TYPE = 'toTagType'
 
 # These should probably be pulled from message tables
 LABEL_MODE = "Mode"
@@ -107,6 +112,8 @@ DIALOGS_TOO_MANY_MASKS = ("Too Many Masks", "Select only one mask to apply.")
 DIALOGS_NO_PTAG_FILTER = ("No pTag Filter", "The selected mask applies to all polygons. No tag to apply.")
 DIALOGS_NONE_PTAG_FILTER = ("(none) pTag Filter", "The selected mask applies to nothing. No tag to apply.")
 DIALOGS_REMOVE_ALL_TAGS = ("Remove All Tags", "All %s tags will be removed from the scene. Continue?")
+DIALOGS_TAG_NOT_FOUND = ("Tag Not Found", "No instances of %s tag '%s' were found in the scene.")
+DIALOGS_TAG_REPLACED = ("Tag Replaced", "Replaced %s instances of %s tag '%s'.")
 
 POPUPS_CLIPBOARD = [
         (COPY, LABEL_COPY),

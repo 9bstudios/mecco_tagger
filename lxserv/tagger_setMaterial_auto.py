@@ -5,28 +5,17 @@ import lx, lxu, modo, tagger, traceback
 NAME_CMD = tagger.CMD_SET_MATERIAL
 
 
-class CMD_tagger(lxu.command.BasicCommand):
+class CommandClass(tagger.Commander):
 
-    def __init__(self):
-        lxu.command.BasicCommand.__init__(self)
+    def commander_execute(self, msg, flags):
 
+        selmode = tagger.selection.get_mode()
 
-    def cmd_Flags(self):
-        return lx.symbol.fCMD_POSTCMD | lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
+        if selmode == 'item':
+            lx.eval(tagger.CMD_SET_ITEM)
 
-
-    def basic_Execute(self, msg, flags):
-        try:
-            selmode = tagger.selection.get_mode()
-
-            if selmode == 'item':
-                lx.eval(tagger.CMD_SET_ITEM)
-
-            elif selmode in ['vertex', 'edge', 'polygon']:
-                lx.eval(tagger.CMD_SET_PTAG)
-
-        except:
-            traceback.print_exc()
+        elif selmode in ['vertex', 'edge', 'polygon']:
+            lx.eval(tagger.CMD_SET_PTAG)
 
 
-lx.bless(CMD_tagger, NAME_CMD)
+lx.bless(CommandClass, NAME_CMD)

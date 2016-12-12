@@ -5,21 +5,23 @@ import lx, lxu.command, lxifc, traceback, modo, tagger
 CMD_NAME = tagger.CMD_PTAG_REMOVEALL
 DEFAULTS = [tagger.PART, '', False]
 
-class CommandClass(lxu.command.BasicCommand):
+class CommandClass(tagger.Commander):
+    _commander_last_used = []
 
-    _last_used = [None]
+    def commander_arguments(self):
+        return [
+                {
+                    'name': tagger.TAGTYPE,
+                    'label': tagger.LABEL_TAGTYPE,
+                    'datatype': 'string',
+                    'value': tagger.PART,
+                    'popup': tagger.POPUPS_TAGTYPES,
+                    'flags': [],
+                }
+            ]
 
-    def __init__(self):
-        lxu.command.BasicCommand.__init__(self)
-
-        self.dyna_Add(tagger.TAGTYPE, lx.symbol.sTYPE_STRING)
-
-    def cmd_Flags (self):
-        return lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
-
-    def CMD_EXE(self, msg, flags):
-        tagType = self.dyna_String(0) if self.dyna_IsSet(0) else tagger.MATERIAL
-        self.set_last_used(0, tagType)
+    def commander_execute(self, msg, flags):
+        tagType = self.commander_arg_value(0)
 
         safety = modo.dialogs.yesNo(tagger.DIALOGS_REMOVE_ALL_TAGS[0], tagger.DIALOGS_REMOVE_ALL_TAGS[1] % tagType)
 
@@ -28,32 +30,5 @@ class CommandClass(lxu.command.BasicCommand):
                 with mesh.geometry as geo:
                     polys = geo.polygons
                     tagger.manage.tag_polys(polys, None, tagger.util.string_to_i_POLYTAG(tagType))
-
-    def cmd_DialogInit(self):
-        if self._last_used[0] == None:
-            self.attr_SetString(0, DEFAULTS[0])
-        else:
-            self.attr_SetString(0, self._last_used[0])
-
-    @classmethod
-    def set_last_used(cls, key, value):
-        cls._last_used[key] = value
-
-    def basic_Execute(self, msg, flags):
-        try:
-            self.CMD_EXE(msg, flags)
-        except Exception:
-            lx.out(traceback.format_exc())
-
-    def basic_Enable(self,msg):
-        return True
-
-    def arg_UIValueHints(self, index):
-        if index == 0:
-            return tagger.PopupClass(tagger.POPUPS_TAGTYPES)
-
-    def arg_UIHints (self, index, hints):
-        if index == 0:
-            hints.Label(tagger.LABEL_TAGTYPE)
 
 lx.bless(CommandClass, CMD_NAME)

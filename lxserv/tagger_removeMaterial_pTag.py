@@ -7,64 +7,40 @@ from os.path import isfile, join, basename, splitext, dirname
 
 CMD_NAME = tagger.CMD_REMOVE_PTAG
 
-class CommandClass(lxu.command.BasicCommand):
-    _last_used = [
-        tagger.POPUPS_TAGTYPES[0][0],
-        tagger.POPUPS_REMOVE_SCOPE[2][0],
-        True
-    ]
+class CommandClass(tagger.Commander):
+    _commander_last_used = []
 
-    def __init__(self):
-        lxu.command.BasicCommand.__init__(self)
+    def commander_arguments(self):
+        return [
+                {
+                    'name': tagger.TAGTYPE,
+                    'label': tagger.LABEL_TAGTYPE,
+                    'datatype': 'string',
+                    'value': tagger.MATERIAL,
+                    'popup': tagger.POPUPS_TAGTYPES,
+                    'flags': ['optional']
+                }, {
+                    'name': tagger.REMOVE_SCOPE,
+                    'label': tagger.LABEL_REMOVE_SCOPE,
+                    'datatype': 'string',
+                    'value': tagger.SCOPE_FLOOD,
+                    'popup': tagger.POPUPS_REMOVE_SCOPE,
+                    'flags': ['optional'],
+                    'sPresetText': True
+                }, {
+                    'name': tagger.DELETE_UNUSED_MASKS,
+                    'label': tagger.LABEL_DELETE_UNUSED_MASKS,
+                    'datatype': 'boolean',
+                    'value': True,
+                    'popup': tagger.POPUPS_SCOPE,
+                    'flags': ['optional']
+                }
+            ]
 
-        self.dyna_Add(tagger.TAGTYPE, lx.symbol.sTYPE_STRING)
-        self.basic_SetFlags(0, lx.symbol.fCMDARG_OPTIONAL)
-
-        self.dyna_Add(tagger.REMOVE_SCOPE, lx.symbol.sTYPE_STRING)
-        self.basic_SetFlags(1, lx.symbol.fCMDARG_OPTIONAL)
-
-        self.dyna_Add(tagger.DELETE_UNUSED_MASKS, lx.symbol.sTYPE_BOOLEAN)
-        self.basic_SetFlags(2, lx.symbol.fCMDARG_OPTIONAL)
-
-    def cmd_Flags(self):
-        return lx.symbol.fCMD_POSTCMD | lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
-
-    def arg_UIHints(self, index, hints):
-        if index == 0:
-            hints.Label(tagger.LABEL_TAGTYPE)
-
-        if index == 1:
-            hints.Label(tagger.LABEL_REMOVE_SCOPE)
-
-        if index == 2:
-            hints.Label(tagger.LABEL_DELETE_UNUSED_MASKS)
-
-    def arg_UIValueHints(self, index):
-        if index == 0:
-            return tagger.PopupClass(tagger.POPUPS_TAGTYPES)
-
-        if index == 1:
-            return tagger.PopupClass(tagger.POPUPS_REMOVE_SCOPE)
-
-    def cmd_DialogInit(self):
-        self.attr_SetString(0, self._last_used[0])
-        self.attr_SetString(1, self._last_used[1])
-        self.attr_SetString(2, self._last_used[2])
-
-    @classmethod
-    def set_last_used(cls, key, value):
-        cls._last_used[key] = value
-
-    def basic_Execute(self, msg, flags):
-        tagType = self.dyna_String(0) if self.dyna_IsSet(0) else self._last_used[0]
-        self.set_last_used(0, tagType)
-        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
-
-        scope = self.dyna_String(1) if self.dyna_IsSet(1) else self._last_used[1]
-        self.set_last_used(1, scope)
-
-        delete_unused = self.dyna_Int(2) if self.dyna_IsSet(2) else self._last_used[2]
-        self.set_last_used(2, delete_unused)
+    def commander_execute(self, msg, flags):
+        tagType = self.commander_arg_value(0)
+        scope = self.commander_arg_value(1)
+        delete_unused = self.commander_arg_value(2)
 
         pTags_to_remove = tagger.selection.get_ptags(i_POLYTAG)
 
@@ -85,6 +61,5 @@ class CommandClass(lxu.command.BasicCommand):
         for pTag in pTags_to_remove:
             if not tagger.scene.meshes_with_pTag(pTag, i_POLYTAG):
                 tagger.shadertree.seek_and_destroy(pTags={pTag:i_POLYTAG})
-
 
 lx.bless(CommandClass, CMD_NAME)

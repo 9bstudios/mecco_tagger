@@ -4,32 +4,23 @@ import lx, lxu, lxifc, modo, tagger, traceback
 
 NAME_CMD = tagger.CMD_SELECT_ALL_BY_TAG
 
-class CMD_tagger(lxu.command.BasicCommand):
+class CommandClass(tagger.Commander):
+    _commander_last_used = []
 
-    def __init__(self):
-        lxu.command.BasicCommand.__init__(self)
+    def commander_arguments(self):
+        return [
+                {
+                    'name': tagger.TAGTYPE,
+                    'label': tagger.LABEL_TAGTYPE,
+                    'datatype': 'string',
+                    'value': tagger.MATERIAL,
+                    'popup': tagger.POPUPS_TAGTYPES,
+                    'flags': [],
+                }
+            ]
 
-        self.dyna_Add (tagger.TAGTYPE, lx.symbol.sTYPE_STRING)
-
-    def cmd_Flags(self):
-        return lx.symbol.fCMD_POSTCMD | lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
-
-    def arg_UIValueHints(self, index):
-        if index == 0:
-            return tagger.PopupClass(tagger.POPUPS_TAGTYPES)
-
-    def arg_UIHints (self, index, hints):
-        if index == 0:
-            hints.Class ("sPresetText")
-
-    def basic_Execute(self, msg, flags):
-        try:
-            self.CMD_EXE(msg, flags)
-        except Exception:
-            lx.out(traceback.format_exc())
-
-    def CMD_EXE(self, msg, flags):
-        tagType = self.dyna_String(0) if self.dyna_IsSet(0) else tagger.MATERIAL
+    def commander_execute(self, msg, flags):
+        tagType = self.commander_arg_value(0)
 
         tags = set()
         for p in tagger.selection.get_polys():
@@ -43,5 +34,4 @@ class CMD_tagger(lxu.command.BasicCommand):
         for tag in tags:
             lx.eval("select.polygon add %s face %s" % (tagType, tag))
 
-
-lx.bless(CMD_tagger, NAME_CMD)
+lx.bless(CommandClass, CMD_NAME)
