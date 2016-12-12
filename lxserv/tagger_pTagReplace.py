@@ -35,7 +35,7 @@ class CommandClass(tagger.Commander):
                     'label': tagger.LABEL_REPLACE_TAG,
                     'datatype': 'string',
                     'value': selected_tag(tagger.MATERIAL),
-                    'popup': tagger.scene.all_tags(x.symbol.i_POLYTAG_MATERIAL),
+                    'popup': tagger.scene.all_tags(),
                     'flags': [],
                     'sPresetText': True
                 }, {
@@ -43,7 +43,7 @@ class CommandClass(tagger.Commander):
                     'label': tagger.LABEL_WITH_TAG,
                     'datatype': 'string',
                     'value': "",
-                    'popup': tagger.scene.all_tags(x.symbol.i_POLYTAG_MATERIAL),
+                    'popup': tagger.scene.all_tags(),
                     'flags': [],
                     'sPresetText': True
                 }

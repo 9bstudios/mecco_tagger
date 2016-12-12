@@ -28,7 +28,7 @@ class CommandClass(tagger.Commander):
                     'label': tagger.LABEL_PRESET,
                     'datatype': 'string',
                     'value': tagger.RANDOM,
-                    'popup': tagger.preset.presets_popup(),
+                    'popup': tagger.presets.presets_popup(),
                     'flags': ['optional']
                 }
             ]
