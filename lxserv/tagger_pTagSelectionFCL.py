@@ -4,6 +4,7 @@ import lx, lxifc, lxu.command, modo, tagger, random
 
 CMD_NAME = tagger.CMD_PTAG_SELECTION_FCL
 
+global_tags = None
 
 class CommandClass(tagger.Commander):
     _commander_default_values = []
@@ -26,9 +27,16 @@ class CommandClass(tagger.Commander):
     def list_commands(self):
         fcl = []
 
+        global global_tags
+        global_tags = [
+            set(),
+            set(),
+            set()
+        ]
+
         mesh_editor = MeshEditorClass()
         mesh_editor.do_mesh_read()
-        tags = mesh_editor.tags
+        tags = global_tags
 
         if not tags:
             return fcl
@@ -47,29 +55,27 @@ lx.bless(CommandClass, CMD_NAME)
 
 
 class MeshEditorClass(tagger.MeshEditorClass):
-    tags = [
-        set(),
-        set(),
-        set()
-    ]
 
     def mesh_read_action(self):
+        global global_tags
+
         stringTag = lx.object.StringTag()
         stringTag.set(self.polygon_accessor)
 
         selected_polys = self.get_polys_by_selected()
+        lx.out(len(selected_polys))
 
         for poly in selected_polys:
             self.polygon_accessor.Select(poly)
 
             material = stringTag.Get(lx.symbol.i_POLYTAG_MATERIAL)
             if material:
-                self.tags[0].add(material)
+                global_tags[0].add(material)
 
             part = stringTag.Get(lx.symbol.i_POLYTAG_PART)
             if part:
-                self.tags[1].add(part)
+                global_tags[1].add(part)
 
             pick = stringTag.Get(lx.symbol.i_POLYTAG_PICK)
             if pick:
-                self.tags[2].update(pick.split(";"))
+                global_tags[2].update(pick.split(";"))
