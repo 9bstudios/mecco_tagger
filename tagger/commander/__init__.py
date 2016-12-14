@@ -14,9 +14,8 @@ class CommandClass(tagger.Commander):
                     'label': 'Input String Here',
                     'datatype': 'string',
                     'value': "default string goes here",
-                    'popup': function_that_returns_list_of_possible_strings(),
                     'flags': [],
-                    'sPresetText': True
+                    'sPresetText': function_that_returns_list_of_possible_strings()
                 }, {
                     'name': 'greeting',
                     'datatype': 'string',
@@ -33,11 +32,11 @@ class CommandClass(tagger.Commander):
         lx.out("%s, %s" (greeting, myGreatString))
 """
 
-__version__ = "0.1"
+__version__ = "0.15"
 __author__ = "Adam"
 
 import lx, lxu, traceback
-from lxifc import UIValueHints
+from lxifc import UIValueHints, Visitor
 from operator import ior
 
 ARG_NAME = 'name'
@@ -126,6 +125,43 @@ class PopupClass(UIValueHints):
     def uiv_PopInternalName(self,index):
         return self._internal[index]
 
+class SetMarksClass (Visitor):
+    def __init__ (self, acc, mark):
+        self.acc = acc
+        self.mark = mark
+
+    def vis_Evaluate (self):
+        self.acc.SetMarks (self.mark)
+
+class PolysByIslandClass (Visitor):
+    def __init__ (self, polygon, point, mark):
+        self.polygon = polygon
+        self.point = point
+        self.mark = mark
+        self.islands = []
+
+    def vis_Evaluate (self):
+        inner = set ()
+        outer = set ()
+
+        outer.add (self.polygon.ID ())
+
+        while len(outer) > 0:
+            polygon_ID = outer.pop ()
+
+            self.polygon.Select (polygon_ID)
+            self.polygon.SetMarks (self.mark)
+            inner.add (polygon_ID)
+
+            num_points = self.polygon.VertexCount ()
+            for v in xrange (num_points):
+                self.point.Select (self.polygon.VertexByIndex (v))
+                num_polys = self.point.PolygonCount ()
+                for p in xrange (num_polys):
+                    vert_polygon_ID = self.point.PolygonByIndex (p)
+                    if vert_polygon_ID not in inner:
+                        outer.add (vert_polygon_ID)
+        self.islands.append (inner)
 
 class Commander(lxu.command.BasicCommand):
     _commander_last_used = []
@@ -134,57 +170,49 @@ class Commander(lxu.command.BasicCommand):
         lxu.command.BasicCommand.__init__(self)
 
         for n, argument in enumerate(self.commander_arguments()):
-            if ARG_DATATYPE not in argument or ARG_NAME not in argument:
+            if not argument.get(ARG_DATATYPE):
+                continue
+            if not argument.get(ARG_NAME):
                 continue
 
             datatype = getattr(lx.symbol, 'sTYPE_' + argument[ARG_DATATYPE].upper())
             self.dyna_Add(argument[ARG_NAME], datatype)
+            self._commander_last_used.append(argument.get(ARG_VALUE))
 
-            if ARG_VALUE in argument:
-                self._commander_last_used.append(argument[ARG_VALUE])
-            else:
-                self._commander_last_used.append(None)
+            flags = []
+            for flag in argument.get(ARG_FLAGS, []):
+                flags.append(getattr(lx.symbol, 'fCMDARG_' + flag.upper()))
+            if flags:
+                self.basic_SetFlags(n, reduce(ior, flags))
 
-            if ARG_FLAGS in argument:
-                flags = []
-                for flag in argument[ARG_FLAGS]:
-                    flags.append(getattr(lx.symbol, 'fCMDARG_' + flag.upper()))
-                if flags:
-                    self.basic_SetFlags(n, reduce(ior, flags))
+        self.not_svc = lx.service.NotifySys()
 
         self.notifiers = []
         self.notifier_tuples = tuple([i for i in self.commander_notifiers()])
-        self.not_svc = lx.service.NotifySys()
-
         for i in self.notifier_tuples:
             self.notifiers.append(None)
-
-        self.notifier0 = None
-        self.notifier1 = None
-        self.notifier2 = None
-        self.notifier3 = None
-        self.notifier4 = None
-        self.notifier5 = None
 
     def commander_arguments(self):
         return []
 
     def commander_arg_value(self, index):
-        if self.dyna_IsSet(index):
-            if self.commander_arguments()[index][ARG_DATATYPE].lower() in sTYPE_STRINGs:
-                return self.dyna_String(index)
+        if not self.dyna_IsSet(index):
+            return None
 
-            elif self.commander_arguments()[index][ARG_DATATYPE].lower() in sTYPE_STRING_vectors:
-                return [float(i) for i in self.dyna_String(index).split(" ")]
+        if self.commander_arguments()[index][ARG_DATATYPE].lower() in sTYPE_STRINGs:
+            return self.dyna_String(index)
 
-            elif self.commander_arguments()[index][ARG_DATATYPE].lower() in sTYPE_INTEGERs:
-                return self.dyna_Int(index)
+        elif self.commander_arguments()[index][ARG_DATATYPE].lower() in sTYPE_STRING_vectors:
+            return [float(i) for i in self.dyna_String(index).split(" ")]
 
-            elif self.commander_arguments()[index][ARG_DATATYPE].lower in sTYPE_FLOATs:
-                return self.dyna_Float(index)
+        elif self.commander_arguments()[index][ARG_DATATYPE].lower() in sTYPE_INTEGERs:
+            return self.dyna_Int(index)
 
-            elif self.commander_arguments()[index][ARG_DATATYPE].lower() in sTYPE_BOOLEANs:
-                return self.dyna_Bool(index)
+        elif self.commander_arguments()[index][ARG_DATATYPE].lower in sTYPE_FLOATs:
+            return self.dyna_Float(index)
+
+        elif self.commander_arguments()[index][ARG_DATATYPE].lower() in sTYPE_BOOLEANs:
+            return self.dyna_Bool(index)
 
         return None
 
@@ -195,109 +223,60 @@ class Commander(lxu.command.BasicCommand):
         return []
 
     def cmd_NotifyAddClient(self, argument, object):
-        if len(self.notifier_tuples) > 0:
-            if self.notifier0 is None:
-                self.notifier0 = self.not_svc.Spawn (self.notifier_tuples[0][0], self.notifier_tuples[0][1])
+        for i, tup in enumerate(self.notifier_tuples):
+            if self.notifiers[i] is None:
+                self.notifiers[i] = self.not_svc.Spawn (self.notifier_tuples[i][0], self.notifier_tuples[i][1])
 
-            self.notifier0.AddClient (object)
-
-        if len(self.notifier_tuples) > 1:
-            if self.notifier1 is None:
-                self.notifier1 = self.not_svc.Spawn (self.notifier_tuples[1][0], self.notifier_tuples[1][1])
-
-            self.notifier1.AddClient (object)
-
-        if len(self.notifier_tuples) > 2:
-            if self.notifier2 is None:
-                self.notifier2 = self.not_svc.Spawn (self.notifier_tuples[2][0], self.notifier_tuples[2][1])
-
-            self.notifier2.AddClient (object)
-
-        if len(self.notifier_tuples) > 3:
-            if self.notifier3 is None:
-                self.notifier3 = self.not_svc.Spawn (self.notifier_tuples[3][0], self.notifier_tuples[3][1])
-
-            self.notifier3.AddClient (object)
-
-        if len(self.notifier_tuples) > 4:
-            if self.notifier4 is None:
-                self.notifier4 = self.not_svc.Spawn (self.notifier_tuples[4][0], self.notifier_tuples[4][1])
-
-            self.notifier4.AddClient (object)
-
-        if len(self.notifier_tuples) > 5:
-            if self.notifier5 is None:
-                self.notifier5 = self.not_svc.Spawn (self.notifier_tuples[5][0], self.notifier_tuples[5][1])
-
-            self.notifier5.AddClient (object)
+            self.notifiers[i].AddClient(object)
 
     def cmd_NotifyRemoveClient(self, object):
-        if len(self.notifier_tuples) > 0:
-            if self.notifier0 is not None:
-                self.notifier0.RemoveClient (object)
-
-        if len(self.notifier_tuples) > 1:
-            if self.notifier1 is not None:
-                self.notifier1.RemoveClient (object)
-
-        if len(self.notifier_tuples) > 2:
-            if self.notifier2 is not None:
-                self.notifier2.RemoveClient (object)
-
-        if len(self.notifier_tuples) > 3:
-            if self.notifier3 is not None:
-                self.notifier3.RemoveClient (object)
-
-        if len(self.notifier_tuples) > 4:
-            if self.notifier4 is not None:
-                self.notifier4.RemoveClient (object)
-
-        if len(self.notifier_tuples) > 5:
-            if self.notifier5 is not None:
-                self.notifier5.RemoveClient (object)
+        for i, tup in enumerate(self.notifier_tuples):
+            if self.notifiers[i] is not None:
+                self.notifiers[i].RemoveClient(object)
 
     def cmd_Flags(self):
         return lx.symbol.fCMD_POSTCMD | lx.symbol.fCMD_MODEL | lx.symbol.fCMD_UNDO
 
     def arg_UIHints(self, index, hints):
-        for n, argument in enumerate(self.commander_arguments()):
-            if index == n:
-                if ARG_LABEL in argument:
-                    label = argument[ARG_LABEL]
-                else:
-                    label = argument[ARG_NAME]
+        args = self.commander_arguments()
+        if index < len(args):
+            label = args[index].get(ARG_LABEL)
+            if not label:
+                label = args[index].get(ARG_NAME)
+            hints.Label(label)
 
-                if ARG_sPresetText in argument:
-                    if argument[ARG_sPresetText]:
-                        hints.Class("sPresetText")
+            if args[index].get(ARG_sPresetText):
+                hints.Class("sPresetText")
 
     def arg_UIValueHints(self, index):
-        for n, argument in enumerate(self.commander_arguments()):
-            if ARG_POPUP in argument:
-                if index == n:
-                    return PopupClass(argument[ARG_POPUP])
-            if ARG_FCL in argument:
-                if index == n:
-                    return FormCommandListClass(argument[ARG_FCL])
+        args = self.commander_arguments()
+        if index < len(args):
+            if args[index].get(ARG_POPUP, None) is not None:
+                return PopupClass(args[index].get(ARG_POPUP, []))
+            elif args[index].get(ARG_sPresetText, None) is not None:
+                return PopupClass(args[index].get(ARG_sPresetText, []))
+            elif args[index].get(ARG_FCL, None) is not None:
+                return FormCommandListClass(args[index].get(ARG_FCL, []))
 
     def cmd_DialogInit(self):
         for n, argument in enumerate(self.commander_arguments()):
-            if self._commander_last_used[n] != None and ARG_DATATYPE in argument:
+            if self._commander_last_used[n] == None:
+                continue
 
-                if argument[ARG_DATATYPE].lower() in sTYPE_STRINGs:
-                    self.attr_SetString(n, str(self._commander_last_used[n]))
+            if argument.get(ARG_DATATYPE, '').lower() in sTYPE_STRINGs:
+                self.attr_SetString(n, str(self._commander_last_used[n]))
 
-                elif argument[ARG_DATATYPE].lower() in sTYPE_STRING_vectors:
-                    self.attr_SetString(n, str(self._commander_last_used[n]))
+            elif argument.get(ARG_DATATYPE, '').lower() in sTYPE_STRING_vectors:
+                self.attr_SetString(n, str(self._commander_last_used[n]))
 
-                elif argument[ARG_DATATYPE].lower() in sTYPE_INTEGERs:
-                    self.attr_SetInt(n, int(self._commander_last_used[n]))
+            elif argument.get(ARG_DATATYPE, '').lower() in sTYPE_INTEGERs:
+                self.attr_SetInt(n, int(self._commander_last_used[n]))
 
-                elif argument[ARG_DATATYPE].lower() in sTYPE_BOOLEANs:
-                    self.attr_SetInt(n, int(self._commander_last_used[n]))
+            elif argument.get(ARG_DATATYPE, '').lower() in sTYPE_BOOLEANs:
+                self.attr_SetInt(n, int(self._commander_last_used[n]))
 
-                elif argument[ARG_DATATYPE].lower in sTYPE_FLOATs:
-                    self.attr_SetFlt(n, float(self._commander_last_used[n]))
+            elif argument.get(ARG_DATATYPE, '').lower in sTYPE_FLOATs:
+                self.attr_SetFlt(n, float(self._commander_last_used[n]))
 
     @classmethod
     def set_commander_last_used(cls, key, value):
@@ -311,27 +290,67 @@ class Commander(lxu.command.BasicCommand):
         pass
 
     def basic_Execute(self, msg, flags):
+        for n, argument in enumerate(self.commander_arguments()):
+            if self.dyna_IsSet(n):
+                self.set_commander_last_used(n, self.commander_arg_value(n))
+
         try:
-            for n, argument in enumerate(self.commander_arguments()):
-
-                if self.dyna_IsSet(n):
-                    self.set_commander_last_used(n, self.commander_arg_value(n))
-
             self.commander_execute(msg, flags)
-
         except:
             lx.out(traceback.format_exc())
+
+    def commander_mesh_edit_action(self, polygon_accessor, point_accessor, list_of_poly_islands):
+        pass
+
+    def commander_mesh_edit(self):
+        """Adapted from James O'Hare's excellent code: https://gist.github.com/Farfarer/31148a78f392a831239d9b018b90330c"""
+
+        layer_svc = lx.service.Layer ()
+        layer_scan = lx.object.LayerScan (layer_svc.ScanAllocate (lx.symbol.f_LAYERSCAN_EDIT_POLYS))
+        if not layer_scan.test ():
+            return
+
+        mesh_svc = lx.service.Mesh ()
+        mark_mode_checked = mesh_svc.ModeCompose ('user0', None)
+        mark_mode_unchecked = mesh_svc.ModeCompose (None, 'user0')
+
+        for n in xrange (layer_scan.Count ()):
+            mesh = lx.object.Mesh (layer_scan.MeshEdit(n))
+            if not mesh.test ():
+                continue
+
+            polygon_count = mesh.PolygonCount ()
+            if polygon_count == 0:
+                continue
+
+            polygon = lx.object.Polygon (mesh.PolygonAccessor ())
+            point = lx.object.Point (mesh.PointAccessor ())
+            if not polygon.test () or not point.test ():
+                continue
+
+            visClear = SetMarksClass (polygon, mark_mode_unchecked)
+            polygon.Enumerate (mark_mode_checked, visClear, 0)
+
+            visIslands = PolysByIslandClass (polygon, point, mark_mode_checked)
+            polygon.Enumerate (mark_mode_unchecked, visIslands, 0)
+
+            self.commander_mesh_edit_action(polygon, point, visIslands.islands)
+
+            layer_scan.SetMeshChange (n, lx.symbol.f_MESHEDIT_POL_TAGS)
+        layer_scan.Apply ()
 
     def cmd_Query(self,index,vaQuery):
         va = lx.object.ValueArray()
         va.set(vaQuery)
-        for n, argument in enumerate(self.commander_arguments()):
-            if ARG_FLAGS in argument:
-                if 'query' not in argument[ARG_FLAGS]:
-                    continue
-                if ARG_FCL in argument:
-                    if argument[ARG_FCL]:
-                        continue
-                if index == n and self._commander_last_used[n]:
-                    va.AddString(str(self._commander_last_used[n]))
+
+        args = self.commander_arguments()
+
+        if index < len(args):
+            is_query = 'query' in args[index].get(ARG_FLAGS, [])
+            is_not_fcl = False if args[index].get(ARG_FCL) else True
+            has_last_used = self._commander_last_used[index]
+
+            if is_query and is_not_fcl and has_last_used:
+                va.AddString(str(self._commander_last_used[index]))
+
         return lx.result.OK

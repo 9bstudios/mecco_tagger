@@ -22,9 +22,8 @@ class CommandClass(tagger.Commander):
                     'label': tagger.LABEL_TAG,
                     'datatype': 'string',
                     'value': "",
-                    'popup': tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL),
                     'flags': ['optional'],
-                    'sPresetText': True
+                    'sPresetText': tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL)
                 }, {
                     'name': tagger.SCOPE,
                     'label': tagger.LABEL_TAGTYPE,
@@ -41,5 +40,11 @@ class CommandClass(tagger.Commander):
         connected = self.commander_arg_value(2)
 
         tagger.selection.tag_polys(tag, connected, tagger.util.string_to_i_POLYTAG(tagType))
+
+    def basic_ButtonName(self):
+        tagType = self.commander_arg_value(0)
+        tag = self.commander_arg_value(1)
+
+        return "%s %s: %s" % (tagger.LABEL_SET, tagType, tag)
 
 lx.bless(CommandClass, CMD_NAME)

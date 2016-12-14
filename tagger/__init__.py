@@ -16,5 +16,6 @@ try:
     from var import *
     from PopupClass import *
     from PolysConnectedByTag import *
+    from PolysByIsland import *
 except:
     traceback.print_exc()

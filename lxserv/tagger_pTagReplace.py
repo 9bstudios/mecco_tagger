@@ -35,17 +35,15 @@ class CommandClass(tagger.Commander):
                     'label': tagger.LABEL_REPLACE_TAG,
                     'datatype': 'string',
                     'value': selected_tag(tagger.MATERIAL),
-                    'popup': tagger.scene.all_tags(),
                     'flags': [],
-                    'sPresetText': True
+                    'sPresetText': tagger.scene.all_tags()
                 }, {
                     'name': tagger.WITHTAG,
                     'label': tagger.LABEL_WITH_TAG,
                     'datatype': 'string',
                     'value': "",
-                    'popup': tagger.scene.all_tags(),
                     'flags': [],
-                    'sPresetText': True
+                    'sPresetText': tagger.scene.all_tags()
                 }
             ]
 

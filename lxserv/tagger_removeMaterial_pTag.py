@@ -24,9 +24,8 @@ class CommandClass(tagger.Commander):
                     'label': tagger.LABEL_REMOVE_SCOPE,
                     'datatype': 'string',
                     'value': tagger.SCOPE_FLOOD,
-                    'popup': tagger.POPUPS_REMOVE_SCOPE,
                     'flags': ['optional'],
-                    'sPresetText': True
+                    'sPresetText': tagger.POPUPS_REMOVE_SCOPE
                 }, {
                     'name': tagger.DELETE_UNUSED_MASKS,
                     'label': tagger.LABEL_DELETE_UNUSED_MASKS,

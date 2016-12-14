@@ -7,38 +7,44 @@ CMD_NAME = tagger.CMD_PTAG_SELECTION_FCL
 def list_commands():
     fcl = []
 
-    tags = {
-        tagger.MATERIAL:set(),
-        tagger.PART:set(),
-        tagger.PICK:set()
-    }
+    for layer in tagger.items.get_active_layers():
+        polys = layer.geometry.polygons.selected
 
-    polys_are_selected = False
+    if not polys:
+        return fcl
+
+    tags = [
+        set(),
+        set(),
+        set()
+    ]
 
     for layer in tagger.items.get_active_layers():
         polys = layer.geometry.polygons.selected
 
-        if polys:
-            polys_are_selected = True
-
         for p in polys:
-            if p.tags()[tagger.MATERIAL]:
-                tags[tagger.MATERIAL].add(p.tags()[tagger.MATERIAL])
-            if p.tags()[tagger.PART]:
-                tags[tagger.PART].add(p.tags()[tagger.PART])
-            if p.tags()[tagger.PICK]:
-                tags[tagger.PICK] = tags[tagger.PICK].union(set(p.tags()[tagger.PICK].split(";")))
+            pTags = p.tags()
 
-    if polys_are_selected:
-        for tagType in tags:
-            if tags[tagType]:
-                fcl.append('- ')
-                for tag in tags[tagType]:
-                    args = tagger.util.build_arg_string({
-                        tagger.TAGTYPE: tagType,
-                        tagger.TAG: tag
-                    })
-                    fcl.append(tagger.CMD_SELECT_ALL_BY_TAG + args)
+            material = pTags.get(tagger.MATERIAL)
+            if material:
+                tags[0].add(material)
+
+            part = pTags.get(tagger.PART)
+            if part:
+                tags[1].add(part)
+
+            pick = pTags.get(tagger.PICK)
+            if pick:
+                tags[2].update(pick.split(";"))
+
+    for n in range(len(tags)):
+        if not tags[n]:
+            continue
+
+        fcl.append('- ')
+        for tag in sorted(tags[n]):
+            tagType = [tagger.MATERIAL, tagger.PART, tagger.PICK][n]
+            fcl.append("%s %s {%s}" % (tagger.CMD_SELECT_ALL_BY_TAG, tagType, tag))
 
     return fcl
 
@@ -57,9 +63,6 @@ class CommandClass(tagger.Commander):
                     'flags': ['query'],
                 }
             ]
-
-    def commander_execute(self, msg, flags):
-        pass
 
     def commander_notifiers(self):
         return [("select.event", "polygon +ldt"),("select.event", "item +ldt")]

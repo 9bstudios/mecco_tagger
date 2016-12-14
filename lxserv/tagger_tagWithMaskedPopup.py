@@ -9,7 +9,7 @@ def tagsHack(tags):
     if not tags:
         hackedTags.append((None, tagger.LABEL_NONE))
 
-    for tag in tags:
+    for tag in sorted(tags):
         tag_internal = "__".join((tag[0], tag[1]))
         tag_user = "%s (%s)" % (tag[1], tag[0])
         hackedTags.append((tag_internal, tag_user))
@@ -33,9 +33,8 @@ class CommandClass(tagger.Commander):
                     'label': tagger.LABEL_SCOPE,
                     'datatype': 'string',
                     'value': tagger.SCOPE_SELECTED,
-                    'popup': tagger.POPUPS_SCOPE,
                     'flags': ['optional'],
-                    'sPresetText': True
+                    'sPresetText': tagger.POPUPS_SCOPE
                 }
             ]
 

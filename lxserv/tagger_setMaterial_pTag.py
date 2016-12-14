@@ -15,9 +15,8 @@ class CommandClass(tagger.Commander):
                     'name': tagger.TAG,
                     'datatype': 'string',
                     'value': "",
-                    'popup': tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL),
                     'flags': [],
-                    'sPresetText': True
+                    'sPresetText': tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL)
                 }, {
                     'name': tagger.PRESET,
                     'datatype': 'string',

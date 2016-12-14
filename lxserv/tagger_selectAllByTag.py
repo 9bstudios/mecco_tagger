@@ -36,10 +36,13 @@ class CommandClass(tagger.Commander):
             tags = tag.split(";")
 
         elif not tag:
-            tags = tagger.selection.get_ptags(i_POLYTAG)
+            tags = tagger.selection.get_ptags(i_POLYTAG).split(";")
 
         for tag in tags:
-            lx.eval("select.polygon add %s face {%s}" % (tagType, tag))
+            if tagType in ['material', 'part']:
+                lx.eval("select.polygon add %s face {%s}" % (tagType, tag))
+            elif tagType == 'pick':
+                lx.eval("select.useSet {%s} select" % tag)
 
     def basic_ButtonName(self):
         tagType = self.commander_arg_value(0)
