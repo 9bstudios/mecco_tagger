@@ -110,6 +110,8 @@ LABEL_COPY = 'Copy'
 LABEL_PASTE = 'Paste'
 LABEL_QUERY = 'Query'
 LABEL_SET = 'Set'
+LABEL_SELECT = 'Select'
+LABEL_SELECT_POLYS = 'Select Polys'
 DIALOGS_NO_MASK_SELECTED = ("No Mask Selected", "Select a mask to apply.")
 DIALOGS_TOO_MANY_MASKS = ("Too Many Masks", "Select only one mask to apply.")
 DIALOGS_NO_PTAG_FILTER = ("No pTag Filter", "The selected mask applies to all polygons. No tag to apply.")
@@ -117,6 +119,7 @@ DIALOGS_NONE_PTAG_FILTER = ("(none) pTag Filter", "The selected mask applies to 
 DIALOGS_REMOVE_ALL_TAGS = ("Remove All Tags", "All %s tags will be removed from the scene. Continue?")
 DIALOGS_TAG_NOT_FOUND = ("Tag Not Found", "No instances of %s tag '%s' were found in the scene.")
 DIALOGS_TAG_REPLACED = ("Tag Replaced", "Replaced %s instances of %s tag '%s'.")
+DIALOGS_TAGGED_POLYS_COUNT = ("Tagged Polygons", "Tagged %s polygons in %s polygon islands.")
 
 POPUPS_CLIPBOARD = [
         (COPY, LABEL_COPY),

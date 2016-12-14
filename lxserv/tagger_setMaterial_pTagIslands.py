@@ -1,11 +1,12 @@
 # python
 
-import lx, tagger
+import lx, tagger, modo
 
 CMD_NAME = tagger.CMD_SET_PTAG_ISLANDS
 
+
 class CommandClass(tagger.Commander):
-    _commander_last_used = []
+    _commander_default_values = []
 
     def commander_arguments(self):
         return [
@@ -27,24 +28,37 @@ class CommandClass(tagger.Commander):
             ]
 
     def commander_execute(self, msg, flags):
-        self.commander_mesh_edit()
+        args = {
+            'tag': self.commander_arg_value(0),
+            'tagType': self.commander_arg_value(1)
+        }
 
-    def commander_mesh_edit_action(self, polygon_accessor, point_accessor, list_of_poly_islands):
-        tag = self.commander_arg_value(0)
-        tagType = self.commander_arg_value(1)
-        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
+        mesh_editor = MeshEditorClass(args, [lx.symbol.f_MESHEDIT_POL_TAGS])
+        counters = mesh_editor.do_mesh_edit()
 
+        modo.dialogs.alert(tagger.DIALOGS_TAGGED_POLYS_COUNT[0], tagger.DIALOGS_TAGGED_POLYS_COUNT[1] % (counters[1], counters[0]))
+
+lx.bless(CommandClass, CMD_NAME)
+
+
+class MeshEditorClass(tagger.MeshEditorClass):
+
+    def mesh_edit_action(self):
+        i_POLYTAG = tagger.util.string_to_i_POLYTAG(self.args['tagType'])
         stringTag = lx.object.StringTag()
-        stringTag.set(polygon_accessor)
+        stringTag.set(self.polygon_accessor)
 
-        for i, island in enumerate(list_of_poly_islands):
+        island_counter = 0
+        poly_counter = 0
+        for i, island in enumerate(self.list_of_poly_islands):
 
-            pTag = "_".join((tag, str(i)))
+            island_counter += 1
+            pTag = "_".join((self.args['tag'], str(i)))
             new_mask = tagger.shadertree.build_material(i_POLYTAG = i_POLYTAG, pTag = pTag)
 
             for poly in island:
-                polygon_accessor.Select(poly)
+                self.polygon_accessor.Select(poly)
                 stringTag.Set(i_POLYTAG, pTag)
+                poly_counter += 1
 
-
-lx.bless(CommandClass, CMD_NAME)
+        return [island_counter, poly_counter]

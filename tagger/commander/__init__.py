@@ -5,7 +5,7 @@ less redundant code, and fewer common mistakes. The following is a
 blessed modo command using Commander:
 
 class CommandClass(tagger.Commander):
-    _commander_last_used = []
+    _commander_default_values = []
 
     def commander_arguments(self):
         return [
@@ -32,7 +32,7 @@ class CommandClass(tagger.Commander):
         lx.out("%s, %s" (greeting, myGreatString))
 """
 
-__version__ = "0.15"
+__version__ = "0.18"
 __author__ = "Adam"
 
 import lx, lxu, traceback
@@ -163,8 +163,76 @@ class PolysByIslandClass (Visitor):
                         outer.add (vert_polygon_ID)
         self.islands.append (inner)
 
+class MeshEditorClass():
+    def __init__(self, args, mesh_edit_flags):
+        self.args = args
+        self.mesh_edit_flags = mesh_edit_flags
+        self.polygon_accessor = None
+        self.edge_accessor = None
+        self.meshmap_accessor = None
+        self.point_accessor = None
+        self.list_of_poly_islands = None
+
+    def mesh_edit_action(self):
+        pass
+
+    def do_mesh_edit(self):
+        """Adapted from James O'Hare's excellent code: https://gist.github.com/Farfarer/31148a78f392a831239d9b018b90330c"""
+
+        layer_svc = lx.service.Layer ()
+        layer_scan = lx.object.LayerScan (layer_svc.ScanAllocate (lx.symbol.f_LAYERSCAN_EDIT))
+        if not layer_scan.test ():
+            return
+
+        mesh_svc = lx.service.Mesh ()
+        mark_mode_checked = mesh_svc.ModeCompose ('user0', None)
+        mark_mode_unchecked = mesh_svc.ModeCompose (None, 'user0')
+
+        for n in xrange (layer_scan.Count ()):
+            mesh = lx.object.Mesh (layer_scan.MeshEdit(n))
+            if not mesh.test ():
+                continue
+
+            polygon_count = mesh.PolygonCount ()
+            if polygon_count == 0:
+                continue
+
+            self.polygon_accessor = lx.object.Polygon (mesh.PolygonAccessor ())
+            if not self.polygon_accessor.test ():
+                continue
+
+            self.edge_accessor = lx.object.Edge (mesh.EdgeAccessor ())
+            if not self.edge_accessor.test ():
+                continue
+
+            self.point_accessor = lx.object.Point (mesh.PointAccessor ())
+            if not self.point_accessor.test ():
+                continue
+
+            self.meshmap_accessor = lx.object.MeshMap (mesh.MeshMapAccessor ())
+            if not self.meshmap_accessor.test ():
+                continue
+
+            visClear = SetMarksClass (self.polygon_accessor, mark_mode_unchecked)
+            self.polygon_accessor.Enumerate (mark_mode_checked, visClear, 0)
+
+            visIslands = PolysByIslandClass (self.polygon_accessor, self.point_accessor, mark_mode_checked)
+            self.polygon_accessor.Enumerate (mark_mode_unchecked, visIslands, 0)
+
+            self.list_of_poly_islands = visIslands.islands
+
+            return_value = self.mesh_edit_action()
+
+            if self.mesh_edit_flags:
+                layer_scan.SetMeshChange (n, reduce(ior, self.mesh_edit_flags))
+
+        layer_scan.Apply ()
+
+        return return_value
+
+
 class Commander(lxu.command.BasicCommand):
-    _commander_last_used = []
+    _commander_default_values = []
 
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
@@ -177,7 +245,7 @@ class Commander(lxu.command.BasicCommand):
 
             datatype = getattr(lx.symbol, 'sTYPE_' + argument[ARG_DATATYPE].upper())
             self.dyna_Add(argument[ARG_NAME], datatype)
-            self._commander_last_used.append(argument.get(ARG_VALUE))
+            self._commander_default_values.append(argument.get(ARG_VALUE))
 
             flags = []
             for flag in argument.get(ARG_FLAGS, []):
@@ -260,27 +328,30 @@ class Commander(lxu.command.BasicCommand):
 
     def cmd_DialogInit(self):
         for n, argument in enumerate(self.commander_arguments()):
-            if self._commander_last_used[n] == None:
+            if self.dyna_IsSet(n):
+                continue
+
+            if self._commander_default_values[n] == None:
                 continue
 
             if argument.get(ARG_DATATYPE, '').lower() in sTYPE_STRINGs:
-                self.attr_SetString(n, str(self._commander_last_used[n]))
+                self.attr_SetString(n, str(self._commander_default_values[n]))
 
             elif argument.get(ARG_DATATYPE, '').lower() in sTYPE_STRING_vectors:
-                self.attr_SetString(n, str(self._commander_last_used[n]))
+                self.attr_SetString(n, str(self._commander_default_values[n]))
 
             elif argument.get(ARG_DATATYPE, '').lower() in sTYPE_INTEGERs:
-                self.attr_SetInt(n, int(self._commander_last_used[n]))
+                self.attr_SetInt(n, int(self._commander_default_values[n]))
 
             elif argument.get(ARG_DATATYPE, '').lower() in sTYPE_BOOLEANs:
-                self.attr_SetInt(n, int(self._commander_last_used[n]))
+                self.attr_SetInt(n, int(self._commander_default_values[n]))
 
             elif argument.get(ARG_DATATYPE, '').lower in sTYPE_FLOATs:
-                self.attr_SetFlt(n, float(self._commander_last_used[n]))
+                self.attr_SetFlt(n, float(self._commander_default_values[n]))
 
     @classmethod
-    def set_commander_last_used(cls, key, value):
-        cls._commander_last_used[key] = value
+    def set_commander_default_values(cls, key, value):
+        cls._commander_default_values[key] = value
 
     @classmethod
     def set_argument(cls, key, value):
@@ -290,54 +361,10 @@ class Commander(lxu.command.BasicCommand):
         pass
 
     def basic_Execute(self, msg, flags):
-        for n, argument in enumerate(self.commander_arguments()):
-            if self.dyna_IsSet(n):
-                self.set_commander_last_used(n, self.commander_arg_value(n))
-
         try:
             self.commander_execute(msg, flags)
         except:
             lx.out(traceback.format_exc())
-
-    def commander_mesh_edit_action(self, polygon_accessor, point_accessor, list_of_poly_islands):
-        pass
-
-    def commander_mesh_edit(self):
-        """Adapted from James O'Hare's excellent code: https://gist.github.com/Farfarer/31148a78f392a831239d9b018b90330c"""
-
-        layer_svc = lx.service.Layer ()
-        layer_scan = lx.object.LayerScan (layer_svc.ScanAllocate (lx.symbol.f_LAYERSCAN_EDIT_POLYS))
-        if not layer_scan.test ():
-            return
-
-        mesh_svc = lx.service.Mesh ()
-        mark_mode_checked = mesh_svc.ModeCompose ('user0', None)
-        mark_mode_unchecked = mesh_svc.ModeCompose (None, 'user0')
-
-        for n in xrange (layer_scan.Count ()):
-            mesh = lx.object.Mesh (layer_scan.MeshEdit(n))
-            if not mesh.test ():
-                continue
-
-            polygon_count = mesh.PolygonCount ()
-            if polygon_count == 0:
-                continue
-
-            polygon = lx.object.Polygon (mesh.PolygonAccessor ())
-            point = lx.object.Point (mesh.PointAccessor ())
-            if not polygon.test () or not point.test ():
-                continue
-
-            visClear = SetMarksClass (polygon, mark_mode_unchecked)
-            polygon.Enumerate (mark_mode_checked, visClear, 0)
-
-            visIslands = PolysByIslandClass (polygon, point, mark_mode_checked)
-            polygon.Enumerate (mark_mode_unchecked, visIslands, 0)
-
-            self.commander_mesh_edit_action(polygon, point, visIslands.islands)
-
-            layer_scan.SetMeshChange (n, lx.symbol.f_MESHEDIT_POL_TAGS)
-        layer_scan.Apply ()
 
     def cmd_Query(self,index,vaQuery):
         va = lx.object.ValueArray()
@@ -348,9 +375,9 @@ class Commander(lxu.command.BasicCommand):
         if index < len(args):
             is_query = 'query' in args[index].get(ARG_FLAGS, [])
             is_not_fcl = False if args[index].get(ARG_FCL) else True
-            has_last_used = self._commander_last_used[index]
+            has_last_used = self._commander_default_values[index]
 
             if is_query and is_not_fcl and has_last_used:
-                va.AddString(str(self._commander_last_used[index]))
+                va.AddString(str(self._commander_default_values[index]))
 
         return lx.result.OK

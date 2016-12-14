@@ -7,7 +7,7 @@ from os.path import basename, splitext
 CMD_NAME = tagger.CMD_SET_PTAG
 
 class CommandClass(tagger.Commander):
-    _commander_last_used = []
+    _commander_default_values = []
 
     def commander_arguments(self):
         return [

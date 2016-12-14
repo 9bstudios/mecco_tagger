@@ -6,7 +6,7 @@ NAME_CMD = tagger.CMD_PTAG_CLIPBOARD
 
 class CommandClass(tagger.Commander):
     _clipboard = {tagger.MATERIAL: None, tagger.PART: None, tagger.PICK: None}
-    _commander_last_used = []
+    _commander_default_values = []
 
     def commander_arguments(self):
         return [

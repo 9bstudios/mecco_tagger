@@ -5,7 +5,7 @@ import lx, lxu, lxifc, modo, tagger, traceback
 CMD_NAME = tagger.CMD_SELECT_ALL_BY_TAG
 
 class CommandClass(tagger.Commander):
-    _commander_last_used = []
+    _commander_default_values = []
 
     def commander_arguments(self):
         return [
@@ -48,6 +48,6 @@ class CommandClass(tagger.Commander):
         tagType = self.commander_arg_value(0)
         tag = self.commander_arg_value(1)
         if tag:
-            return "%s (%s)" % (tag, tagger.util.i_POLYTAG_to_label(tagType))
+            return "%s by %s: %s" % (tagger.LABEL_SELECT_POLYS, tagger.util.i_POLYTAG_to_label(tagType), tag)
 
 lx.bless(CommandClass, CMD_NAME)

@@ -17,7 +17,7 @@ def tagsHack(tags):
     return hackedTags
 
 class CommandClass(tagger.Commander):
-    _commander_last_used = []
+    _commander_default_values = []
 
     def commander_arguments(self):
         return [

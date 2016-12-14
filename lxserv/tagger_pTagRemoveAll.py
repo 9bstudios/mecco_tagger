@@ -6,7 +6,7 @@ CMD_NAME = tagger.CMD_PTAG_REMOVEALL
 DEFAULTS = [tagger.PART, '', False]
 
 class CommandClass(tagger.Commander):
-    _commander_last_used = []
+    _commander_default_values = []
 
     def commander_arguments(self):
         return [

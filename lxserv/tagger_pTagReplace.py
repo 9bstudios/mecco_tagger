@@ -19,7 +19,7 @@ def selected_tag(tagType):
         return DEFAULTS[1]
 
 class CommandClass(tagger.Commander):
-    _commander_last_used = []
+    _commander_default_values = []
 
     def commander_arguments(self):
         return [

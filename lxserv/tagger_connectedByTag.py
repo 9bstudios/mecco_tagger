@@ -8,7 +8,7 @@ import lx, lxu.command, lxifc, modo, traceback, tagger
 CMD_NAME = tagger.CMD_SELECT_CONNECTED_BY_TAG
 
 class CommandClass(tagger.Commander):
-    _commander_last_used = []
+    _commander_default_values = []
 
     def commander_arguments(self):
         return [

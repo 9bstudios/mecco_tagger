@@ -5,7 +5,7 @@ import lx, lxu.command, lxifc, traceback, modo, tagger
 CMD_NAME = tagger.CMD_CONVERT_PTAGS
 
 class CommandClass(tagger.Commander):
-    _commander_last_used = []
+    _commander_default_values = []
 
     def commander_arguments(self):
         return [

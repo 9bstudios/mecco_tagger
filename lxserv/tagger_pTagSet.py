@@ -6,7 +6,7 @@ CMD_NAME = tagger.CMD_PTAG_SET
 DEFAULTS = [tagger.MATERIAL, '', False]
 
 class CommandClass(tagger.Commander):
-    _commander_last_used = []
+    _commander_default_values = []
 
     def commander_arguments(self):
         return [
@@ -26,7 +26,7 @@ class CommandClass(tagger.Commander):
                     'sPresetText': tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL)
                 }, {
                     'name': tagger.SCOPE,
-                    'label': tagger.LABEL_TAGTYPE,
+                    'label': tagger.LABEL_SCOPE,
                     'datatype': 'string',
                     'value': tagger.SCOPE_SELECTED,
                     'popup': tagger.POPUPS_SCOPE,
@@ -45,6 +45,6 @@ class CommandClass(tagger.Commander):
         tagType = self.commander_arg_value(0)
         tag = self.commander_arg_value(1)
 
-        return "%s %s: %s" % (tagger.LABEL_SET, tagType, tag)
+        return "%s %s: %s" % (tagger.LABEL_SET, tagger.util.i_POLYTAG_to_label(tagType), tag)
 
 lx.bless(CommandClass, CMD_NAME)
