@@ -1,6 +1,6 @@
 import lx
 from os import listdir, sep
-from os.path import isfile, join, basename, splitext, dirname
+from os.path import isfile, join, basename, splitext, dirname, isdir
 from var import *
 
 def presets_popup():
@@ -25,8 +25,16 @@ def list_presets():
         "kit_mecco_tagger:basics"
     ]
 
+    user_presets = lx.eval('user.value mecco_tagger.userPresetsPath ?')
+
+    if user_presets:
+        presets_paths.append(user_presets)
+
     raw_presets_list = []
     for path in presets_paths:
+        if not isdir(path):
+            continue
+
         presets_folder = lx.eval("query platformservice alias ? {%s}" % path)
 
         for f in listdir(presets_folder):

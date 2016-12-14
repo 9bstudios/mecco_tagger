@@ -27,6 +27,7 @@ CMD_SELECT_ALL_BY_TAG = 'tagger.selectAllByTag'
 CMD_TAG_WITH_MASKED = 'tagger.tagWithMasked'
 CMD_TAG_WITH_MASKED_FCL = 'tagger.tagWithMaskedFCL'
 CMD_TAG_WITH_MASKED_POPUP = 'tagger.tagWithMaskedPopup'
+CMD_MASK_ALL = 'tagger.maskAllTags'
 
 GROUPNAME = "group"
 MATNAME = "material"
