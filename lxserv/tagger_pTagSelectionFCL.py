@@ -38,9 +38,6 @@ class CommandClass(tagger.Commander):
         mesh_editor.do_mesh_read()
         tags = global_tags
 
-        if not tags:
-            return fcl
-
         for n in range(len(tags)):
             if not tags[n]:
                 continue
@@ -63,7 +60,6 @@ class MeshEditorClass(tagger.MeshEditorClass):
         stringTag.set(self.polygon_accessor)
 
         selected_polys = self.get_polys_by_selected()
-        lx.out(len(selected_polys))
 
         for poly in selected_polys:
             self.polygon_accessor.Select(poly)
