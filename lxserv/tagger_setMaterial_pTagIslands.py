@@ -34,31 +34,34 @@ class CommandClass(tagger.Commander):
         }
 
         mesh_editor = MeshEditorClass(args, [lx.symbol.f_MESHEDIT_POL_TAGS])
-        counters = mesh_editor.do_mesh_edit()
+        mesh_editor.do_mesh_edit()
 
-        modo.dialogs.alert(tagger.DIALOGS_TAGGED_POLYS_COUNT[0], tagger.DIALOGS_TAGGED_POLYS_COUNT[1] % (counters[1], counters[0]))
+        modo.dialogs.alert(
+            tagger.DIALOGS_TAGGED_POLYS_COUNT[0],
+            tagger.DIALOGS_TAGGED_POLYS_COUNT[1] % (mesh_editor.poly_counter, mesh_editor.island_counter)
+            )
 
 lx.bless(CommandClass, CMD_NAME)
 
 
 class MeshEditorClass(tagger.MeshEditorClass):
+    poly_counter = 0
+    island_counter = 0
 
     def mesh_edit_action(self):
         i_POLYTAG = tagger.util.string_to_i_POLYTAG(self.args['tagType'])
         stringTag = lx.object.StringTag()
         stringTag.set(self.polygon_accessor)
 
-        island_counter = 0
-        poly_counter = 0
-        for i, island in enumerate(self.list_of_poly_islands):
+        islands = self.get_polys_by_island()
 
-            island_counter += 1
+        for i, island in enumerate(islands):
+
+            self.island_counter += 1
             pTag = "_".join((self.args['tag'], str(i)))
             new_mask = tagger.shadertree.build_material(i_POLYTAG = i_POLYTAG, pTag = pTag)
 
             for poly in island:
                 self.polygon_accessor.Select(poly)
                 stringTag.Set(i_POLYTAG, pTag)
-                poly_counter += 1
-
-        return [island_counter, poly_counter]
+                self.poly_counter += 1

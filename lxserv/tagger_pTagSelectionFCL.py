@@ -1,37 +1,9 @@
 # python
 
-import lx, lxifc, lxu.command, modo, tagger
+import lx, lxifc, lxu.command, modo, tagger, random
 
 CMD_NAME = tagger.CMD_PTAG_SELECTION_FCL
 
-class MeshEditorClass(tagger.MeshEditorClass):
-    def commander_mesh_edit_action(self):
-        tags = [
-            set(),
-            set(),
-            set()
-        ]
-
-        stringTag = lx.object.StringTag()
-        stringTag.set(polygon_accessor)
-
-        for island in list_of_poly_islands:
-            for poly in island:
-                polygon_accessor.Select(poly)
-
-                material = stringTag.Get(lx.symbol.i_POLYTAG_MATERIAL)
-                if material:
-                    tags[0].add(material)
-
-                part = stringTag.Get(lx.symbol.i_POLYTAG_PART)
-                if part:
-                    tags[1].add(part)
-
-                pick = stringTag.Get(lx.symbol.i_POLYTAG_PICK)
-                if pick:
-                    tags[2].update(pick.split(";"))
-
-        return tags
 
 class CommandClass(tagger.Commander):
     _commander_default_values = []
@@ -54,8 +26,12 @@ class CommandClass(tagger.Commander):
     def list_commands(self):
         fcl = []
 
-        mesh_editor = MeshEditorClass(None,[])
-        tags = mesh_editor.do_mesh_edit()
+        mesh_editor = MeshEditorClass()
+        mesh_editor.do_mesh_read()
+        tags = mesh_editor.tags
+
+        if not tags:
+            return fcl
 
         for n in range(len(tags)):
             if not tags[n]:
@@ -67,5 +43,33 @@ class CommandClass(tagger.Commander):
 
         return fcl
 
-
 lx.bless(CommandClass, CMD_NAME)
+
+
+class MeshEditorClass(tagger.MeshEditorClass):
+    tags = [
+        set(),
+        set(),
+        set()
+    ]
+
+    def mesh_read_action(self):
+        stringTag = lx.object.StringTag()
+        stringTag.set(self.polygon_accessor)
+
+        selected_polys = self.get_polys_by_selected()
+
+        for poly in selected_polys:
+            self.polygon_accessor.Select(poly)
+
+            material = stringTag.Get(lx.symbol.i_POLYTAG_MATERIAL)
+            if material:
+                self.tags[0].add(material)
+
+            part = stringTag.Get(lx.symbol.i_POLYTAG_PART)
+            if part:
+                self.tags[1].add(part)
+
+            pick = stringTag.Get(lx.symbol.i_POLYTAG_PICK)
+            if pick:
+                self.tags[2].update(pick.split(";"))
