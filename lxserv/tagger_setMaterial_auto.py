@@ -6,9 +6,9 @@ NAME_CMD = tagger.CMD_SET_MATERIAL
 
 
 class CommandClass(tagger.Commander):
+    _commander_default_values = []
 
     def commander_execute(self, msg, flags):
-
         selmode = tagger.selection.get_mode()
 
         if selmode == 'item':

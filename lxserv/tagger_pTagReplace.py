@@ -52,6 +52,8 @@ class CommandClass(tagger.Commander):
         replaceTag = self.commander_arg_value(1)
         withTag = self.commander_arg_value(2)
 
+        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
+
         hitcount = 0
 
         meshes_with_pTag = tagger.scene.meshes_with_pTag(replaceTag, i_POLYTAG)

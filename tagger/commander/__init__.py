@@ -5,6 +5,8 @@ less redundant code, and fewer common mistakes. The following is a
 blessed modo command using Commander:
 
 class CommandClass(tagger.Commander):
+    _commander_default_values = []
+
     def commander_arguments(self):
         return [
                 {
@@ -350,7 +352,7 @@ class Commander(lxu.command.BasicCommand):
                 label = args[index].get(ARG_NAME)
             hints.Label(label)
 
-            if args[index].get(ARG_sPresetText):
+            if ARG_sPresetText in args[index]:
                 hints.Class("sPresetText")
 
     def arg_UIValueHints(self, index):

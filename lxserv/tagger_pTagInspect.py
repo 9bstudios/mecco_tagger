@@ -5,6 +5,7 @@ import lx, lxu, modo, tagger, traceback
 CMD_NAME = tagger.CMD_PTAG_INSPECT
 
 class CommandClass(tagger.Commander):
+    _commander_default_values = []
 
     def commander_execute(self, msg, flags):
         tags = {
