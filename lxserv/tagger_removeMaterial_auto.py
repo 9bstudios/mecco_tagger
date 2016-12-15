@@ -14,6 +14,6 @@ class CommandClass(tagger.Commander):
             lx.eval("%s %s" % (tagger.CMD_SET_ITEM, tagger.REMOVE))
 
         elif selmode in ['vertex', 'edge', 'polygon']:
-            lx.eval("%s material 2 true" % (tagger.CMD_REMOVE_PTAG))
+            lx.eval("%s %s %s %s" % (tagger.CMD_REMOVE_PTAG, tagger.MATERIAL, tagger.SCOPE_FLOOD, 'true'))
 
 lx.bless(CommandClass, NAME_CMD)

@@ -45,11 +45,11 @@ class CommandClass(tagger.Commander):
         pTags_to_remove = tagger.selection.get_ptags(i_POLYTAG)
 
         # if we're just nixing tags in a selection, easy.
-        if scope in [0,1,2]:
+        if scope in [tagger.SCOPE_SELECTED, tagger.SCOPE_CONNECTED, tagger.SCOPE_FLOOD]:
             tagger.selection.tag_polys(None, scope, i_POLYTAG)
 
         # if we want to nix tags for the whole scene, do some work.
-        if scope == 3:
+        if scope == tagger.SCOPE_SCENE:
             for  pTag in pTags_to_remove:
                 lx.eval("%s %s %s {}" % (tagger.CMD_PTAG_REPLACE, tagType, pTag))
 

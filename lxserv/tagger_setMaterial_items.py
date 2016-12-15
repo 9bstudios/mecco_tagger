@@ -27,16 +27,16 @@ class CommandClass(tagger.Commander):
                     'name': tagger.WITH_EXISTING,
                     'label': tagger.LABEL_WITH_EXISTING,
                     'datatype': 'string',
-                    'value': tagger.POPUPS_WITH_EXISTING[0][0],
+                    'value': tagger.KEEP,
                     'popup': tagger.POPUPS_WITH_EXISTING,
                     'flags': ['optional']
                 }
             ]
 
     def commander_execute(self, msg, flags):
-        operation = self.commander_arg_value(0)
-        preset = self.commander_arg_value(1)
-        withExisting = self.commander_arg_value(2)
+        operation = self.commander_arg_value(0, tagger.ADD)
+        preset = self.commander_arg_value(1, tagger.RANDOM)
+        withExisting = self.commander_arg_value(2, tagger.KEEP)
 
         if preset == tagger.RANDOM:
             preset = None

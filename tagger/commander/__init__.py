@@ -306,9 +306,9 @@ class Commander(lxu.command.BasicCommand):
     def commander_notifiers(self):
         return []
 
-    def commander_arg_value(self, index):
+    def commander_arg_value(self, index, default=None):
         if not self.dyna_IsSet(index):
-            return None
+            return default
 
         if self.commander_arguments()[index][ARG_DATATYPE].lower() in sTYPE_STRINGs:
             return self.dyna_String(index)
@@ -325,7 +325,7 @@ class Commander(lxu.command.BasicCommand):
         elif self.commander_arguments()[index][ARG_DATATYPE].lower() in sTYPE_BOOLEANs:
             return self.dyna_Bool(index)
 
-        return None
+        return default
 
     def cmd_NotifyAddClient(self, argument, object):
         for i, tup in enumerate(self.notifier_tuples):

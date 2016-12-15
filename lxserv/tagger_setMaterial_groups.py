@@ -35,8 +35,8 @@ class CommandClass(tagger.Commander):
 
     def commander_execute(self, msg, flags):
         group_name = self.commander_arg_value(0)
-        operation = self.commander_arg_value(1)
-        preset = self.commander_arg_value(2)
+        operation = self.commander_arg_value(1, tagger.ADD)
+        preset = self.commander_arg_value(2, tagger.RANDOM)
 
         preset = None if preset == tagger.RANDOM else preset
 
