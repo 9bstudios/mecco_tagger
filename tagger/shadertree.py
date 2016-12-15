@@ -4,7 +4,7 @@ import modo, lx, util, items
 from var import *
 from util import *
 
-def do_preset(preset_path):
+def do_preset(preset_path, target_mask=None):
     """Drops a material preset, deletes the cruft, and returns the good stuff."""
 
     lx.eval('preset.do {%s}' % preset_path)
@@ -13,12 +13,17 @@ def do_preset(preset_path):
     preset_parent_mask = preset_group.itemGraph('itemGroups').forward()[0]
     preset_contents = preset_parent_mask.children()
 
+    if target_mask:
+        preset_parent_mask.setParent(target_mask)
+
     modo.Scene().removeItems(preset_parent_mask)
     modo.Scene().removeItems(preset_group)
 
     if len(preset_contents) == 1 and preset_contents[0].type == 'mask':
         parent_mask = preset_contents[0]
         preset_contents = parent_mask.children()
+        for child in parent_mask.children()[::-1]:
+            child.setParent(parent_mask.parent)
         modo.Scene().removeItems(parent_mask)
 
     return preset_contents
@@ -75,9 +80,7 @@ def build_material(
             mask.setParent(parent,parent.childCount())
 
     if preset:
-        preset_contents = do_preset(preset)
-        for i in preset_contents:
-            i.setParent(mask)
+        preset_contents = do_preset(preset, mask)
 
     elif not preset:
         if(shader):
