@@ -5,7 +5,7 @@ import lx, lxu, modo, tagger, traceback
 NAME_CMD = tagger.CMD_PTAG_CLIPBOARD
 
 class CommandClass(tagger.Commander):
-    _clipboard = {tagger.MATERIAL: None, tagger.PART: None, tagger.PICK: None}
+    _clipboard = {'material': None, 'part': None, 'pick': None}
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -34,6 +34,21 @@ class CommandClass(tagger.Commander):
                 }
             ]
 
+    def basic_ButtonName(self):
+        if self.commander_arg_value(0):
+            label = []
+
+            if self.commander_arg_value(0) == tagger.COPY:
+                label.append(tagger.LABEL_COPY)
+            elif self.commander_arg_value(0) == tagger.PASTE:
+                label.append(tagger.LABEL_PASTE)
+
+            if self.commander_arg_value(0) == tagger.PASTE and self.commander_arg_value(1):
+                label.append(tagger.util.i_POLYTAG_to_label(self.commander_arg_value(1)))
+
+            label.append(tagger.LABEL_TAGS)
+            return " ".join(label)
+
     @classmethod
     def set_clipboard(cls, key, value):
         cls._clipboard[key] = value
@@ -47,7 +62,9 @@ class CommandClass(tagger.Commander):
             mode = tagger.COPY
 
         if mode == tagger.COPY:
-            self.set_clipboard(tagType, tagger.selection.get_polys()[0].tags()[tagType])
+            self.set_clipboard('material', tagger.selection.get_polys()[0].tags()['material'])
+            self.set_clipboard('part', tagger.selection.get_polys()[0].tags()['part'])
+            self.set_clipboard('pick', tagger.selection.get_polys()[0].tags()['pick'])
 
         elif mode == tagger.COPYMASK:
             masks = set()

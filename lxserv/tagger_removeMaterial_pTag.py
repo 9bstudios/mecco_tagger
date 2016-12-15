@@ -41,6 +41,7 @@ class CommandClass(tagger.Commander):
         scope = self.commander_arg_value(1)
         delete_unused = self.commander_arg_value(2)
 
+        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
         pTags_to_remove = tagger.selection.get_ptags(i_POLYTAG)
 
         # if we're just nixing tags in a selection, easy.

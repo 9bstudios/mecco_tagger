@@ -20,6 +20,14 @@ class CommandClass(tagger.Commander):
                 }
             ]
 
+    def basic_ButtonName(self):
+        if self.commander_arg_value(0):
+            label = []
+            label.append(tagger.LABEL_REMOVE_ALL)
+            label.append(tagger.util.i_POLYTAG_to_label(self.commander_arg_value(0)))
+            label.append(tagger.LABEL_TAGS)
+            return " ".join(label)
+
     def commander_execute(self, msg, flags):
         tagType = self.commander_arg_value(0)
 

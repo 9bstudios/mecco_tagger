@@ -13,30 +13,35 @@ class CommandClass(tagger.Commander):
         return [
                 {
                     'name': tagger.TAG,
+                    'label': tagger.LABEL_TAG,
                     'datatype': 'string',
                     'value': "",
                     'flags': [],
                     'sPresetText': tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL)
                 }, {
                     'name': tagger.PRESET,
+                    'label': tagger.LABEL_PRESET,
                     'datatype': 'string',
                     'value': tagger.RANDOM,
                     'popup': tagger.presets.presets_popup(),
                     'flags': ['optional', 'query']
                 }, {
                     'name': tagger.SCOPE,
+                    'label': tagger.LABEL_SCOPE,
                     'datatype': 'string',
                     'value': tagger.POPUPS_SCOPE[2][0],
                     'popup': tagger.POPUPS_SCOPE,
                     'flags': ['optional']
                 }, {
                     'name': tagger.TAGTYPE,
+                    'label': tagger.LABEL_TAGTYPE,
                     'datatype': 'string',
                     'value': tagger.POPUPS_TAGTYPES[0][0],
                     'popup': tagger.POPUPS_TAGTYPES,
                     'flags': ['optional']
                 }, {
                     'name': tagger.WITH_EXISTING,
+                    'label': tagger.LABEL_WITH_EXISTING,
                     'datatype': 'string',
                     'value': tagger.POPUPS_WITH_EXISTING[0][0],
                     'popup': tagger.POPUPS_WITH_EXISTING,

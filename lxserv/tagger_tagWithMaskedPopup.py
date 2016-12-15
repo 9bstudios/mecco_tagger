@@ -23,7 +23,7 @@ class CommandClass(tagger.Commander):
         return [
                 {
                     'name': tagger.TAG,
-                    'label': tagger.LABEL_TAG,
+                    'label': tagger.LABEL_TAG_WITH_MASKED,
                     'datatype': 'string',
                     'value': '',
                     'popup': tagsHack(tagger.items.get_all_masked_tags()),
