@@ -364,27 +364,32 @@ class Commander(lxu.command.BasicCommand):
                 return FormCommandListClass(args[index].get(ARG_FCL, []))
 
     def cmd_DialogInit(self):
+
         for n, argument in enumerate(self.commander_arguments()):
-            # if self.dyna_IsSet(n):
-            #     continue
+
+            if self.dyna_IsSet(n):
+                continue
 
             if self._commander_default_values[n] == None:
                 continue
 
-            if argument.get(ARG_DATATYPE, '').lower() in sTYPE_STRINGs:
-                self.attr_SetString(n, str(self._commander_default_values[n]))
+            datatype = argument.get(ARG_DATATYPE, '').lower()
+            default_value = self._commander_default_values[n]
 
-            elif argument.get(ARG_DATATYPE, '').lower() in sTYPE_STRING_vectors:
-                self.attr_SetString(n, str(self._commander_default_values[n]))
+            if datatype in sTYPE_STRINGs:
+                self.attr_SetString(n, str(default_value))
 
-            elif argument.get(ARG_DATATYPE, '').lower() in sTYPE_INTEGERs:
-                self.attr_SetInt(n, int(self._commander_default_values[n]))
+            elif datatype in sTYPE_STRING_vectors:
+                self.attr_SetString(n, str(default_value))
 
-            elif argument.get(ARG_DATATYPE, '').lower() in sTYPE_BOOLEANs:
-                self.attr_SetInt(n, int(self._commander_default_values[n]))
+            elif datatype in sTYPE_INTEGERs:
+                self.attr_SetInt(n, int(default_value))
 
-            elif argument.get(ARG_DATATYPE, '').lower in sTYPE_FLOATs:
-                self.attr_SetFlt(n, float(self._commander_default_values[n]))
+            elif datatype in sTYPE_BOOLEANs:
+                self.attr_SetInt(n, int(default_value))
+
+            elif datatype in sTYPE_FLOATs:
+                self.attr_SetFlt(n, float(default_value))
 
     @classmethod
     def set_commander_default_values(cls, key, value):
@@ -399,9 +404,8 @@ class Commander(lxu.command.BasicCommand):
 
     def basic_Execute(self, msg, flags):
         try:
-            for n, argument in enumerate(self.commander_arguments()):
-                if self.dyna_IsSet(n):
-                    self.set_commander_default_values(n, self.commander_arg_value(n))
+            # for n, argument in enumerate(self.commander_arguments()):
+            #     self.set_commander_default_values(n, self.commander_arg_value(n))
 
             self.commander_execute(msg, flags)
         except:
