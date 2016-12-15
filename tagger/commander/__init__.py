@@ -5,8 +5,6 @@ less redundant code, and fewer common mistakes. The following is a
 blessed modo command using Commander:
 
 class CommandClass(tagger.Commander):
-    _commander_default_values = []
-
     def commander_arguments(self):
         return [
                 {
@@ -269,20 +267,22 @@ class MeshEditorClass():
 
 
 class Commander(lxu.command.BasicCommand):
-    _commander_default_values = []
-
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
 
         for n, argument in enumerate(self.commander_arguments()):
+
             if not argument.get(ARG_DATATYPE):
-                continue
+                return lx.symbol.e_FAILED
+
             if not argument.get(ARG_NAME):
-                continue
+                return lx.symbol.e_FAILED
 
             datatype = getattr(lx.symbol, 'sTYPE_' + argument[ARG_DATATYPE].upper())
+            if not datatype:
+                return lx.symbol.e_FAILED
+
             self.dyna_Add(argument[ARG_NAME], datatype)
-            self._commander_default_values.append(argument.get(ARG_VALUE))
 
             flags = []
             for flag in argument.get(ARG_FLAGS, []):
@@ -298,6 +298,9 @@ class Commander(lxu.command.BasicCommand):
             self.notifiers.append(None)
 
     def commander_arguments(self):
+        return []
+
+    def commander_notifiers(self):
         return []
 
     def commander_arg_value(self, index):
@@ -320,12 +323,6 @@ class Commander(lxu.command.BasicCommand):
             return self.dyna_Bool(index)
 
         return None
-
-    def commander_args_count(self):
-        return len(self._arguments)
-
-    def commander_notifiers(self):
-        return []
 
     def cmd_NotifyAddClient(self, argument, object):
         for i, tup in enumerate(self.notifier_tuples):
@@ -364,17 +361,16 @@ class Commander(lxu.command.BasicCommand):
                 return FormCommandListClass(args[index].get(ARG_FCL, []))
 
     def cmd_DialogInit(self):
-
         for n, argument in enumerate(self.commander_arguments()):
 
             if self.dyna_IsSet(n):
                 continue
 
-            if self._commander_default_values[n] == None:
+            if self.commander_arguments()[n].get(ARG_VALUE) == None:
                 continue
 
             datatype = argument.get(ARG_DATATYPE, '').lower()
-            default_value = self._commander_default_values[n]
+            default_value = self.commander_arguments()[n].get(ARG_VALUE)
 
             if datatype in sTYPE_STRINGs:
                 self.attr_SetString(n, str(default_value))
@@ -391,22 +387,11 @@ class Commander(lxu.command.BasicCommand):
             elif datatype in sTYPE_FLOATs:
                 self.attr_SetFlt(n, float(default_value))
 
-    @classmethod
-    def set_commander_default_values(cls, key, value):
-        cls._commander_default_values[key] = value
-
-    @classmethod
-    def set_argument(cls, key, value):
-        cls._arguments[key] = value
-
     def commander_execute(self, msg, flags):
         pass
 
     def basic_Execute(self, msg, flags):
         try:
-            # for n, argument in enumerate(self.commander_arguments()):
-            #     self.set_commander_default_values(n, self.commander_arg_value(n))
-
             self.commander_execute(msg, flags)
         except:
             lx.out(traceback.format_exc())
@@ -420,9 +405,9 @@ class Commander(lxu.command.BasicCommand):
         if index < len(args):
             is_query = 'query' in args[index].get(ARG_FLAGS, [])
             is_not_fcl = False if args[index].get(ARG_FCL) else True
-            has_last_used = self._commander_default_values[index]
+            has_recent_value = self.commander_arg_value(index)
 
-            if is_query and is_not_fcl and has_last_used:
-                va.AddString(str(self._commander_default_values[index]))
+            if is_query and is_not_fcl and has_recent_value:
+                va.AddString(str(self.commander_arg_value(index)))
 
         return lx.result.OK
