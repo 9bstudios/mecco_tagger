@@ -267,6 +267,8 @@ class MeshEditorClass():
 
 
 class Commander(lxu.command.BasicCommand):
+    _commander_default_values = []
+
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
 
@@ -283,6 +285,7 @@ class Commander(lxu.command.BasicCommand):
                 return lx.symbol.e_FAILED
 
             self.dyna_Add(argument[ARG_NAME], datatype)
+            self._commander_default_values.append(argument.get(ARG_VALUE))
 
             flags = []
             for flag in argument.get(ARG_FLAGS, []):
@@ -363,14 +366,14 @@ class Commander(lxu.command.BasicCommand):
     def cmd_DialogInit(self):
         for n, argument in enumerate(self.commander_arguments()):
 
-            if self.dyna_IsSet(n):
+            if self.dyna_IsSet(n) and self.dyna_String(n):
                 continue
 
             if self.commander_arguments()[n].get(ARG_VALUE) == None:
                 continue
 
             datatype = argument.get(ARG_DATATYPE, '').lower()
-            default_value = self.commander_arguments()[n].get(ARG_VALUE)
+            default_value = self._commander_default_values[n]
 
             if datatype in sTYPE_STRINGs:
                 self.attr_SetString(n, str(default_value))
@@ -391,6 +394,9 @@ class Commander(lxu.command.BasicCommand):
         pass
 
     def basic_Execute(self, msg, flags):
+        for n, argument in enumerate(self.commander_arguments()):
+            self._commander_default_values[n] = self.commander_arg_value(n)
+
         try:
             self.commander_execute(msg, flags)
         except:

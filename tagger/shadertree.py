@@ -217,26 +217,26 @@ def consolidate(
     ):
 
     """Consolidates all shader tree masks with supplied criteria into a single parent mask."""
+    consolidation_masks = {}
 
-    for pTag, i_POLYTAG in pTags:
+    for pTag, i_POLYTAG in pTags.iteritems():
         existing_masks = get_masks(pTags={ pTag: i_POLYTAG })
-        consolidation_mask = tagger.shadertree.add_mask(i_POLYTAG = i_POLYTAG, pTag = pTag)
+
+        consolidation_masks[pTag] = add_mask(i_POLYTAG = i_POLYTAG, pTag = pTag)
+        move_to_base_shader(consolidation_masks[pTag])
 
         hitlist = set()
         for mask in existing_masks:
-            if len(mask.children() == 0):
+            if len(mask.children()) == 0:
                 hitlist.add(mask)
                 continue
 
-            mask.setParent(consolidation_mask)
+            mask.setParent(consolidation_masks[pTag])
 
         for hit in hitlist:
             modo.Scene().removeItems(hit)
 
-        new_mask.setParent(consolidation_mask)
-        tagger.shadertree.move_to_top(new_mask)
-
-        tagger.shadertree.move_to_base_shader(consolidation_mask)
+    return consolidation_masks
 
 
 

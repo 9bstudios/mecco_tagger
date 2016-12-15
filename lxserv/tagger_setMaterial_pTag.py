@@ -75,13 +75,19 @@ class CommandClass(tagger.Commander):
         tagger.selection.tag_polys(pTag, connected, i_POLYTAG)
 
         # build a new mask if we need one
-        if not existing_masks or (existing_masks and withExisting != tagger.POPUPS_WITH_EXISTING[0][0]):
+        if not existing_masks or (existing_masks and withExisting != tagger.USE):
             new_mask = tagger.shadertree.build_material(i_POLYTAG = i_POLYTAG, pTag = pTag, preset = preset)
+            tagger.shadertree.move_to_base_shader(new_mask)
 
-        if existing_masks and withExisting == tagger.POPUPS_WITH_EXISTING[1][0]:
+        if existing_masks and withExisting == tagger.KEEP:
+            pass
+
+        elif existing_masks and withExisting == tagger.REMOVE:
             tagger.util.safe_removeItems(existing_masks, True)
 
-        elif existing_masks and withExisting == tagger.POPUPS_WITH_EXISTING[2][0]:
-            tagger.shadertree.consolidate(pTags = { pTag: i_POLYTAG })
+        elif existing_masks and withExisting == tagger.CONSOLIDATE:
+            consolidation_masks = tagger.shadertree.consolidate(pTags = { pTag: i_POLYTAG })
+            new_mask.setParent(consolidation_masks[pTag])
+            tagger.shadertree.move_to_top(new_mask)
 
 lx.bless(CommandClass, CMD_NAME)
