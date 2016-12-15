@@ -356,17 +356,17 @@ class Commander(lxu.command.BasicCommand):
     def arg_UIValueHints(self, index):
         args = self.commander_arguments()
         if index < len(args):
-            if args[index].get(ARG_POPUP, None) is not None:
+            if args[index].get(ARG_POPUP) is not None:
                 return PopupClass(args[index].get(ARG_POPUP, []))
-            elif args[index].get(ARG_sPresetText, None) is not None:
+            elif args[index].get(ARG_sPresetText) is not None:
                 return PopupClass(args[index].get(ARG_sPresetText, []))
-            elif args[index].get(ARG_FCL, None) is not None:
+            elif args[index].get(ARG_FCL) is not None:
                 return FormCommandListClass(args[index].get(ARG_FCL, []))
 
     def cmd_DialogInit(self):
         for n, argument in enumerate(self.commander_arguments()):
-            if self.dyna_IsSet(n):
-                continue
+            # if self.dyna_IsSet(n):
+            #     continue
 
             if self._commander_default_values[n] == None:
                 continue
@@ -399,6 +399,10 @@ class Commander(lxu.command.BasicCommand):
 
     def basic_Execute(self, msg, flags):
         try:
+            for n, argument in enumerate(self.commander_arguments()):
+                if self.dyna_IsSet(n):
+                    self.set_commander_default_values(n, self.commander_arg_value(n))
+
             self.commander_execute(msg, flags)
         except:
             lx.out(traceback.format_exc())

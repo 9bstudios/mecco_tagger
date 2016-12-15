@@ -32,10 +32,11 @@ def list_presets():
 
     raw_presets_list = []
     for path in presets_paths:
-        if not isdir(path):
-            continue
 
         presets_folder = lx.eval("query platformservice alias ? {%s}" % path)
+
+        if not isdir(presets_folder):
+            continue
 
         for f in listdir(presets_folder):
             if f.startswith('.'):
