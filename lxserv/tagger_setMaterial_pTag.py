@@ -22,7 +22,7 @@ class CommandClass(tagger.Commander):
                     'datatype': 'string',
                     'value': tagger.RANDOM,
                     'popup': tagger.presets.presets_popup(),
-                    'flags': ['optional']
+                    'flags': ['optional', 'query']
                 }, {
                     'name': tagger.SCOPE,
                     'datatype': 'string',
