@@ -2,7 +2,7 @@
 
 import lx, lxu.command, lxifc, traceback, modo, tagger
 
-CMD_NAME = tagger.CMD_REMOVE_UNMASKED
+CMD_NAME = tagger.CMD_SHADERTREE_MASK_UNMASKED
 
 class CommandClass(tagger.Commander):
     _commander_default_values = []
@@ -23,19 +23,15 @@ class CommandClass(tagger.Commander):
         tagType = self.commander_arg_value(0)
         i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
 
-        hitcount = 0
-        tagCounter = 0
+        counter = 0
         for pTag in tagger.scene.all_tags_by_type(i_POLYTAG):
             if not tagger.shadertree.get_masks( pTags = { pTag: i_POLYTAG }):
-                hitcount += tagger.scene.replace_tag(tagType, pTag, "")
-                tagCounter += 1
+                new_mask = tagger.shadertree.build_material(i_POLYTAG = i_POLYTAG, pTag = pTag)
+                counter += 1
 
-        try:
-            modo.dialogs.alert(
-                tagger.DIALOGS_UNTAGGED_POLYS_COUNT[0],
-                tagger.DIALOGS_UNTAGGED_POLYS_COUNT[1] % (tagCounter, hitcount)
-            )
-        except:
-            pass
+        modo.dialogs.alert(
+            tagger.DIALOGS_MASKED_TAGS_COUNT[0],
+            tagger.DIALOGS_MASKED_TAGS_COUNT[1] % counter
+        )
 
 lx.bless(CommandClass, CMD_NAME)

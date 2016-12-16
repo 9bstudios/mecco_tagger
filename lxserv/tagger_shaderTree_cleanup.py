@@ -2,7 +2,7 @@
 
 import lx, lxu, modo, traceback, tagger
 
-NAME_CMD = tagger.CMD_CLEANUP_SHADER_TREE
+NAME_CMD = tagger.CMD_SHADERTREE_CLEANUP
 
 
 class CommandClass(tagger.Commander):

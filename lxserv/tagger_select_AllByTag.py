@@ -26,10 +26,20 @@ class CommandClass(tagger.Commander):
                 }
             ]
 
+    def basic_Icon(self):
+        if self.commander_arg_value(0):
+            if self.commander_arg_value(0) == tagger.MATERIAL:
+                return 'tagger.selectAllByMaterial'
+            if self.commander_arg_value(0) == tagger.PART:
+                return 'tagger.selectAllByPart'
+            if self.commander_arg_value(0) == tagger.PICK:
+                return 'tagger.selectAllBySet'
+
+        return 'tagger.selectAllByTag'
+
     def basic_ButtonName(self):
         label = []
-        label.append(tagger.LABEL_SELECT_POLYS)
-        label.append(tagger.LABEL_BY)
+        label.append(tagger.LABEL_SELECT_ALL)
         if self.commander_arg_value(0):
             label.append(tagger.util.i_POLYTAG_to_label(self.commander_arg_value(0)))
         label.append(tagger.LABEL_TAG)
@@ -59,10 +69,5 @@ class CommandClass(tagger.Commander):
             elif tagType == 'pick':
                 lx.eval("select.useSet {%s} select" % tag)
 
-    def basic_ButtonName(self):
-        tagType = self.commander_arg_value(0)
-        tag = self.commander_arg_value(1)
-        if tag:
-            return "%s by %s: %s" % (tagger.LABEL_SELECT_POLYS, tagger.util.i_POLYTAG_to_label(tagType), tag)
 
 lx.bless(CommandClass, CMD_NAME)

@@ -2,7 +2,7 @@
 
 import lx, lxifc, lxu.command, modo, tagger
 
-CMD_NAME = tagger.CMD_TAG_WITH_MASKED_FCL
+CMD_NAME = tagger.CMD_SET_EXISTING_FCL
 
 def list_commands():
     fcl = []

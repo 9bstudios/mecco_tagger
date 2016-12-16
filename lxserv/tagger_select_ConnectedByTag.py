@@ -22,6 +22,17 @@ class CommandClass(tagger.Commander):
                 }
             ]
 
+    def basic_Icon(self):
+        if self.commander_arg_value(0):
+            if self.commander_arg_value(0) == tagger.MATERIAL:
+                return 'tagger.selectConnectedByMaterial'
+            elif self.commander_arg_value(0) == tagger.PART:
+                return 'tagger.selectConnectedByPart'
+            elif self.commander_arg_value(0) == tagger.PICK:
+                return 'tagger.selectConnectedBySet'
+
+        return 'tagger.selectConnectedByTag'
+
     def basic_ButtonName(self):
         if self.commander_arg_value(0):
             label = []

@@ -1,7 +1,7 @@
 
 import lx, lxifc, lxu.command, tagger
 
-CMD_NAME = tagger.CMD_TAG_WITH_MASKED_POPUP
+CMD_NAME = tagger.CMD_SET_EXISTING_POPUP
 
 def tagsHack(tags):
     hackedTags = []

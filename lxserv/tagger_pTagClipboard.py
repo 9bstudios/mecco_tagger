@@ -34,11 +34,32 @@ class CommandClass(tagger.Commander):
                 }
             ]
 
+    def basic_Icon(self):
+        if self.commander_arg_value(0):
+            if self.commander_arg_value(0) == tagger.COPY:
+                return 'tagger.copyTags'
+            elif self.commander_arg_value(0) == tagger.COPYMASK:
+                return 'tagger.copyTags'
+            elif self.commander_arg_value(0) == tagger.PASTE and not self.commander_arg_value(1):
+                return 'tagger.pasteMaterial'
+                
+            elif self.commander_arg_value(0) == tagger.PASTE and self.commander_arg_value(1):
+                if self.commander_arg_value(1) == tagger.MATERIAL:
+                    return 'tagger.pasteMaterial'
+                elif self.commander_arg_value(1) == tagger.PART:
+                    return 'tagger.pastePart'
+                elif self.commander_arg_value(1) == tagger.PICK:
+                    return 'tagger.pasteSet'
+
+        return 'tagger.copyTags'
+
     def basic_ButtonName(self):
         if self.commander_arg_value(0):
             label = []
 
             if self.commander_arg_value(0) == tagger.COPY:
+                label.append(tagger.LABEL_COPY)
+            elif self.commander_arg_value(0) == tagger.COPYMASK:
                 label.append(tagger.LABEL_COPY)
             elif self.commander_arg_value(0) == tagger.PASTE:
                 label.append(tagger.LABEL_PASTE)

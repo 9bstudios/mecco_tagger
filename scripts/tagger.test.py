@@ -41,32 +41,32 @@ for p in polys:
 
 # Convert Tags
 
-lx.eval('tagger.convertTags part material')
+lx.eval('tagger.pTagConvert part material')
 for p in polys:
     if p.tags()['part'] or p.tags()['material'] != 'p3':
-        lx.out('tagger.convertTags part material - failed')
+        lx.out('tagger.pTagConvert part material - failed')
         errors += 1
         break
 
-lx.eval('tagger.convertTags material part')
+lx.eval('tagger.pTagConvert material part')
 for p in polys:
     if p.tags()['material'] or p.tags()['part'] != 'p3':
-        lx.out('tagger.convertTags material part - failed')
+        lx.out('tagger.pTagConvert material part - failed')
         errors += 1
         break
 
-lx.eval('tagger.convertTags part pick')
+lx.eval('tagger.pTagConvert part pick')
 for p in polys:
     if p.tags()['part'] or 'p3' not in p.tags()['pick'].split(";"):
-        lx.out('tagger.convertTags part pick - failed')
+        lx.out('tagger.pTagConvert part pick - failed')
         errors += 1
         break
 
-lx.eval('tagger.convertTags pick part')
+lx.eval('tagger.pTagConvert pick part')
 for p in polys:
     if p.tags()['pick'] or 'p3' not in p.tags()['part'].split('-'):
         lx.out("Got " + str(p.tags()['part']) + ", expected p3")
-        lx.out('tagger.convertTags pick part - failed')
+        lx.out('tagger.pTagConvert pick part - failed')
         errors += 1
         break
 

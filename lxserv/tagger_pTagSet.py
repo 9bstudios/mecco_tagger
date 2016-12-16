@@ -34,6 +34,17 @@ class CommandClass(tagger.Commander):
                 }
             ]
 
+    def basic_Icon(self):
+        if self.commander_arg_value(0):
+            if self.commander_arg_value(0) == tagger.MATERIAL:
+                return 'tagger.pTagSetMaterial'
+            if self.commander_arg_value(0) == tagger.PART:
+                return 'tagger.pTagSetPart'
+            if self.commander_arg_value(0) == tagger.PICK:
+                return 'tagger.pTagSetSet'
+
+        return 'tagger.pTagSet'
+
     def basic_ButtonName(self):
         label = []
         label.append(tagger.LABEL_SET)

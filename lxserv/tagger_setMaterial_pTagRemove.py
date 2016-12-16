@@ -5,7 +5,7 @@ import tagger
 from os import listdir, sep
 from os.path import isfile, join, basename, splitext, dirname
 
-CMD_NAME = tagger.CMD_REMOVE_PTAG
+CMD_NAME = tagger.CMD_SET_PTAG_REMOVE
 
 class CommandClass(tagger.Commander):
     _commander_default_values = []

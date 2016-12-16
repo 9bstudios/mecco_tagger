@@ -33,7 +33,7 @@ class CommandClass(tagger.Commander):
 
         if selmode == 'item':
             preset = self.commander_arg_value(0, tagger.RANDOM)
-            lx.eval("%s %s {%s}" % (tagger.CMD_SET_ITEM, tagger.ADD, preset))
+            lx.eval("%s {%s}" % (tagger.CMD_SET_ITEM, preset))
 
         elif selmode in ['vertex', 'edge', 'polygon']:
             preset = self.commander_arg_value(0, tagger.RANDOM)

@@ -20,6 +20,17 @@ class CommandClass(tagger.Commander):
                 }
             ]
 
+    def basic_Icon(self):
+        if self.commander_arg_value(0):
+            if self.commander_arg_value(0) == tagger.MATERIAL:
+                return 'tagger.removeAllByMaterial'
+            elif self.commander_arg_value(0) == tagger.PART:
+                return 'tagger.removeAllByPart'
+            elif self.commander_arg_value(0) == tagger.PICK:
+                return 'tagger.removeAllBySet'
+
+        return 'tagger.pTagRemoveAll'
+
     def basic_ButtonName(self):
         if self.commander_arg_value(0):
             label = []
