@@ -4,7 +4,7 @@ import lx, lxifc, lxu, modo
 import tagger
 from os.path import basename, splitext
 
-CMD_NAME = tagger.CMD_SET_PTAG_PRESET
+CMD_NAME = tagger.CMD_SET_AUTO_QUICK
 
 class CommandClass(tagger.Commander):
     _commander_default_values = []
