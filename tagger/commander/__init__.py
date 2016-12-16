@@ -32,7 +32,7 @@ class CommandClass(tagger.Commander):
         lx.out("%s, %s" (greeting, myGreatString))
 """
 
-__version__ = "0.19"
+__version__ = "0.2"
 __author__ = "Adam"
 
 import lx, lxu, traceback

@@ -14,7 +14,6 @@ class CommandClass(tagger.Commander):
                     'label': tagger.LABEL_GROUP_NAME,
                     'datatype': 'string',
                     'value': tagger.DEFAULT_GROUP_NAME,
-                    'popup': tagger.POPUPS_TAGTYPES,
                     'flags': []
                 }, {
                     'name': tagger.OPERATION,

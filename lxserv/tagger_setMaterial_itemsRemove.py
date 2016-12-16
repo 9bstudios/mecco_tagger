@@ -9,9 +9,7 @@ class CommandClass(tagger.Commander):
 
     def commander_execute(self, msg, flags):
         items = tagger.items.get_selected_and_maskable()
-
-        if operation == tagger.REMOVE:
-            tagger.shadertree.seek_and_destroy(items)
+        tagger.shadertree.seek_and_destroy(items)
 
 
 lx.bless(CommandClass, NAME_CMD)

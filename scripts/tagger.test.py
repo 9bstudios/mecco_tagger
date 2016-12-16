@@ -1,6 +1,6 @@
 #python
 
-import tagger
+import tagger, traceback
 
 errors = 0
 
@@ -23,104 +23,252 @@ lx.eval('select.subItem Cube set')
 lx.eval('select.polygon add material face m1')
 polys = tagger.selection.get_polys()
 
-# Set Material
 
-lx.eval('tagger.setMaterial test1')
-for p in polys:
-    if p.tags()['material'] != 'test1':
-        lx.out('tagger.setMaterial - failed')
-        errors += 1
-        break
+try:
+    lx.eval('!tagger.setMaterial_pTag test random selected material use')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
 
-lx.eval('tagger.setMaterial {} auto remove')
-for p in polys:
-    if p.tags()['material']:
-        lx.out('tagger.setMaterial {} auto remove - failed')
-        errors += 1
-        break
+try:
+    lx.eval('!tagger.setMaterial_auto')
+    lx.eval('!tagger.setMaterial_auto')
+    lx.eval('!tagger.setMaterial_auto')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
 
-# Convert Tags
+lx.eval('select.contract')
+lx.eval('select.contract')
+lx.eval('select.contract')
+lx.eval('select.contract')
+lx.eval('select.contract')
+lx.eval('select.contract')
+lx.eval('select.contract')
 
-lx.eval('tagger.pTagConvert part material')
-for p in polys:
-    if p.tags()['part'] or p.tags()['material'] != 'p3':
-        lx.out('tagger.pTagConvert part material - failed')
-        errors += 1
-        break
+try:
+    lx.eval('!tagger.setMaterial_pTag test2 random flood material consolidate')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
 
-lx.eval('tagger.pTagConvert material part')
-for p in polys:
-    if p.tags()['material'] or p.tags()['part'] != 'p3':
-        lx.out('tagger.pTagConvert material part - failed')
-        errors += 1
-        break
+try:
+    lx.eval('!tagger.setMaterial_pTag test3 random flood material consolidate')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
 
-lx.eval('tagger.pTagConvert part pick')
-for p in polys:
-    if p.tags()['part'] or 'p3' not in p.tags()['pick'].split(";"):
-        lx.out('tagger.pTagConvert part pick - failed')
-        errors += 1
-        break
+try:
+    lx.eval('!tagger.setMaterial_pTag test4 random connected material consolidate')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
 
-lx.eval('tagger.pTagConvert pick part')
-for p in polys:
-    if p.tags()['pick'] or 'p3' not in p.tags()['part'].split('-'):
-        lx.out("Got " + str(p.tags()['part']) + ", expected p3")
-        lx.out('tagger.pTagConvert pick part - failed')
-        errors += 1
-        break
-
-# pTag Set
-
-lx.eval('tagger.pTagSet part')
-for p in polys:
-    if p.tags()['part'] != None:
-        lx.out('tagger.pTagSet part - failed')
-        errors += 1
-        break
-
-lx.eval('tagger.pTagSet pick')
-for p in polys:
-    if p.tags()['pick'] != None:
-        lx.out('tagger.pTagSet pick - failed')
-        errors += 1
-        break
-
-lx.eval('tagger.setMaterial test1')
-lx.eval('tagger.pTagSet material')
-for p in polys:
-    if p.tags()['material'] != None:
-        lx.out('tagger.pTagSet material - failed')
-        errors += 1
-        break
+try:
+    lx.eval('!tagger.setMaterial_pTagIslands islands material')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
 
 
-# pTag Clipboard
-# Copy and paste material tags using connected:0, 1, and 2.
-# Test to ensure that all of the proper tags were applied.
+lx.eval('select.typeFrom item;pivot;center;edge;polygon;vertex;ptag true')
 
 
-# pTag Replace
-# Replace a tag globally in the file.
-# Test to ensure that the tag is gone from the scene.
+try:
+    lx.eval('!tagger.setMaterial_item')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.setMaterial_group material add random')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
 
 
-# pTag Select All By Tag
-# Run the command to make sure no errors are thrown. Do not test.
+lx.eval('select.typeFrom polygon;edge;vertex;item;pivot;center;ptag true')
 
 
-# pTag Tag With Masked
-# Tag a polygon selection with a mask selection.
-# Test to ensure that the proper tag was applied.
+try:
+    lx.eval('!tagger.selectConnectedByTag material')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.selectConnectedByTag part')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.selectConnectedByTag part')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.selectConnectedByTag pick')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.selectAllByTag material')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.selectAllByTag part')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.selectAllByTag pick')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+lx.eval('select.drop polygon')
+
+try:
+    lx.eval('!tagger.pTagClipboard copy material')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagClipboard paste material flood')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagClipboard paste part flood')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagClipboard paste pick flood')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagSet material')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagSet material')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagSet part')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagSet pick')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagConvert material part')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagConvert material pick')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagConvert part material')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagConvert part pick')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagConvert pick material')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagConvert pick part')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagReplace material islands_1 islands_3')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagRemoveUnmasked material')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.shaderTree_cleanup true true')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.shaderTree_maskUnmasked material')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagRemoveAll material')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagRemoveAll part')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+try:
+    lx.eval('!tagger.pTagRemoveAll pick')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
 
 
-# pTag Connected By Tag
-# Run the command to make sure no errors are thrown. Do not test.
+lx.eval('select.typeFrom item;pivot;center;edge;polygon;vertex;ptag true')
 
 
-# pTag Remove All
-# Remove a given tag type from the scene entirely. (e.g. remove all part tags)
-# Test to ensure that all polys in scene are tagged "None" for the given tag type.
+try:
+    lx.eval('!tagger.setMaterial_itemRemove')
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
 
 
 

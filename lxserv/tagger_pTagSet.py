@@ -22,7 +22,7 @@ class CommandClass(tagger.Commander):
                     'label': tagger.LABEL_TAG,
                     'datatype': 'string',
                     'value': "",
-                    'flags': ['optional'],
+                    'flags': [],
                     'sPresetText': tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL)
                 }, {
                     'name': tagger.SCOPE,
