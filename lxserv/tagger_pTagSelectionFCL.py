@@ -64,17 +64,19 @@ class MeshEditorClass(tagger.MeshEditorClass):
 
         selected_polys = self.get_polys_by_selected()
 
-        for poly in selected_polys:
-            self.polygon_accessor.Select(poly)
+        if len(selected_polys) <= tagger.MAX_FCL:
 
-            material = stringTag.Get(lx.symbol.i_POLYTAG_MATERIAL)
-            if material:
-                global_tags[0].add(material)
+            for poly in selected_polys:
+                self.polygon_accessor.Select(poly)
 
-            part = stringTag.Get(lx.symbol.i_POLYTAG_PART)
-            if part:
-                global_tags[1].add(part)
+                material = stringTag.Get(lx.symbol.i_POLYTAG_MATERIAL)
+                if material:
+                    global_tags[0].add(material)
 
-            pick = stringTag.Get(lx.symbol.i_POLYTAG_PICK)
-            if pick:
-                global_tags[2].update(pick.split(";"))
+                part = stringTag.Get(lx.symbol.i_POLYTAG_PART)
+                if part:
+                    global_tags[1].add(part)
+
+                pick = stringTag.Get(lx.symbol.i_POLYTAG_PICK)
+                if pick:
+                    global_tags[2].update(pick.split(";"))

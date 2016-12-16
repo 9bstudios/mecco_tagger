@@ -54,7 +54,7 @@ class CommandClass(tagger.Commander):
         lx.eval(tagger.CMD_PTAG_SET + args)
 
     def commander_notifiers(self):
-        return [("select.event", "polygon +ldt"),("select.event", "item +ldt")]
+        return [('notifier.editAction',''),("select.event", "item +ldt")]
 
 
 lx.bless(CommandClass, CMD_NAME)
