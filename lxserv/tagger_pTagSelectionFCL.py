@@ -38,6 +38,9 @@ class CommandClass(tagger.Commander):
         mesh_editor.do_mesh_read()
         tags = global_tags
 
+        if len(tags) > tagger.MAX_FCL:
+            return fcl
+
         for n in range(len(tags)):
             if not tags[n]:
                 continue

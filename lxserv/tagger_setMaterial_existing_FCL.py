@@ -12,6 +12,9 @@ def list_commands():
 
     material_tags = tagger.items.get_all_masked_tags()
 
+    if len(material_tags) > tagger.MAX_FCL:
+        return fcl
+
     for tag in sorted(material_tags):
         fcl.append('%s %s {%s}' % (tagger.CMD_PTAG_SET, tag[0], tag[1]))
 
