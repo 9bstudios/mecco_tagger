@@ -13,7 +13,7 @@ def list_commands():
     material_tags = tagger.items.get_all_masked_tags()
 
     for tag in sorted(material_tags):
-        fcl.append('?%s %s {%s}' % (tagger.CMD_PTAG_SET, tag[0], tag[1]))
+        fcl.append('%s %s {%s}' % (tagger.CMD_PTAG_SET, tag[0], tag[1], tagger.SCOPE_FLOOD))
 
     return fcl
 

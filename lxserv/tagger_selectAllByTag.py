@@ -43,11 +43,15 @@ class CommandClass(tagger.Commander):
 
         i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
 
+        tags = []
+
         if tag:
             tags = tag.split(";")
 
         elif not tag:
-            tags = tagger.selection.get_ptags(i_POLYTAG).split(";")
+            tagStrings = tagger.selection.get_ptags(i_POLYTAG)
+            for tagString in tagStrings:
+                tags.extend(tagString.split(";"))
 
         for tag in tags:
             if tagType in ['material', 'part']:

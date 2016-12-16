@@ -12,6 +12,7 @@ CMD_CONVERT_PTAGS = 'tagger.convertTags'
 CMD_SET_MATERIAL = 'tagger.setMaterial_auto'
 CMD_REMOVE_MATERIAL = 'tagger.removeMaterial_auto'
 CMD_SET_PTAG = 'tagger.setMaterial_pTag'
+CMD_SET_PTAG_PRESET = 'tagger.setMaterial_pTag_preset'
 CMD_SET_PTAG_ISLANDS = 'tagger.setMaterial_pTagIslands'
 CMD_REMOVE_PTAG = 'tagger.removeMaterial_pTag'
 CMD_SET_ITEM = 'tagger.setMaterial_item'
@@ -27,7 +28,9 @@ CMD_SELECT_ALL_BY_TAG = 'tagger.selectAllByTag'
 CMD_TAG_WITH_MASKED = 'tagger.tagWithMasked'
 CMD_TAG_WITH_MASKED_FCL = 'tagger.tagWithMaskedFCL'
 CMD_TAG_WITH_MASKED_POPUP = 'tagger.tagWithMaskedPopup'
-CMD_MASK_ALL = 'tagger.maskAllTags'
+CMD_MASK_UNMASKED = 'tagger.maskUnmaskedTags'
+CMD_REMOVE_UNMASKED = 'tagger.removeUnmaskedTags'
+CMD_CLEANUP_SHADER_TREE = 'tagger.cleanupShaderTree'
 
 GROUPNAME = "group"
 MATNAME = "material"
@@ -75,6 +78,8 @@ SCOPE_FLOOD = 'flood'
 SCOPE_SCENE = 'scene'
 FROM_TAG_TYPE = 'fromTagType'
 TO_TAG_TYPE = 'toTagType'
+DEL_EMPTY = 'delEmpty'
+DEL_UNUSED = 'delUnused'
 
 # These should probably be pulled from message tables
 LABEL_MODE = "Mode"
@@ -116,6 +121,8 @@ LABEL_BY = 'by'
 LABEL_SELECT_POLYS = 'Select Polys'
 LABEL_SELECT_CONNECTED_BY = 'Flood select by'
 LABEL_REMOVE_ALL = 'Remove All'
+LABEL_DELETE_EMPTY_GROUPS = 'Delete Empty Masks'
+LABEL_DELETE_UNUSED_GROUPS = 'Delete Unused Masks'
 DIALOGS_NO_MASK_SELECTED = ("No Mask Selected", "Select a mask to apply.")
 DIALOGS_TOO_MANY_MASKS = ("Too Many Masks", "Select only one mask to apply.")
 DIALOGS_NO_PTAG_FILTER = ("No pTag Filter", "The selected mask applies to all polygons. No tag to apply.")
@@ -124,6 +131,8 @@ DIALOGS_REMOVE_ALL_TAGS = ("Remove All Tags", "All %s tags will be removed from 
 DIALOGS_TAG_NOT_FOUND = ("Tag Not Found", "No instances of %s tag '%s' were found in the scene.")
 DIALOGS_TAG_REPLACED = ("Tag Replaced", "Replaced %s instances of %s tag '%s'.")
 DIALOGS_TAGGED_POLYS_COUNT = ("Tagged Polygons", "Tagged %s polygons in %s polygon islands.")
+DIALOGS_UNTAGGED_POLYS_COUNT = ("Removed Polygon Tags", "Removed %s polytags from %s polygons in the scene.")
+DIALOGS_MASKED_TAGS_COUNT = ("Masked Unmasked Tags", "Added %s new masks.")
 
 POPUPS_CLIPBOARD = [
         (COPY, LABEL_COPY),

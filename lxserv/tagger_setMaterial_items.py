@@ -34,12 +34,18 @@ class CommandClass(tagger.Commander):
             ]
 
     def commander_execute(self, msg, flags):
-        operation = self.commander_arg_value(0, tagger.ADD)
-        preset = self.commander_arg_value(1, tagger.RANDOM)
-        withExisting = self.commander_arg_value(2, tagger.KEEP)
+        operation = self.commander_arg_value(0)
+        preset = self.commander_arg_value(1)
+        withExisting = self.commander_arg_value(2)
+
+        if not operation:
+            operation = tagger.ADD
 
         if preset == tagger.RANDOM:
             preset = None
+
+        if not withExisting:
+            withExisting = tagger.KEEP
 
         items = tagger.items.get_selected_and_maskable()
 

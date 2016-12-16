@@ -1,6 +1,7 @@
 #python
 
-from lx import symbol
+import modo
+from lx import symbol, out
 from var import *
 
 def random_color():
@@ -53,11 +54,10 @@ def sICHAN_MASK_PTYP(string_or_int):
 
 def safe_removeItems(items, children = False):
     for i in items:
-
         # make sure item exists before trying to delete it
         # (lest ye crash)
         try:
-            modo.Scene().item(i.id)
+            modo.Item(i.id)
         except:
             continue
 

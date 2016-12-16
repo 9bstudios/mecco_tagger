@@ -42,7 +42,7 @@ class CommandClass(tagger.Commander):
                     'label': tagger.LABEL_WITH_TAG,
                     'datatype': 'string',
                     'value': "",
-                    'flags': [],
+                    'flags': ['optional'],
                     'sPresetText': tagger.scene.all_tags()
                 }
             ]
@@ -52,50 +52,28 @@ class CommandClass(tagger.Commander):
         replaceTag = self.commander_arg_value(1)
         withTag = self.commander_arg_value(2)
 
-        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
+        if not withTag:
+            withTag = None
 
-        hitcount = 0
-
-        meshes_with_pTag = tagger.scene.meshes_with_pTag(replaceTag, i_POLYTAG)
-
-        for mesh in meshes_with_pTag:
-            with mesh.geometry as geo:
-                hitlist = set()
-                for poly in geo.polygons:
-
-                    if tagType in [tagger.MATERIAL, tagger.PART]:
-                        if poly.getTag(i_POLYTAG) == replaceTag:
-                            hitlist.add(poly)
-                            hitcount += 1
-
-                    elif tagType == tagger.PICK:
-                        if not poly.getTag(i_POLYTAG):
-                            continue
-
-                        pickTags = set(poly.getTag(i_POLYTAG).split(";"))
-                        if replaceTag in pickTags:
-                            hitlist.add(poly)
-                            hitcount += 1
-
-
-            with mesh.geometry as geo:
-                for poly in hitlist:
-
-                    if tagType in [tagger.MATERIAL, tagger.PART]:
-                        poly.setTag(i_POLYTAG, withTag)
-
-                    elif tagType == tagger.PICK:
-                        pickTags = set(poly.getTag(i_POLYTAG).split(";"))
-                        pickTags.discard(replaceTag)
-                        pickTags.add(withTag)
-                        poly.setTag(i_POLYTAG, ";".join(pickTags))
-
+        hitcount = tagger.scene.replace_tag(tagType, replaceTag, withTag)
 
         if hitcount == 0:
-            modo.dialogs.alert(tagger.DIALOGS_TAG_NOT_FOUND[0], tagger.DIALOGS_TAG_NOT_FOUND[1] % (tagType, replaceTag))
+            try:
+                modo.dialogs.alert(
+                    tagger.DIALOGS_TAG_NOT_FOUND[0],
+                    tagger.DIALOGS_TAG_NOT_FOUND[1] % (tagType, replaceTag)
+                    )
+            except:
+                pass
 
         elif hitcount >= 1:
-            modo.dialogs.alert(tagger.DIALOGS_TAG_REPLACED[0], tagger.DIALOGS_TAG_REPLACED[1] % (hitcount, tagType, replaceTag))
+            try:
+                modo.dialogs.alert(
+                    tagger.DIALOGS_TAG_REPLACED[0],
+                    tagger.DIALOGS_TAG_REPLACED[1] % (hitcount, tagType, replaceTag)
+                    )
+            except:
+                pass
 
 
 lx.bless(CommandClass, CMD_NAME)

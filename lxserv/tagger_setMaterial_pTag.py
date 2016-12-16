@@ -29,21 +29,21 @@ class CommandClass(tagger.Commander):
                     'name': tagger.SCOPE,
                     'label': tagger.LABEL_SCOPE,
                     'datatype': 'string',
-                    'value': tagger.POPUPS_SCOPE[2][0],
+                    'value': tagger.SCOPE_SELECTED,
                     'popup': tagger.POPUPS_SCOPE,
                     'flags': ['optional']
                 }, {
                     'name': tagger.TAGTYPE,
                     'label': tagger.LABEL_TAGTYPE,
                     'datatype': 'string',
-                    'value': tagger.POPUPS_TAGTYPES[0][0],
+                    'value': tagger.MATERIAL,
                     'popup': tagger.POPUPS_TAGTYPES,
                     'flags': ['optional']
                 }, {
                     'name': tagger.WITH_EXISTING,
                     'label': tagger.LABEL_WITH_EXISTING,
                     'datatype': 'string',
-                    'value': tagger.POPUPS_WITH_EXISTING[0][0],
+                    'value': tagger.USE,
                     'popup': tagger.POPUPS_WITH_EXISTING,
                     'flags': ['optional']
                 }
@@ -51,22 +51,25 @@ class CommandClass(tagger.Commander):
 
     def commander_execute(self, msg, flags):
         pTag = self.commander_arg_value(0)
-
-        preset = self.commander_arg_value(1)
-        preset = None if preset == tagger.RANDOM else preset
-
-        connected = self.commander_arg_value(2)
-
-        tagType = self.commander_arg_value(3)
-        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
-
+        preset = self.commander_arg_value(1, tagger.RANDOM)
+        connected = self.commander_arg_value(2, tagger.SCOPE_FLOOD)
+        tagType = self.commander_arg_value(3, tagger.MATERIAL)
         withExisting = self.commander_arg_value(4)
 
-        if not pTag and (not preset or not preset.endswith(".lxp")):
-            pTag = tagger.DEFAULT_MATERIAL_NAME
+        if preset == tagger.RANDOM:
+            preset = None
 
-        elif not pTag and preset.endswith(".lxp"):
-            pTag = splitext(basename(preset))[0]
+        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
+
+        if not pTag:
+            if not preset:
+                pTag = tagger.DEFAULT_MATERIAL_NAME
+
+            elif not preset.endswith(".lxp"):
+                pTag = tagger.DEFAULT_MATERIAL_NAME
+
+            elif preset.endswith(".lxp"):
+                pTag = splitext(basename(preset))[0]
 
         # find any existing masks for this pTag
         existing_masks = tagger.shadertree.get_masks( pTags = { pTag: i_POLYTAG })
