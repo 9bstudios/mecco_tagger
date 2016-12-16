@@ -42,7 +42,7 @@ class CommandClass(tagger.Commander):
                 return 'tagger.copyTags'
             elif self.commander_arg_value(0) == tagger.PASTE and not self.commander_arg_value(1):
                 return 'tagger.pasteMaterial'
-                
+
             elif self.commander_arg_value(0) == tagger.PASTE and self.commander_arg_value(1):
                 if self.commander_arg_value(1) == tagger.MATERIAL:
                     return 'tagger.pasteMaterial'
@@ -54,21 +54,29 @@ class CommandClass(tagger.Commander):
         return 'tagger.copyTags'
 
     def basic_ButtonName(self):
-        if self.commander_arg_value(0):
-            label = []
+        label = []
 
+        if self.commander_arg_value(0):
             if self.commander_arg_value(0) == tagger.COPY:
                 label.append(tagger.LABEL_COPY)
             elif self.commander_arg_value(0) == tagger.COPYMASK:
                 label.append(tagger.LABEL_COPY)
             elif self.commander_arg_value(0) == tagger.PASTE:
                 label.append(tagger.LABEL_PASTE)
+        else:
+            label.append(tagger.LABEL_COPY)
 
-            if self.commander_arg_value(0) == tagger.PASTE and self.commander_arg_value(1):
-                label.append(tagger.util.i_POLYTAG_to_label(self.commander_arg_value(1)))
 
-            label.append(tagger.LABEL_TAGS)
-            return " ".join(label)
+        if self.commander_arg_value(0) == tagger.PASTE and self.commander_arg_value(1):
+            label.append(tagger.util.i_POLYTAG_to_label(self.commander_arg_value(1)))
+
+        label.append(tagger.LABEL_TAGS)
+
+        if self.commander_arg_value(2):
+            if self.commander_arg_value(2) != tagger.SCOPE_SELECTED:
+                label.append("(%s)" % self.commander_arg_value(2))
+
+        return " ".join(label)
 
     @classmethod
     def set_clipboard(cls, key, value):

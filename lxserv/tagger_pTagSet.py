@@ -57,6 +57,10 @@ class CommandClass(tagger.Commander):
         if self.commander_arg_value(1):
             label.append(": %s" % self.commander_arg_value(1))
 
+        if self.commander_arg_value(2):
+            if self.commander_arg_value(2) != tagger.SCOPE_SELECTED:
+                label.append("(%s)" % self.commander_arg_value(2))
+
         return " ".join(label)
 
     def commander_execute(self, msg, flags):

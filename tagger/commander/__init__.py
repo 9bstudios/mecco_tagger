@@ -32,7 +32,7 @@ class CommandClass(tagger.Commander):
         lx.out("%s, %s" (greeting, myGreatString))
 """
 
-__version__ = "0.2"
+__version__ = "0.22"
 __author__ = "Adam"
 
 import lx, lxu, traceback
@@ -192,7 +192,7 @@ class MeshEditorClass():
         """Adapted from James O'Hare's excellent code: https://gist.github.com/Farfarer/31148a78f392a831239d9b018b90330c"""
 
         if read_only:
-            scan_allocate = lx.symbol.f_LAYERSCAN_ACTIVE
+            scan_allocate = lx.symbol.f_LAYERSCAN_ACTIVE | lx.symbol.f_LAYERSCAN_MARKPOLYS
         if not read_only:
             scan_allocate = lx.symbol.f_LAYERSCAN_EDIT
 
