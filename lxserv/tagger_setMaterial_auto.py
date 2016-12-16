@@ -12,10 +12,10 @@ class CommandClass(tagger.Commander):
         selmode = tagger.selection.get_mode()
 
         if selmode == 'item':
-            lx.eval("%s %s" % (tagger.CMD_SET_ITEM, tagger.ADD))
+            lx.eval("?%s %s" % (tagger.CMD_SET_ITEM, tagger.ADD))
 
         elif selmode in ['vertex', 'edge', 'polygon']:
-            lx.eval("%s" % tagger.CMD_SET_PTAG)
+            lx.eval("?%s" % tagger.CMD_SET_PTAG)
 
 
 lx.bless(CommandClass, NAME_CMD)

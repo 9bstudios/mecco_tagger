@@ -110,7 +110,8 @@ def get_all_masked_tags():
 
         tagType = i_POLYTAG_to_string(chan_read.String(mask, mask.ChannelLookup(lx.symbol.sICHAN_MASK_PTYP)))
         tag = chan_read.String(mask, mask.ChannelLookup(lx.symbol.sICHAN_MASK_PTAG))
-        ptags.add((tagType, tag))
+        if tag:
+            ptags.add((tagType, tag))
 
     return list(ptags)
 
