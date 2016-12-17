@@ -94,5 +94,7 @@ class CommandClass(tagger.Commander):
                 tagger.DIALOGS_TAGGED_POLYS_COUNT[1] % (mesh_editor.poly_count, _island_enumerator)
                 )
 
+        notifier = tagger.Notifier()
+        notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
 
 lx.bless(CommandClass, CMD_NAME)

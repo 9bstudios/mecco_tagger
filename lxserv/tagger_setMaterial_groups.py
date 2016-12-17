@@ -51,5 +51,7 @@ class CommandClass(tagger.Commander):
             groups = tagger.items.get_groups(selected)
             tagger.shadertree.seek_and_destroy(groups)
 
-
+        notifier = tagger.Notifier()
+        notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
+        
 lx.bless(CommandClass, NAME_CMD)

@@ -75,5 +75,9 @@ class CommandClass(tagger.Commander):
             except:
                 pass
 
+        notifier = tagger.Notifier()
+        notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
+
+
 
 lx.bless(CommandClass, CMD_NAME)

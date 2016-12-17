@@ -62,4 +62,7 @@ class CommandClass(tagger.Commander):
             if not tagger.scene.meshes_with_pTag(pTag, i_POLYTAG):
                 tagger.shadertree.seek_and_destroy(pTags={pTag:i_POLYTAG})
 
+        notifier = tagger.Notifier()
+        notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
+
 lx.bless(CommandClass, CMD_NAME)

@@ -49,5 +49,7 @@ class CommandClass(tagger.Commander):
             tagger.DIALOGS_CLEANED_UP_SHADERTREE[1] % len(hitlist)
         )
 
-
+        notifier = tagger.Notifier()
+        notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
+        
 lx.bless(CommandClass, NAME_CMD)

@@ -54,5 +54,7 @@ class CommandClass(tagger.Commander):
             mask = tagger.shadertree.build_material( item, preset = preset )
             tagger.shadertree.move_to_base_shader(mask)
 
-
+        notifier = tagger.Notifier()
+        notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
+        
 lx.bless(CommandClass, NAME_CMD)

@@ -70,5 +70,8 @@ class CommandClass(tagger.Commander):
 
         tagger.selection.tag_polys(tag, connected, tagger.util.string_to_i_POLYTAG(tagType))
 
+        notifier = tagger.Notifier()
+        notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
+
 
 lx.bless(CommandClass, CMD_NAME)

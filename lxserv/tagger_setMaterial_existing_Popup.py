@@ -53,8 +53,11 @@ class CommandClass(tagger.Commander):
 
         lx.eval(tagger.CMD_PTAG_SET + args)
 
+        notifier = tagger.Notifier()
+        notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
+
     def commander_notifiers(self):
-        return [('notifier.editAction',''),("select.event", "item +ldt")]
+        return [('notifier.editAction',''),("select.event", "item +ldt"), ("tagger.notifier", "")]
 
 
 lx.bless(CommandClass, CMD_NAME)

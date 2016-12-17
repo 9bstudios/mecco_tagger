@@ -93,4 +93,7 @@ class CommandClass(tagger.Commander):
             new_mask.setParent(consolidation_masks[pTag])
             tagger.shadertree.move_to_top(new_mask)
 
+        notifier = tagger.Notifier()
+        notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
+
 lx.bless(CommandClass, CMD_NAME)

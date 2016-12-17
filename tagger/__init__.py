@@ -12,6 +12,7 @@ try:
     import shadertree
     import selection
     import scene
+    from notifier import *
     from commander import *
     from var import *
     from PopupClass import *

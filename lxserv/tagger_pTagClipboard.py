@@ -28,10 +28,17 @@ def paste(tagType=tagger.MATERIAL, connected=tagger.SCOPE_SELECTED):
     args[tagger.SCOPE] = connected
 
     if not args[tagger.TAG]:
-        modo.dialogs.alert(tagger.DIALOGS_NOTHING_TO_PASTE)
+        modo.dialogs.alert(
+            tagger.DIALOGS_NOTHING_TO_PASTE[0],
+            tagger.DIALOGS_NOTHING_TO_PASTE[1]
+            )
         return
 
     lx.eval("!" + tagger.CMD_PTAG_SET + tagger.util.build_arg_string(args))
+
+    notifier = tagger.Notifier()
+    notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
+
 
 
 class CopyCommandClass(tagger.Commander):
@@ -43,9 +50,9 @@ class CopyCommandClass(tagger.Commander):
         polys = tagger.selection.get_polys()
 
         if polys:
-            _clipboard['material'] = [-1].tags()['material']
-            _clipboard['part'] = [-1].tags()['part']
-            _clipboard['pick'] = [-1].tags()['pick']
+            _clipboard['material'] = polys[-1].tags()['material']
+            _clipboard['part'] = polys[-1].tags()['part']
+            _clipboard['pick'] = polys[-1].tags()['pick']
 
 
 class CopyMaskCommandClass(tagger.Commander):

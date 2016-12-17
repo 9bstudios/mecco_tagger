@@ -55,7 +55,7 @@ class CommandClass(tagger.Commander):
             ]
 
     def commander_notifiers(self):
-        return [("select.event", "polygon +ldt"),("select.event", "item +ldt")]
+        return [("select.event", "polygon +ldt"),("select.event", "item +ldt"), ("tagger.notifier", "")]
 
 
 lx.bless(CommandClass, CMD_NAME)

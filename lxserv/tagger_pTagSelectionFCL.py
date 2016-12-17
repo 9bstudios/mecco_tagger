@@ -23,7 +23,7 @@ class CommandClass(tagger.Commander):
             ]
 
     def commander_notifiers(self):
-        return [("select.event", "polygon +ldt"),("select.event", "item +ldt")]
+        return [("select.event", "polygon +ldt"),("select.event", "item +ldt"), ("tagger.notifier", "")]
 
     def list_commands(self):
         global global_tags

@@ -34,4 +34,7 @@ class CommandClass(tagger.Commander):
             tagger.DIALOGS_MASKED_TAGS_COUNT[1] % counter
         )
 
+        notifier = tagger.Notifier()
+        notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
+
 lx.bless(CommandClass, CMD_NAME)

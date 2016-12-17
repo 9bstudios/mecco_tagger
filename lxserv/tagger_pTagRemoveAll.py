@@ -60,4 +60,8 @@ class CommandClass(tagger.Commander):
             tagger.DIALOGS_REMOVED_ALL_TAGS[1] % (tag_count, tagType, poly_count, item_count)
         )
 
+        notifier = tagger.Notifier()
+        notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
+
+
 lx.bless(CommandClass, CMD_NAME)
