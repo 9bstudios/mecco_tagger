@@ -2,72 +2,99 @@
 
 import lx, lxu, lxifc, modo, tagger, traceback
 
-CMD_NAME = tagger.CMD_SELECT_ALL_BY_TAG
+def _args_tagType():
+    return {
+        'name': tagger.TAGTYPE,
+        'label': tagger.LABEL_TAGTYPE,
+        'datatype': 'string',
+        'value': tagger.MATERIAL,
+        'popup': tagger.POPUPS_TAGTYPES,
+        'flags': [],
+    }
 
-class CommandClass(tagger.Commander):
+def _args_tag():
+    return {
+            'name': tagger.TAG,
+            'label': tagger.LABEL_TAG,
+            'datatype': 'string',
+            'value': '',
+            'sPresetText': tagger.scene.all_tags(),
+            'flags': ['optional'],
+        }
+
+def select_all_by_tag(tagType, tag):
+    i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
+
+    tags = []
+
+    if tag:
+        tags = tag.split(";")
+
+    elif not tag:
+        tagStrings = tagger.selection.get_ptags(i_POLYTAG)
+        for tagString in tagStrings:
+            tags.extend(tagString.split(";"))
+
+    for tag in tags:
+        if tagType in ['material', 'part']:
+            lx.eval("select.polygon add %s face {%s}" % (tagType, tag))
+        elif tagType == 'pick':
+            lx.eval("select.useSet {%s} select" % tag)
+
+
+class SelAllByDialogCommandClass(tagger.Commander):
     _commander_default_values = []
 
     def commander_arguments(self):
-        return [
-                {
-                    'name': tagger.TAGTYPE,
-                    'label': tagger.LABEL_TAGTYPE,
-                    'datatype': 'string',
-                    'value': tagger.MATERIAL,
-                    'popup': tagger.POPUPS_TAGTYPES,
-                    'flags': [],
-                }, {
-                    'name': tagger.TAG,
-                    'label': tagger.LABEL_TAG,
-                    'datatype': 'string',
-                    'value': '',
-                    'popup': tagger.scene.all_tags(),
-                    'flags': ['optional'],
-                }
-            ]
-
-    def basic_Icon(self):
-        if self.commander_arg_value(0):
-            if self.commander_arg_value(0) == tagger.MATERIAL:
-                return 'tagger.selectAllByMaterial'
-            if self.commander_arg_value(0) == tagger.PART:
-                return 'tagger.selectAllByPart'
-            if self.commander_arg_value(0) == tagger.PICK:
-                return 'tagger.selectAllBySet'
-
-        return 'tagger.selectAllByTag'
-
-    def basic_ButtonName(self):
-        label = []
-        label.append(tagger.LABEL_SELECT_ALL)
-        if self.commander_arg_value(0):
-            label.append(tagger.util.i_POLYTAG_to_label(self.commander_arg_value(0)))
-        label.append(tagger.LABEL_TAG)
-        if self.commander_arg_value(1):
-            label.append(": %s" % self.commander_arg_value(1))
-        return " ".join(label)
+        return [ _args_tagType(), _args_tag() ]
 
     def commander_execute(self, msg, flags):
-        tagType = self.commander_arg_value(0)
-        tag = self.commander_arg_value(1)
-
-        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
-
-        tags = []
-
-        if tag:
-            tags = tag.split(";")
-
-        elif not tag:
-            tagStrings = tagger.selection.get_ptags(i_POLYTAG)
-            for tagString in tagStrings:
-                tags.extend(tagString.split(";"))
-
-        for tag in tags:
-            if tagType in ['material', 'part']:
-                lx.eval("select.polygon add %s face {%s}" % (tagType, tag))
-            elif tagType == 'pick':
-                lx.eval("select.useSet {%s} select" % tag)
+        select_all_by_tag(self.commander_arg_value(0), self.commander_arg_value(1))
 
 
-lx.bless(CommandClass, CMD_NAME)
+class SelAllByMatCommandClass(tagger.Commander):
+    _commander_default_values = []
+
+    def commander_arguments(self):
+        return [ _args_tag() ]
+
+    def basic_ButtonName(self):
+        if self.commander_arg_value(0):
+            return "%s %s: %s" % (tagger.LABEL_SELECT_ALL, tagger.LABEL_MATERIAL, self.commander_arg_value(0))
+
+    def commander_execute(self, msg, flags):
+        select_all_by_tag('material', self.commander_arg_value(0))
+
+
+class SelAllByPartCommandClass(tagger.Commander):
+    _commander_default_values = []
+
+    def commander_arguments(self):
+        return [ _args_tag() ]
+
+    def basic_ButtonName(self):
+        if self.commander_arg_value(0):
+            return "%s %s: %s" % (tagger.LABEL_SELECT_ALL, tagger.LABEL_PART, self.commander_arg_value(0))
+
+    def commander_execute(self, msg, flags):
+        select_all_by_tag('part', self.commander_arg_value(0))
+
+
+class SelAllBySetCommandClass(tagger.Commander):
+    _commander_default_values = []
+
+    def commander_arguments(self):
+        return [ _args_tag() ]
+
+    def basic_ButtonName(self):
+        if self.commander_arg_value(0):
+            return "%s %s: %s" % (tagger.LABEL_SELECT_ALL, tagger.LABEL_PICK, self.commander_arg_value(0))
+
+    def commander_execute(self, msg, flags):
+        select_all_by_tag('pick', self.commander_arg_value(0))
+
+
+lx.bless(SelAllByDialogCommandClass, tagger.CMD_SELECT_ALL_BY_DIALOG)
+lx.bless(SelAllByMatCommandClass, tagger.CMD_SELECT_ALL_BY_MATERIAL)
+lx.bless(SelAllByPartCommandClass, tagger.CMD_SELECT_ALL_BY_PART)
+lx.bless(SelAllBySetCommandClass, tagger.CMD_SELECT_ALL_BY_SET)

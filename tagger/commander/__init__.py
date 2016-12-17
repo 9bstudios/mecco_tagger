@@ -238,10 +238,13 @@ class MeshEditorClass():
             visClear = SetMarksClass (self.polygon_accessor, self.mark_mode_unchecked)
             self.polygon_accessor.Enumerate (self.mark_mode_checked, visClear, 0)
 
-            if read_only:
-                self.mesh_read_action()
-            if not read_only:
-                self.mesh_edit_action()
+            try:
+                if read_only:
+                    self.mesh_read_action()
+                if not read_only:
+                    self.mesh_edit_action()
+            except:
+                break
 
             if self.mesh_edit_flags and not read_only:
                 layer_scan.SetMeshChange (n, reduce(ior, self.mesh_edit_flags))

@@ -30,6 +30,9 @@ class CommandClass(tagger.Commander):
         preset = self.commander_arg_value(0)
         withExisting = self.commander_arg_value(1)
 
+        if preset == tagger.RANDOM:
+            preset = None
+
         if not withExisting:
             withExisting = tagger.KEEP
 

@@ -10,13 +10,31 @@ def list_commands():
     if tagger.selection.get_mode() != 'polygon':
         return fcl
 
-    material_tags = tagger.items.get_all_masked_tags()
+    tags_list = []
 
-    if len(material_tags) > tagger.MAX_FCL:
+    existing_tags = tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL)
+    recent_tags = tagger.scene.get_recent_pTags()
+
+    if recent_tags:
+        tags_list = [i for i in recent_tags if i in existing_tags]
+
+    tags_list = tags_list + existing_tags
+    if len(tags_list) > tagger.MAX_MASK_FCL:
+        tags_list = tags_list[:tagger.MAX_MASK_FCL]
+
+    # removes duplicates while maintainint list order
+    tags_list = [ii for n,ii in enumerate(tags_list) if ii not in tags_list[:n]]
+
+    if tags_list:
+        for tag in tags_list:
+            fcl.append('%s %s {%s}' % (tagger.CMD_PTAG_SET, tagger.MATERIAL, tag))
+    else:
+        fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_NO_MASKS))
         return fcl
 
-    for tag in sorted(material_tags):
-        fcl.append('%s %s {%s}' % (tagger.CMD_PTAG_SET, tag[0], tag[1]))
+    # if len(material_tags) > tagger.MAX_MASK_FCL:
+    #     fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_MAX_FCL))
+    #     return fcl
 
     return fcl
 

@@ -29,11 +29,11 @@ class CommandClass(tagger.Commander):
                 masks.add(i)
 
         if len(masks) < 1:
-            modo.dialogs.alert(tagger.DIALOGS_NO_MASK_SELECTED)
+            modo.dialogs.alert(tagger.DIALOGS_NO_MASK_SELECTED[0], tagger.DIALOGS_NO_MASK_SELECTED[1])
             return
 
         if len(masks) > 1:
-            modo.dialogs.alert(tagger.DIALOGS_TOO_MANY_MASKS)
+            modo.dialogs.alert(tagger.DIALOGS_TOO_MANY_MASKS[0], tagger.DIALOGS_TOO_MANY_MASKS[1])
             return
 
         mask = list(masks)[0]

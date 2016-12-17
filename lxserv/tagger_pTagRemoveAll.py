@@ -41,13 +41,23 @@ class CommandClass(tagger.Commander):
 
     def commander_execute(self, msg, flags):
         tagType = self.commander_arg_value(0)
+        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
 
         safety = modo.dialogs.yesNo(tagger.DIALOGS_REMOVE_ALL_TAGS[0], tagger.DIALOGS_REMOVE_ALL_TAGS[1] % tagType)
+        poly_count = 0
+        tag_count = len(tagger.scene.all_tags_by_type(i_POLYTAG))
+        item_count = len(modo.Scene().selectedByType('mesh'))
 
         if safety == 'yes':
-            for mesh in modo.Scene().meshes:
+            for mesh in modo.Scene().selectedByType('mesh'):
                 with mesh.geometry as geo:
                     polys = geo.polygons
-                    tagger.manage.tag_polys(polys, None, tagger.util.string_to_i_POLYTAG(tagType))
+                    poly_count += len(polys)
+                    tagger.manage.tag_polys(polys, None, i_POLYTAG)
+
+        modo.dialogs.alert(
+            tagger.DIALOGS_REMOVED_ALL_TAGS[0],
+            tagger.DIALOGS_REMOVED_ALL_TAGS[1] % (tag_count, tagType, poly_count, item_count)
+        )
 
 lx.bless(CommandClass, CMD_NAME)

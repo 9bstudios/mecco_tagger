@@ -44,5 +44,10 @@ class CommandClass(tagger.Commander):
 
         tagger.util.safe_removeItems(hitlist, True)
 
+        modo.dialogs.alert(
+            tagger.DIALOGS_CLEANED_UP_SHADERTREE[0],
+            tagger.DIALOGS_CLEANED_UP_SHADERTREE[1] % len(hitlist)
+        )
+
 
 lx.bless(CommandClass, NAME_CMD)

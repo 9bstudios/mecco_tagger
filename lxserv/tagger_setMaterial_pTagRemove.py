@@ -23,7 +23,7 @@ class CommandClass(tagger.Commander):
                     'name': tagger.REMOVE_SCOPE,
                     'label': tagger.LABEL_REMOVE_SCOPE,
                     'datatype': 'string',
-                    'value': tagger.SCOPE_FLOOD,
+                    'value': tagger.SCOPE_SELECTED,
                     'flags': ['optional'],
                     'sPresetText': tagger.POPUPS_REMOVE_SCOPE
                 }, {
@@ -37,9 +37,9 @@ class CommandClass(tagger.Commander):
             ]
 
     def commander_execute(self, msg, flags):
-        tagType = self.commander_arg_value(0)
-        scope = self.commander_arg_value(1)
-        delete_unused = self.commander_arg_value(2)
+        tagType = self.commander_arg_value(0, tagger.MATERIAL)
+        scope = self.commander_arg_value(1, tagger.SCOPE_SELECTED)
+        delete_unused = self.commander_arg_value(2, True)
 
         i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
         pTags_to_remove = tagger.selection.get_ptags(i_POLYTAG)

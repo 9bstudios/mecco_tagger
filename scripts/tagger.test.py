@@ -91,43 +91,43 @@ lx.eval('select.typeFrom polygon;edge;vertex;item;pivot;center;ptag true')
 
 
 try:
-    lx.eval('!tagger.selectConnectedByTag material')
+    lx.eval('!tagger.floodSelectMaterial')
 except:
     lx.out(traceback.print_exc())
     errors += 1
 
 try:
-    lx.eval('!tagger.selectConnectedByTag part')
+    lx.eval('!tagger.floodSelectPart')
 except:
     lx.out(traceback.print_exc())
     errors += 1
 
 try:
-    lx.eval('!tagger.selectConnectedByTag part')
+    lx.eval('!tagger.floodSelectPart')
 except:
     lx.out(traceback.print_exc())
     errors += 1
 
 try:
-    lx.eval('!tagger.selectConnectedByTag pick')
+    lx.eval('!tagger.floodSelectSelectionSet')
 except:
     lx.out(traceback.print_exc())
     errors += 1
 
 try:
-    lx.eval('!tagger.selectAllByTag material')
+    lx.eval('!tagger.selectAllByMaterial')
 except:
     lx.out(traceback.print_exc())
     errors += 1
 
 try:
-    lx.eval('!tagger.selectAllByTag part')
+    lx.eval('!tagger.selectAllByPart')
 except:
     lx.out(traceback.print_exc())
     errors += 1
 
 try:
-    lx.eval('!tagger.selectAllByTag pick')
+    lx.eval('!tagger.selectAllBySelectionSet')
 except:
     lx.out(traceback.print_exc())
     errors += 1
@@ -135,25 +135,25 @@ except:
 lx.eval('select.drop polygon')
 
 try:
-    lx.eval('!tagger.pTagClipboard copy material')
+    lx.eval('!tagger.pTagCopy')
 except:
     lx.out(traceback.print_exc())
     errors += 1
 
 try:
-    lx.eval('!tagger.pTagClipboard paste material flood')
+    lx.eval('!tagger.pTagPasteMaterial flood')
 except:
     lx.out(traceback.print_exc())
     errors += 1
 
 try:
-    lx.eval('!tagger.pTagClipboard paste part flood')
+    lx.eval('!tagger.pTagPastePart flood')
 except:
     lx.out(traceback.print_exc())
     errors += 1
 
 try:
-    lx.eval('!tagger.pTagClipboard paste pick flood')
+    lx.eval('!tagger.pTagPasteSelectionSet flood')
 except:
     lx.out(traceback.print_exc())
     errors += 1
