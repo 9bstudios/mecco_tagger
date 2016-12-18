@@ -1,6 +1,6 @@
 # python
 
-import lx, items, modo, scene
+import lx, items, modo, scene, util
 
 
 def tag_polys(polys, ptag, i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL):
@@ -31,4 +31,4 @@ def tag_polys(polys, ptag, i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL):
         else:
             p.setTag(i_POLYTAG,ptag)
 
-    scene.add_pTag_to_recent(ptag)
+    scene.add_pTag_to_recent(ptag, util.i_POLYTAG_to_string(i_POLYTAG))

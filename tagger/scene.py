@@ -2,14 +2,14 @@ import modo, lx
 import util
 from var import *
 
-def add_pTag_to_recent(pTag):
+def add_pTag_to_recent(pTag, tagType):
     old_tag = modo.Scene().sceneItem.getTags().get(SCENE_TAG_RECENT)
     if old_tag:
         tags_list = old_tag.split(";")
     else:
         tags_list = []
 
-    tags_list = [pTag] + tags_list
+    tags_list = [":".join((tagType, pTag))] + tags_list
 
     # removes duplicates while maintainint list order
     tags_list = [ii for n,ii in enumerate(tags_list) if ii not in tags_list[:n]]
@@ -23,6 +23,7 @@ def get_recent_pTags():
     tags = modo.Scene().sceneItem.getTags().get(SCENE_TAG_RECENT)
     if tags:
         tags = tags.split(";")
+        tags = [tuple(i.split(":")) for i in tags]
     return tags
 
 def all_tags_by_type(i_POLYTAG):

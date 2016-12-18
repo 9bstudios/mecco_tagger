@@ -12,13 +12,14 @@ def list_commands():
 
     tags_list = []
 
-    existing_tags = tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL)
+    existing_tags = tagger.items.get_all_masked_tags()
     recent_tags = tagger.scene.get_recent_pTags()
 
     if recent_tags:
         tags_list = [i for i in recent_tags if i in existing_tags]
 
     tags_list = tags_list + existing_tags
+
     if len(tags_list) > tagger.MAX_MASK_FCL:
         tags_list = tags_list[:tagger.MAX_MASK_FCL]
 
@@ -27,7 +28,7 @@ def list_commands():
 
     if tags_list:
         for tag in tags_list:
-            fcl.append('%s %s {%s}' % (tagger.CMD_PTAG_SET, tagger.MATERIAL, tag))
+            fcl.append('%s {%s} {%s}' % (tagger.CMD_PTAG_SET, tag[0], tag[1]))
     else:
         fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_NO_MASKS))
         return fcl
