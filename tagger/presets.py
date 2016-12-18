@@ -25,8 +25,11 @@ def list_presets():
         "kit_mecco_tagger:basics"
     ]
 
-    user_presets = lx.eval('user.value mecco_tagger.userPresetsPath ?')
+    kelvin_presets = lx.eval('user.value mecco_tagger.includeKelvin ?')
+    if kelvin_presets:
+        presets_paths.append("kit_mecco_kelvin:Kelvin/kelvin_materials")
 
+    user_presets = lx.eval('user.value mecco_tagger.userPresetsPath ?')
     if user_presets:
         presets_paths.append(user_presets)
 
