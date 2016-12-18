@@ -72,6 +72,7 @@ PASTE = 'paste'
 MATERIAL = 'material'
 PICK = 'pick'
 PART = 'part'
+ALL = 'all'
 TAG = 'tag'
 i_POLYTAG = 'i_POLYTAG'
 MASK = 'mask'
@@ -94,7 +95,9 @@ CONSOLIDATE = 'consolidate'
 SCOPE_SELECTED = 'selected'
 SCOPE_CONNECTED = 'connected'
 SCOPE_FLOOD = 'flood'
+SCOPE_SELECTED_ITEMS = 'selected_items'
 SCOPE_SCENE = 'scene'
+SCOPE_ALL = 'all'
 FROM_TAG_TYPE = 'fromTagType'
 TO_TAG_TYPE = 'toTagType'
 DEL_EMPTY = 'delEmpty'
@@ -121,9 +124,11 @@ LABEL_TAG_WITH_MASKED = "All Existing Masks"
 LABEL_MATERIAL = "Material"
 LABEL_PART = "Part"
 LABEL_PICK = "Selection Set"
+LABEL_ALL = "All"
 LABEL_SCOPE_SELECTED = 'Selected Polys'
 LABEL_SCOPE_CONNECTED = 'Connected Polys'
 LABEL_SCOPE_FLOOD = 'Flood Polys'
+LABEL_SCOPE_SELECTED_ITEMS = 'Selected Items'
 LABEL_SCOPE_SCENE = 'Entire Scene'
 LABEL_USE = 'Use'
 LABEL_KEEP = 'Keep and add'
@@ -152,7 +157,7 @@ DIALOGS_NO_MASK_SELECTED = ("No Mask Selected", "Select a mask to apply.")
 DIALOGS_TOO_MANY_MASKS = ("Too Many Masks", "Select only one mask to apply.")
 DIALOGS_NO_PTAG_FILTER = ("No pTag Filter", "The selected mask applies to all polygons. No tag to apply.")
 DIALOGS_NONE_PTAG_FILTER = ("(none) pTag Filter", "The selected mask applies to nothing. No tag to apply.")
-DIALOGS_REMOVE_ALL_TAGS = ("Remove All Tags", "All %s tags will be removed from the selected items. Continue?")
+DIALOGS_REMOVE_ALL_TAGS = ("Remove All Tags", "%s tags will be removed from the %s. Continue?")
 DIALOGS_TAG_NOT_FOUND = ("Tag Not Found", "No instances of %s tag '%s' were found in the scene.")
 DIALOGS_TAG_REPLACED = ("Tag Replaced", "Replaced %s instances of %s tag '%s'.")
 DIALOGS_TAGGED_POLYS_COUNT = ("Tagged Polygons", "Tagged %s polygons in %s polygon islands.")
@@ -160,7 +165,7 @@ DIALOGS_UNTAGGED_POLYS_COUNT = ("Removed Polygon Tags", "Removed %s polytags fro
 DIALOGS_MASKED_TAGS_COUNT = ("Masked Unmasked Tags", "Added %s new masks.")
 DIALOGS_NOTHING_TO_PASTE = ("Nothing to Paste", "Nothing to paste. Copy a tag before pasting.")
 DIALOGS_TOO_MANY_ISLANDS = ("Too many islands", "Too many poly islands to mask safely. (Max %s, found %s)")
-DIALOGS_REMOVED_ALL_TAGS = ("Removed tags", "Reset %s %s tags accross %s polygons in %s items.")
+DIALOGS_REMOVED_ALL_TAGS = ("Removed tags", "Reset %s tags accross %s polygons in %s items.")
 DIALOGS_CLEANED_UP_SHADERTREE = ("Cleaned up shader tree", "Removed %s items from the shader tree.")
 
 POPUPS_CLIPBOARD = [
@@ -181,10 +186,22 @@ POPUPS_REMOVE_SCOPE = [
         (SCOPE_SCENE, LABEL_SCOPE_SCENE)
     ]
 
+POPUPS_REMOVE_ALL_SCOPE = [
+        (SCOPE_SELECTED_ITEMS, LABEL_SCOPE_SELECTED_ITEMS),
+        (SCOPE_SCENE, LABEL_SCOPE_SCENE)
+    ]
+
 POPUPS_TAGTYPES = [
         (MATERIAL, LABEL_MATERIAL),
         (PART, LABEL_PART),
         (PICK, LABEL_PICK)
+    ]
+
+POPUPS_TAGTYPES_WITH_ALL = [
+        (MATERIAL, LABEL_MATERIAL),
+        (PART, LABEL_PART),
+        (PICK, LABEL_PICK),
+        (ALL, LABEL_ALL)
     ]
 
 POPUPS_WITH_EXISTING = [

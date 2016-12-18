@@ -15,7 +15,14 @@ class CommandClass(tagger.Commander):
                     'label': tagger.LABEL_TAGTYPE,
                     'datatype': 'string',
                     'value': tagger.PART,
-                    'popup': tagger.POPUPS_TAGTYPES,
+                    'popup': tagger.POPUPS_TAGTYPES_WITH_ALL,
+                    'flags': [],
+                }, {
+                    'name': tagger.SCOPE,
+                    'label': tagger.LABEL_SCOPE,
+                    'datatype': 'string',
+                    'value': tagger.SCOPE_SELECTED_ITEMS,
+                    'popup': tagger.POPUPS_REMOVE_ALL_SCOPE,
                     'flags': [],
                 }
             ]
@@ -41,27 +48,66 @@ class CommandClass(tagger.Commander):
 
     def commander_execute(self, msg, flags):
         tagType = self.commander_arg_value(0)
-        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
+        scope = self.commander_arg_value(1)
 
-        safety = modo.dialogs.yesNo(tagger.DIALOGS_REMOVE_ALL_TAGS[0], tagger.DIALOGS_REMOVE_ALL_TAGS[1] % tagType)
-        poly_count = 0
-        tag_count = len(tagger.scene.all_tags_by_type(i_POLYTAG))
-        item_count = len(modo.Scene().selectedByType('mesh'))
+        scope_label = tagger.LABEL_SCOPE_SELECTED_ITEMS if scope == tagger.SCOPE_SELECTED_ITEMS else tagger.LABEL_SCOPE_SCENE
+
+        safety = modo.dialogs.yesNo(
+            tagger.DIALOGS_REMOVE_ALL_TAGS[0],
+            tagger.DIALOGS_REMOVE_ALL_TAGS[1] % (tagType.title(), scope_label.lower())
+            )
 
         if safety == 'yes':
-            for mesh in modo.Scene().selectedByType('mesh'):
-                with mesh.geometry as geo:
-                    polys = geo.polygons
-                    poly_count += len(polys)
-                    tagger.manage.tag_polys(polys, None, i_POLYTAG)
+            poly_count = 0
+            tag_count = 0
 
-        modo.dialogs.alert(
-            tagger.DIALOGS_REMOVED_ALL_TAGS[0],
-            tagger.DIALOGS_REMOVED_ALL_TAGS[1] % (tag_count, tagType, poly_count, item_count)
-        )
+            if scope == tagger.SCOPE_SELECTED_ITEMS:
+                meshes = modo.Scene().selectedByType('mesh')
+            elif scope == tagger.SCOPE_SCENE:
+                meshes = modo.Scene().meshes
 
-        notifier = tagger.Notifier()
-        notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
+            item_count = len(meshes)
+
+            for mesh in meshes:
+
+                # For some reason the tagging operation files if we do
+                # more than one in a single `with` statement.
+                # Hence we do it three times, once for each tag type.
+
+                if tagType in (tagger.MATERIAL, tagger.ALL):
+                    with mesh.geometry as geo:
+                        polys = geo.polygons
+                        poly_count += len(polys)
+
+                        i_POLYTAG = lx.symbol.i_POLYTAG_MATERIAL
+                        tag_count += len(tagger.scene.all_tags_by_type(i_POLYTAG))
+                        tagger.manage.tag_polys(polys, None, i_POLYTAG)
+
+                if tagType in (tagger.PART, tagger.ALL):
+                    with mesh.geometry as geo:
+                        polys = geo.polygons
+                        poly_count += len(polys)
+
+                        i_POLYTAG = lx.symbol.i_POLYTAG_PART
+                        tag_count += len(tagger.scene.all_tags_by_type(i_POLYTAG))
+                        tagger.manage.tag_polys(polys, None, i_POLYTAG)
+
+                if tagType in (tagger.PICK, tagger.ALL):
+                    with mesh.geometry as geo:
+                        polys = geo.polygons
+                        poly_count += len(polys)
+
+                        i_POLYTAG = lx.symbol.i_POLYTAG_PICK
+                        tag_count += len(tagger.scene.all_tags_by_type(i_POLYTAG))
+                        tagger.manage.tag_polys(polys, None, i_POLYTAG)
+
+            modo.dialogs.alert(
+                tagger.DIALOGS_REMOVED_ALL_TAGS[0],
+                tagger.DIALOGS_REMOVED_ALL_TAGS[1] % (tag_count, poly_count, item_count)
+            )
+
+            notifier = tagger.Notifier()
+            notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
 
 
 lx.bless(CommandClass, CMD_NAME)

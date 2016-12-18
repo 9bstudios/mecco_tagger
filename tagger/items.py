@@ -109,6 +109,9 @@ def get_all_masked_tags():
         mask = scene.ItemByIndex(mask_type, i)
 
         tagType = i_POLYTAG_to_string(chan_read.String(mask, mask.ChannelLookup(lx.symbol.sICHAN_MASK_PTYP)))
+        if not tagType:
+            tagType = MATERIAL
+
         tag = chan_read.String(mask, mask.ChannelLookup(lx.symbol.sICHAN_MASK_PTAG))
         if tag:
             ptags.add((tagType, tag))
