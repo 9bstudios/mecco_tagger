@@ -15,6 +15,7 @@ MAX_PTAG_ISLANDS = 50
 SCENE_TAG_RECENT = 'TAGR'
 SCENE_TAG_RECENT_MAX = 25
 
+CMD_PREFS_SET_USER_PRESETS_PATH = 'tagger.prefsSetUserPresetsPath'
 CMD_PTAG_CONVERT = 'tagger.pTagConvert'
 CMD_SET_MATERIAL = 'tagger.setMaterial_auto'
 CMD_SET_AUTO_REMOVE = 'tagger.setMaterial_autoRemove'
@@ -104,6 +105,7 @@ DEL_EMPTY = 'delEmpty'
 DEL_UNUSED = 'delUnused'
 
 # These should probably be pulled from message tables
+LABEL_CHOOSE_FOLDER = "Select Folder"
 LABEL_MODE = "Mode"
 LABEL_TAGTYPE = "Tag Type"
 LABEL_TAG = "Tag"
