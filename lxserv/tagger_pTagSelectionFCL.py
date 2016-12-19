@@ -42,7 +42,9 @@ class CommandClass(tagger.Commander):
         mesh_editor = MeshEditorClass()
         mesh_read_successful = mesh_editor.do_mesh_read()
 
-        if global_poly_count == 0:
+        selmode = tagger.selection.get_mode()
+
+        if global_poly_count == 0 or selmode not in ['polygon', 'edge', 'vertex']:
             fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_NO_POLYS))
             return fcl
 
