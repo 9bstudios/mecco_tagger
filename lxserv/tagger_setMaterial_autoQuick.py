@@ -41,6 +41,6 @@ class CommandClass(tagger.Commander):
                     inc += 1
                 pTag = pTag + str(inc)
 
-            lx.eval("?%s %s %s" % (tagger.CMD_SET_PTAG, pTag, preset))
+            lx.eval("?%s %s {%s}" % (tagger.CMD_SET_PTAG, pTag, preset))
 
 lx.bless(CommandClass, CMD_NAME)
