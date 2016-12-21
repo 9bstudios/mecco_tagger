@@ -4,6 +4,8 @@ import lx, lxifc, lxu.command, tagger
 CMD_NAME = tagger.CMD_SET_EXISTING_POPUP
 
 def tagsHack(tags):
+    tagger.debug_timer_start('tagger_setMaterial_existing_Popup_tagsHack')
+    
     hackedTags = []
 
     if not tags:
@@ -14,6 +16,7 @@ def tagsHack(tags):
         tag_user = "%s (%s)" % (tag[1], tag[0])
         hackedTags.append((tag_internal, tag_user))
 
+    tagger.debug_timer_end('tagger_setMaterial_existing_Popup_tagsHack')
     return hackedTags
 
 class CommandClass(tagger.Commander):

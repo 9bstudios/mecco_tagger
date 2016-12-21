@@ -1,5 +1,6 @@
 import modo, lx
 import util
+from debug_performance import *
 from var import *
 
 def add_pTag_to_recent(pTag, tagType):
@@ -27,20 +28,28 @@ def get_recent_pTags():
     return tags
 
 def all_tags_by_type(i_POLYTAG):
+    debug_timer_start('all_tags_by_type')
+    
     tags = set()
     for m in modo.Scene().meshes:
         n = m.geometry.internalMesh.PTagCount(i_POLYTAG)
         for i in range(n):
             tags.add(m.geometry.internalMesh.PTagByIndex(i_POLYTAG, i))
+            
+    debug_timer_end('all_tags_by_type')
     return sorted(list(tags))
 
 def all_tags():
+    debug_timer_start('all_tags')
+    
     tags = set()
     for i_POLYTAG in (lx.symbol.i_POLYTAG_MATERIAL, lx.symbol.i_POLYTAG_PICK, lx.symbol.i_POLYTAG_PART):
         for m in modo.Scene().meshes:
             n = m.geometry.internalMesh.PTagCount(i_POLYTAG)
             for i in range(n):
                 tags.add(m.geometry.internalMesh.PTagByIndex(i_POLYTAG, i))
+   
+    debug_timer_end('all_tags')
     return sorted(list(tags))
 
 def meshes_with_pTag(pTag, i_POLYTAG):

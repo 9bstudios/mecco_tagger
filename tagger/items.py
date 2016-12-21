@@ -3,6 +3,7 @@
 import modo, lx, lxu, selection
 from util import *
 from var import *
+from debug_performance import *
 
 def group_selected_and_maskable(name):
     scene = modo.Scene()
@@ -97,6 +98,9 @@ def get_active_layers():
 
 def get_all_masked_tags():
     """see https://gist.github.com/mattcox/6147502"""
+    
+    debug_timer_start('get_all_masked_tags')
+    
     ptags = set()
 
     scn_svc = lx.service.Scene()
@@ -116,6 +120,7 @@ def get_all_masked_tags():
         if tag:
             ptags.add((tagType, tag))
 
+    debug_timer_end('get_all_masked_tags')
     return list(ptags)
 
 
