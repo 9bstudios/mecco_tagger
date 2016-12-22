@@ -6,7 +6,7 @@ CMD_NAME = tagger.CMD_SET_EXISTING_FCL
 
 def list_commands():
     tagger.debug_timer_start('tagger_setMaterial_existing_FCL')
-    
+
     fcl = []
 
     if tagger.selection.get_mode() != 'polygon':
@@ -34,7 +34,7 @@ def list_commands():
             fcl.append('%s {%s} {%s}' % (tagger.CMD_PTAG_SET, tag[0], tag[1]))
     else:
         fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_NO_MASKS))
-        
+
         tagger.debug_timer_end('tagger_setMaterial_existing_FCL')
         return fcl
 
@@ -52,7 +52,7 @@ class CommandClass(tagger.Commander):
                     'label': tagger.LABEL_QUERY,
                     'datatype': 'integer',
                     'value': '',
-                    'fcl': list_commands(),
+                    'fcl': list_commands,
                     'flags': ['query'],
                 }
             ]

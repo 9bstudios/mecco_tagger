@@ -7,6 +7,71 @@ CMD_NAME = tagger.CMD_PTAG_SELECTION_FCL
 global_tags = None
 global_poly_count = 0
 
+def list_commands():
+    tagger.debug_timer_start('tagger_pTagSelectionFCL')
+
+    global global_tags
+    global global_poly_count
+
+    fcl = []
+
+    global_tags = [
+        set(),
+        set(),
+        set()
+    ]
+
+    global_poly_count = 0
+
+    mesh_editor = MeshEditorClass()
+    mesh_read_successful = mesh_editor.do_mesh_read()
+
+    selmode = tagger.selection.get_mode()
+
+    if global_poly_count == 0 or selmode not in ['polygon', 'edge', 'vertex']:
+        fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_NO_POLYS))
+
+        tagger.debug_timer_end('tagger_pTagSelectionFCL')
+        return fcl
+
+    elif global_poly_count > tagger.MAX_FCL_POLY_INSPECT:
+        fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_MAX_POLY))
+
+        tagger.debug_timer_end('tagger_pTagSelectionFCL')
+        return fcl
+
+    if sum([len(tags) for tags in global_tags]) == 0:
+        fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_NO_TAGS))
+
+        tagger.debug_timer_end('tagger_pTagSelectionFCL')
+        return fcl
+
+    if len(global_tags) > tagger.MAX_FCL:
+        fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_MAX_FCL))
+
+        tagger.debug_timer_end('tagger_pTagSelectionFCL')
+        return fcl
+
+    for n in range(len(global_tags)):
+        if not global_tags[n]:
+            continue
+
+        for tag in sorted(global_tags[n]):
+            tagType = [tagger.MATERIAL, tagger.PART, tagger.PICK][n]
+
+            if tagType == tagger.MATERIAL:
+                command = tagger.CMD_SELECT_ALL_BY_MATERIAL
+            elif tagType == tagger.PART:
+                command = tagger.CMD_SELECT_ALL_BY_PART
+            elif tagType == tagger.PICK:
+                command = tagger.CMD_SELECT_ALL_BY_SET
+
+            fcl.append("%s {%s}" % (command, tag))
+
+    tagger.debug_timer_end('tagger_pTagSelectionFCL')
+    return fcl
+
+
 class CommandClass(tagger.Commander):
     _commander_default_values = []
 
@@ -17,7 +82,7 @@ class CommandClass(tagger.Commander):
                     'label': tagger.LABEL_QUERY,
                     'datatype': 'integer',
                     'value': '',
-                    'fcl': self.list_commands(),
+                    'fcl': list_commands,
                     'flags': ['query'],
                 }
             ]
@@ -25,69 +90,6 @@ class CommandClass(tagger.Commander):
     def commander_notifiers(self):
         return [("select.event", "polygon +ldt"),("select.event", "item +ldt"), ("tagger.notifier", "")]
 
-    def list_commands(self):
-        tagger.debug_timer_start('tagger_pTagSelectionFCL')
-        
-        global global_tags
-        global global_poly_count
-
-        fcl = []
-
-        global_tags = [
-            set(),
-            set(),
-            set()
-        ]
-
-        global_poly_count = 0
-
-        mesh_editor = MeshEditorClass()
-        mesh_read_successful = mesh_editor.do_mesh_read()
-
-        selmode = tagger.selection.get_mode()
-
-        if global_poly_count == 0 or selmode not in ['polygon', 'edge', 'vertex']:
-            fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_NO_POLYS))
-            
-            tagger.debug_timer_end('tagger_pTagSelectionFCL')
-            return fcl
-
-        elif global_poly_count > tagger.MAX_FCL_POLY_INSPECT:
-            fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_MAX_POLY))
-            
-            tagger.debug_timer_end('tagger_pTagSelectionFCL')
-            return fcl
-
-        if sum([len(tags) for tags in global_tags]) == 0:
-            fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_NO_TAGS))
-            
-            tagger.debug_timer_end('tagger_pTagSelectionFCL')
-            return fcl
-
-        if len(global_tags) > tagger.MAX_FCL:
-            fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_MAX_FCL))
-            
-            tagger.debug_timer_end('tagger_pTagSelectionFCL')
-            return fcl
-
-        for n in range(len(global_tags)):
-            if not global_tags[n]:
-                continue
-
-            for tag in sorted(global_tags[n]):
-                tagType = [tagger.MATERIAL, tagger.PART, tagger.PICK][n]
-
-                if tagType == tagger.MATERIAL:
-                    command = tagger.CMD_SELECT_ALL_BY_MATERIAL
-                elif tagType == tagger.PART:
-                    command = tagger.CMD_SELECT_ALL_BY_PART
-                elif tagType == tagger.PICK:
-                    command = tagger.CMD_SELECT_ALL_BY_SET
-
-                fcl.append("%s {%s}" % (command, tag))
-
-        tagger.debug_timer_end('tagger_pTagSelectionFCL')
-        return fcl
 
 lx.bless(CommandClass, CMD_NAME)
 

@@ -3,9 +3,11 @@ import lx, lxifc, lxu.command, tagger
 
 CMD_NAME = tagger.CMD_SET_EXISTING_POPUP
 
-def tagsHack(tags):
+def tagsHack():
+    tags = tagger.items.get_all_masked_tags()
+
     tagger.debug_timer_start('tagger_setMaterial_existing_Popup_tagsHack')
-    
+
     hackedTags = []
 
     if not tags:
@@ -29,7 +31,7 @@ class CommandClass(tagger.Commander):
                     'label': tagger.LABEL_TAG_WITH_MASKED,
                     'datatype': 'string',
                     'value': '',
-                    'popup': tagsHack(tagger.items.get_all_masked_tags()),
+                    'popup': tagsHack,
                     'flags': ['query'],
                 }, {
                     'name': tagger.SCOPE,
@@ -45,7 +47,7 @@ class CommandClass(tagger.Commander):
         if not self.commander_arg_value(0):
             return
 
-        tag = self.commander_arg_value( 0).split("__")
+        tag = self.commander_arg_value(0).split("__")
         connected = self.commander_arg_value(1)
 
         args = tagger.util.build_arg_string({
@@ -60,7 +62,7 @@ class CommandClass(tagger.Commander):
         notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
 
     def commander_notifiers(self):
-        return [('notifier.editAction',''),("select.event", "item +ldt"), ("tagger.notifier", "")]
+        return [('notifier.editAction',''), ("tagger.notifier", "")]
 
 
 lx.bless(CommandClass, CMD_NAME)

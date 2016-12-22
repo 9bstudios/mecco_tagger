@@ -12,7 +12,7 @@ def tag_polys(polys, ptag, i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL):
     :param connected: extend selection to all connected polys (bool)
     :param ptyp: type of tag to apply (str) - e.g. lx.symbol.i_POLYTAG_MATERIAL
     """
-    
+
     # TODO: should be replaced with pyAPI code
 
     if not ptag:

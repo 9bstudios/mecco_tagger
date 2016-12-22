@@ -6,6 +6,9 @@ from os.path import basename, splitext
 
 CMD_NAME = tagger.CMD_SET_PTAG
 
+def material_tags_list():
+    return tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL)
+
 class CommandClass(tagger.Commander):
     _commander_default_values = []
 
@@ -17,13 +20,13 @@ class CommandClass(tagger.Commander):
                     'datatype': 'string',
                     'value': "",
                     'flags': [],
-                    'sPresetText': tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL)
+                    'sPresetText': material_tags_list
                 }, {
                     'name': tagger.PRESET,
                     'label': tagger.LABEL_PRESET,
                     'datatype': 'string',
                     'value': tagger.RANDOM,
-                    'popup': tagger.presets.presets_popup(),
+                    'popup': tagger.presets.presets_popup,
                     'flags': ['optional', 'query']
                 }, {
                     'name': tagger.SCOPE,

@@ -5,6 +5,9 @@ import lx, lxu.command, lxifc, traceback, modo, tagger
 CMD_NAME = tagger.CMD_PTAG_SET
 DEFAULTS = [tagger.MATERIAL, '', False]
 
+def tags_list():
+    return tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL)
+
 class CommandClass(tagger.Commander):
     _commander_default_values = []
 
@@ -23,7 +26,7 @@ class CommandClass(tagger.Commander):
                     'datatype': 'string',
                     'value': "",
                     'flags': [],
-                    'sPresetText': tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL)
+                    'sPresetText': tags_list
                 }, {
                     'name': tagger.SCOPE,
                     'label': tagger.LABEL_SCOPE,

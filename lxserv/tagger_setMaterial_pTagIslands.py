@@ -55,7 +55,7 @@ class CommandClass(tagger.Commander):
                     'label': tagger.LABEL_TAG,
                     'datatype': 'string',
                     'value': '',
-                    'sPresetText': sorted(tagger.scene.all_tags()),
+                    'sPresetText': tagger.scene.all_tags,
                     'flags': ['optional'],
                 }, {
                     'name': tagger.TAGTYPE,

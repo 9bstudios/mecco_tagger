@@ -18,7 +18,7 @@ def _args_tag():
             'label': tagger.LABEL_TAG,
             'datatype': 'string',
             'value': '',
-            'sPresetText': tagger.scene.all_tags(),
+            'sPresetText': tagger.scene.all_tags,
             'flags': ['optional'],
         }
 

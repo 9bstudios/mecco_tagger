@@ -36,14 +36,14 @@ class CommandClass(tagger.Commander):
                     'datatype': 'string',
                     'value': selected_tag(tagger.MATERIAL),
                     'flags': [],
-                    'sPresetText': tagger.scene.all_tags()
+                    'sPresetText': tagger.scene.all_tags
                 }, {
                     'name': tagger.WITHTAG,
                     'label': tagger.LABEL_WITH_TAG,
                     'datatype': 'string',
                     'value': "",
                     'flags': ['optional'],
-                    'sPresetText': tagger.scene.all_tags()
+                    'sPresetText': tagger.scene.all_tags
                 }
             ]
 
