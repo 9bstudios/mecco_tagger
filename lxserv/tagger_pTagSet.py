@@ -5,8 +5,37 @@ import lx, lxu.command, lxifc, traceback, modo, tagger
 CMD_NAME = tagger.CMD_PTAG_SET
 DEFAULTS = [tagger.MATERIAL, '', False]
 
-def tags_list():
+global_poly_count = 0
+
+def build_tags_list():
     return tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL)
+
+class MeshEditorClass(tagger.MeshEditorClass):
+
+    def mesh_edit_action(self):
+        global global_poly_count
+        global_poly_count = 0
+
+        i_POLYTAG = self.args[0]
+        pTag = self.args[1]
+        connected = self.args[2]
+
+        stringTag = lx.object.StringTag()
+        stringTag.set(self.polygon_accessor)
+
+        if connected == tagger.SCOPE_SELECTED:
+            polys = self.get_polys_by_selected()
+        elif connected == tagger.SCOPE_FLOOD:
+            polys = self.get_polys_by_flood(i_POLYTAG)
+        else:
+            polys = self.get_polys_by_island()
+
+        for poly in polys:
+            global_poly_count += 1
+
+            self.polygon_accessor.Select(poly)
+            stringTag.Set(i_POLYTAG, pTag)
+
 
 class CommandClass(tagger.Commander):
     _commander_default_values = []
@@ -26,7 +55,7 @@ class CommandClass(tagger.Commander):
                     'datatype': 'string',
                     'value': "",
                     'flags': [],
-                    'sPresetText': tags_list
+                    'sPresetText': build_tags_list
                 }, {
                     'name': tagger.SCOPE,
                     'label': tagger.LABEL_SCOPE,
@@ -71,7 +100,13 @@ class CommandClass(tagger.Commander):
         tag = self.commander_arg_value(1)
         connected = self.commander_arg_value(2)
 
-        tagger.selection.tag_polys(tag, connected, tagger.util.string_to_i_POLYTAG(tagType))
+        mesh_editor = MeshEditorClass([tagType, tag, connected], [lx.symbol.f_MESHEDIT_POL_TAGS])
+        mesh_editor.do_mesh_edit()
+
+        # modo.dialogs.alert(
+        #     tagger.DIALOGS_TAGGED_POLYS_COUNT[0],
+        #     tagger.DIALOGS_TAGGED_POLYS_COUNT[1] % (mesh_editor.poly_count, _island_enumerator)
+        #     )
 
         notifier = tagger.Notifier()
         notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
