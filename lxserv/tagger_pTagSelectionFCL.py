@@ -103,7 +103,7 @@ class MeshEditorClass(tagger.MeshEditorClass):
         stringTag = lx.object.StringTag()
         stringTag.set(self.polygon_accessor)
 
-        selected_polys = self.get_polys_by_selected()
+        selected_polys = self.get_selected_polys()
 
         for poly in selected_polys:
             global_poly_count += 1

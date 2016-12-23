@@ -12,7 +12,7 @@ class IslandCounterClass(tagger.MeshEditorClass):
     def mesh_edit_action(self):
         global _island_enumerator
 
-        islands = self.get_polys_by_island()
+        islands = self.get_active_polys_by_island()
 
         for i, island in enumerate(islands):
             self.island_count += 1
@@ -30,7 +30,7 @@ class MeshEditorClass(tagger.MeshEditorClass):
         stringTag = lx.object.StringTag()
         stringTag.set(self.polygon_accessor)
 
-        islands = self.get_polys_by_island()
+        islands = self.get_active_polys_by_island()
 
         for i, island in enumerate(islands):
 
@@ -90,8 +90,8 @@ class CommandClass(tagger.Commander):
             mesh_editor.do_mesh_edit()
 
             modo.dialogs.alert(
-                tagger.DIALOGS_TAGGED_POLYS_COUNT[0],
-                tagger.DIALOGS_TAGGED_POLYS_COUNT[1] % (mesh_editor.poly_count, _island_enumerator)
+                tagger.DIALOGS_TAGGED_POLY_ISLANDS_COUNT[0],
+                tagger.DIALOGS_TAGGED_POLY_ISLANDS_COUNT[1] % (mesh_editor.poly_count, _island_enumerator)
                 )
 
         notifier = tagger.Notifier()

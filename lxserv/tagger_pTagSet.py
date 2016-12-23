@@ -24,11 +24,13 @@ class MeshEditorClass(tagger.MeshEditorClass):
         stringTag.set(self.polygon_accessor)
 
         if connected == tagger.SCOPE_SELECTED:
-            polys = self.get_polys_by_selected()
+            polys = self.get_selected_polys()
+
         elif connected == tagger.SCOPE_FLOOD:
-            polys = self.get_polys_by_flood(i_POLYTAG)
-        else:
-            polys = self.get_polys_by_island()
+            polys = self.get_selected_polys_by_flood(i_POLYTAG)
+
+        elif connected == tagger.SCOPE_CONNECTED:
+            polys = self.get_selected_polys_by_island()
 
         for poly in polys:
             global_poly_count += 1
@@ -100,13 +102,10 @@ class CommandClass(tagger.Commander):
         tag = self.commander_arg_value(1)
         connected = self.commander_arg_value(2)
 
-        mesh_editor = MeshEditorClass([tagType, tag, connected], [lx.symbol.f_MESHEDIT_POL_TAGS])
-        mesh_editor.do_mesh_edit()
+        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
 
-        # modo.dialogs.alert(
-        #     tagger.DIALOGS_TAGGED_POLYS_COUNT[0],
-        #     tagger.DIALOGS_TAGGED_POLYS_COUNT[1] % (mesh_editor.poly_count, _island_enumerator)
-        #     )
+        mesh_editor = MeshEditorClass([i_POLYTAG, tag, connected], [lx.symbol.f_MESHEDIT_POL_TAGS])
+        mesh_editor.do_mesh_edit()
 
         notifier = tagger.Notifier()
         notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)

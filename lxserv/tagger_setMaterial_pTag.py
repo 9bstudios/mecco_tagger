@@ -78,7 +78,12 @@ class CommandClass(tagger.Commander):
         existing_masks = tagger.shadertree.get_masks( pTags = { pTag: i_POLYTAG })
 
         # tag the polys
-        tagger.selection.tag_polys(pTag, connected, i_POLYTAG)
+        args = tagger.util.build_arg_string({
+            tagger.TAGTYPE: tagType,
+            tagger.TAG: pTag,
+            tagger.SCOPE: connected
+        })
+        lx.eval("!" + tagger.CMD_PTAG_SET + args)
 
         # build a new mask if we need one
         if not existing_masks or (existing_masks and withExisting != tagger.USE):

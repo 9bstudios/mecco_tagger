@@ -89,7 +89,7 @@ def get_active_layers():
     scan = lx.object.LayerScan (lyr_svc.ScanAllocate (lx.symbol.f_LAYERSCAN_ACTIVE))
     itemCount = scan.Count ()
     if itemCount > 0:
-            items = [modo.Mesh( scan.MeshItem(i) ) for i in range(itemCount)]
+        items = [modo.Mesh( scan.MeshItem(i) ) for i in range(itemCount)]
     scan.Apply ()
 
     return items
@@ -98,9 +98,9 @@ def get_active_layers():
 
 def get_all_masked_tags():
     """see https://gist.github.com/mattcox/6147502"""
-    
+
     debug_timer_start('get_all_masked_tags')
-    
+
     ptags = set()
 
     scn_svc = lx.service.Scene()
