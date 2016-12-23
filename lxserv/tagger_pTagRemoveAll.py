@@ -117,7 +117,12 @@ class CommandClass(tagger.Commander):
             visitor = PolyTaggerClass (polygon_accessor, mark_mode_valid, i_POLYTAG)
             polygon_accessor.Enumerate (mark_mode_valid, visitor, 0)
 
-        layer_scan.SetMeshChange (n, lx.symbol.f_MESHEDIT_POL_TAGS)
+            layer_scan.SetMeshChange (n, lx.symbol.f_MESHEDIT_POL_TAGS)
+
+        if scope == tagger.SCOPE_SCENE:
+            lx.eval("select.drop item")
+            modo.Scene().meshes[0].select()
+
         layer_scan.Apply ()
 
         notifier = tagger.Notifier()
