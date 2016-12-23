@@ -20,7 +20,7 @@ class CommandClass(tagger.Commander):
             ]
 
     def commander_execute(self, msg, flags):
-        connected = self.commander_arg_value(0)
+        connected = self.commander_arg_value(0, tagger.SCOPE_SELECTED)
 
         masks = set()
 
@@ -49,7 +49,12 @@ class CommandClass(tagger.Commander):
         tagLabel = mask.channel(lx.symbol.sICHAN_MASK_PTYP).get()
         tag = mask.channel(lx.symbol.sICHAN_MASK_PTAG).get()
 
-        tagger.selection.tag_polys(tag, connected, tagger.util.string_to_i_POLYTAG(tagLabel))
+        args = tagger.util.build_arg_string({
+            tagger.TAGTYPE: tagger.util.i_POLYTAG_to_string(tagLabel),
+            tagger.TAG: tag,
+            tagger.SCOPE: connected
+        })
+        lx.eval("!" + tagger.CMD_PTAG_SET + args)
 
         notifier = tagger.Notifier()
         notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)

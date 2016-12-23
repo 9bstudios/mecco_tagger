@@ -82,34 +82,6 @@ def get_ptags(i_POLYTAG = lx.symbol.i_POLYTAG_MATERIAL,connected=SCOPE_SELECTED)
 
 
 
-def tag_polys(ptag,connected=SCOPE_SELECTED,i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL):
-    """Assigns a pTag of type ptyp to all selected polys in all active layers.
-
-    :param ptag: tag to apply (str)
-    :param connected: extend selection to all connected polys (bool)
-    :param ptyp: type of tag to apply (str) - e.g. lx.symbol.i_POLYTAG_MATERIAL
-    """
-
-    polyCount = 0
-    for layer in items.get_active_layers():
-        with layer.geometry as geo:
-            polyCount += len(geo.polygons.selected)
-
-    for layer in items.get_active_layers():
-        with layer.geometry as geo:
-            if polyCount == 0:
-                polys = geo.polygons
-            elif polyCount >= 1:
-                polys = geo.polygons.selected
-                if connected == SCOPE_CONNECTED:
-                    polys = island(polys)
-                if connected == SCOPE_FLOOD:
-                    polys = flood(polys, i_POLYTAG)
-
-            manage.tag_polys(polys, ptag, i_POLYTAG)
-
-
-
 def convert_tags(from_i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL, to_i_POLYTAG=lx.symbol.i_POLYTAG_PICK, connected=SCOPE_SELECTED):
     """Converts ptags of one type to another.
     :param from_i_POLYTAG: polygon tag type to convert from (e.g. lx.symbol.i_POLYTAG_MATERIAL)

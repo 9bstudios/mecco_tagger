@@ -100,7 +100,7 @@ class CommandClass(tagger.Commander):
     def commander_execute(self, msg, flags):
         tagType = self.commander_arg_value(0)
         tag = self.commander_arg_value(1)
-        connected = self.commander_arg_value(2)
+        connected = self.commander_arg_value(2, tagger.SCOPE_SELECTED)
 
         i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
 

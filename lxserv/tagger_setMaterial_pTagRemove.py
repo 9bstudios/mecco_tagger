@@ -46,7 +46,12 @@ class CommandClass(tagger.Commander):
 
         # if we're just nixing tags in a selection, easy.
         if scope in [tagger.SCOPE_SELECTED, tagger.SCOPE_CONNECTED, tagger.SCOPE_FLOOD]:
-            tagger.selection.tag_polys(None, scope, i_POLYTAG)
+            args = tagger.util.build_arg_string({
+                tagger.TAGTYPE: tagType,
+                tagger.TAG: "",
+                tagger.SCOPE: scope
+            })
+            lx.eval("!" + tagger.CMD_PTAG_SET + args)
 
         # if we want to nix tags for the whole scene, do some work.
         if scope == tagger.SCOPE_SCENE:
