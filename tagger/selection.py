@@ -3,6 +3,7 @@
 import modo, lx, items, manage
 from PolysConnectedByTag import *
 from var import *
+from debug_performance import *
 
 
 def get_mode():
