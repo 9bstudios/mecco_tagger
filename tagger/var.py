@@ -2,8 +2,6 @@
 
 from lx import symbol
 
-DEBUG_PERFORMANCE = False
-
 DEFAULT_PTAG = symbol.i_POLYTAG_MATERIAL
 DEFAULT_RANDOM_COLOR_SATURATION = .7
 DEFAULT_RANDOM_COLOR_VALUE = .95
@@ -17,8 +15,14 @@ MAX_PTAG_ISLANDS = 50
 SCENE_TAG_RECENT = 'TAGR'
 SCENE_TAG_RECENT_MAX = 25
 
+TAGTYPE_SEP = ":"
+TAG_SEP = ";"
+
+CMD = 'command'
 CMD_PREFS_SET_USER_PRESETS_PATH = 'tagger.prefsSetUserPresetsPath'
 CMD_PTAG_CONVERT = 'tagger.pTagConvert'
+CMD_PTAG_QUICK_ASSIGN_POPUP = 'tagger.pTagQuickAssignPopup'
+CMD_PTAG_QUICK_SELECT_POPUP = 'tagger.pTagQuickSelectPopup'
 CMD_SET_MATERIAL = 'tagger.setMaterial_auto'
 CMD_SET_AUTO_REMOVE = 'tagger.setMaterial_autoRemove'
 CMD_SET_PTAG = 'tagger.setMaterial_pTag'
@@ -105,8 +109,12 @@ FROM_TAG_TYPE = 'fromTagType'
 TO_TAG_TYPE = 'toTagType'
 DEL_EMPTY = 'delEmpty'
 DEL_UNUSED = 'delUnused'
+NEW_TAG = "newTag"
 
 # These should probably be pulled from message tables
+LABEL_NEW_TAG = "(new tag)"
+LABEL_ASSIGN_TAG = "Assign"
+LABEL_SELECT_TAG = "Select by"
 LABEL_CHOOSE_FOLDER = "Select Folder"
 LABEL_MODE = "Mode"
 LABEL_TAGTYPE = "Tag Type"
@@ -124,7 +132,7 @@ LABEL_WITH_EXISTING = "With Existing"
 LABEL_DELETE_UNUSED_MASKS = "Cleanup unused masks"
 LABEL_OPERATION = "Operation"
 LABEL_GROUP_NAME = "Group Name"
-LABEL_TAG_WITH_MASKED = "All Existing Masks"
+LABEL_TAG_WITH_MASKED = "Assign Existing Mask"
 LABEL_MATERIAL = "Material"
 LABEL_PART = "Part"
 LABEL_PICK = "Selection Set"

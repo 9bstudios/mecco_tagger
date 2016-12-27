@@ -34,7 +34,7 @@ def paste(tagType=tagger.MATERIAL, connected=tagger.SCOPE_SELECTED):
             )
         return
 
-    lx.eval("!" + tagger.CMD_PTAG_SET + tagger.util.build_arg_string(args))
+    lx.eval("!" + tagger.CMD_PTAG_SET + tagger.build_arg_string(args))
 
     notifier = tagger.Notifier()
     notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
@@ -76,7 +76,7 @@ class CopyMaskCommandClass(tagger.Commander):
         mask = list(masks)[0]
 
         tagLabel = mask.channel(lx.symbol.sICHAN_MASK_PTYP).get()
-        tagType = tagger.util.i_POLYTAG_to_string(tagLabel)
+        tagType = tagger.convert_to_tagType_string(tagLabel)
         tag = mask.channel(lx.symbol.sICHAN_MASK_PTAG).get()
 
         global _clipboard

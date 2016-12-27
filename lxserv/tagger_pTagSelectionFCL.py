@@ -8,7 +8,7 @@ global_tags = None
 global_poly_count = 0
 
 def list_commands():
-    tagger.debug_timer_start('tagger_pTagSelectionFCL')
+    timer = tagger.DebugTimer()
 
     global global_tags
     global global_poly_count
@@ -31,25 +31,25 @@ def list_commands():
     if global_poly_count == 0 or selmode not in ['polygon', 'edge', 'vertex']:
         fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_NO_POLYS))
 
-        tagger.debug_timer_end('tagger_pTagSelectionFCL')
+        timer.end()
         return fcl
 
     elif global_poly_count > tagger.MAX_FCL_POLY_INSPECT:
         fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_MAX_POLY))
 
-        tagger.debug_timer_end('tagger_pTagSelectionFCL')
+        timer.end()
         return fcl
 
     if sum([len(tags) for tags in global_tags]) == 0:
         fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_NO_TAGS))
 
-        tagger.debug_timer_end('tagger_pTagSelectionFCL')
+        timer.end()
         return fcl
 
     if len(global_tags) > tagger.MAX_FCL:
         fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_MAX_FCL))
 
-        tagger.debug_timer_end('tagger_pTagSelectionFCL')
+        timer.end()
         return fcl
 
     for n in range(len(global_tags)):
@@ -68,7 +68,7 @@ def list_commands():
 
             fcl.append("%s {%s}" % (command, tag))
 
-    tagger.debug_timer_end('tagger_pTagSelectionFCL')
+    timer.end()
     return fcl
 
 

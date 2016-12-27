@@ -20,36 +20,36 @@ def build_arg_string(arg_dict):
             arg_string += " %s:%s" % (str(k),v)
     return arg_string
 
-def string_to_i_POLYTAG(input_string):
-    if input_string.lower() == 'material':
+def convert_to_iPOLYTAG(tagType):
+    if tagType.lower() == 'material':
         return symbol.i_POLYTAG_MATERIAL
-    elif input_string.lower() == 'part':
+    elif tagType.lower() == 'part':
         return symbol.i_POLYTAG_PART
-    elif input_string.lower() in ('pick', 'selection set'):
+    elif tagType.lower() in ('pick', 'selection set'):
         return symbol.i_POLYTAG_PICK
 
-def i_POLYTAG_to_string(i_POLYTAG):
-    if i_POLYTAG in (symbol.i_POLYTAG_MATERIAL, 'Material'):
+def convert_to_tagType_string(tagType):
+    if tagType in (symbol.i_POLYTAG_MATERIAL, 'Material'):
         return 'material'
-    elif i_POLYTAG in (symbol.i_POLYTAG_PART, 'Part'):
+    elif tagType in (symbol.i_POLYTAG_PART, 'Part'):
         return 'part'
-    elif i_POLYTAG in (symbol.i_POLYTAG_PICK, 'Selection Set'):
+    elif tagType in (symbol.i_POLYTAG_PICK, 'Selection Set'):
         return 'pick'
 
-def i_POLYTAG_to_label(i_POLYTAG):
-    if i_POLYTAG in (symbol.i_POLYTAG_MATERIAL, 'Material', 'material'):
+def convert_to_tagType_label(tagType):
+    if tagType in (symbol.i_POLYTAG_MATERIAL, 'Material', 'material'):
         return LABEL_MATERIAL
-    elif i_POLYTAG in (symbol.i_POLYTAG_PART, 'Part', 'part'):
+    elif tagType in (symbol.i_POLYTAG_PART, 'Part', 'part'):
         return LABEL_PART
-    elif i_POLYTAG in (symbol.i_POLYTAG_PICK, 'Selection Set', 'pick'):
+    elif tagType in (symbol.i_POLYTAG_PICK, 'Selection Set', 'pick'):
         return LABEL_PICK
 
-def sICHAN_MASK_PTYP(string_or_int):
-    if string_or_int in (symbol.i_POLYTAG_MATERIAL, 'material'):
+def sICHAN_MASK_PTYP(tagType):
+    if tagType in (symbol.i_POLYTAG_MATERIAL, 'material'):
         return 'Material'
-    elif string_or_int in (symbol.i_POLYTAG_PART, 'part'):
+    elif tagType in (symbol.i_POLYTAG_PART, 'part'):
         return 'Part'
-    elif string_or_int in (symbol.i_POLYTAG_PICK, 'pick'):
+    elif tagType in (symbol.i_POLYTAG_PICK, 'pick'):
         return 'Selection Set'
 
 def safe_removeItems(items, children = False):

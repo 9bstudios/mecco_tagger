@@ -5,12 +5,12 @@ import lx, lxifc, lxu.command, modo, tagger
 CMD_NAME = tagger.CMD_SET_EXISTING_FCL
 
 def list_commands():
-    tagger.debug_timer_start('tagger_setMaterial_existing_FCL')
+    timer = tagger.DebugTimer()
 
     fcl = []
 
     if tagger.selection.get_mode() != 'polygon':
-        tagger.debug_timer_end('tagger_setMaterial_existing_FCL')
+        timer.end()
         return fcl
 
     tags_list = []
@@ -35,10 +35,10 @@ def list_commands():
     else:
         fcl.append("%s {%s}" % (tagger.CMD_NOOP, tagger.LABEL_NO_MASKS))
 
-        tagger.debug_timer_end('tagger_setMaterial_existing_FCL')
+        timer.end()
         return fcl
 
-    tagger.debug_timer_end('tagger_setMaterial_existing_FCL')
+    timer.end()
     return fcl
 
 

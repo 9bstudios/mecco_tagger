@@ -1,22 +1,23 @@
 # python
 
 import lx
-from time import time, strftime
+from sys import _getframe
+from time import time
 from var import *
 
-_timers = {}
+class DebugTimer():
+    _start = 0
 
-def debug_timer_start(key):
-    global _timers
-    
-    if DEBUG_PERFORMANCE:
-        _timers[key] = [0,0]
-        _timers[key][0] = time()
-    
-def debug_timer_end(key):
-    global _timers
-    
-    if DEBUG_PERFORMANCE:
-        _timers[key][1] = time()
-        elapsed = _timers[key][1] - _timers[key][0]
-        lx.out('Timer %.4f (%s)' % ((elapsed * 10), key))
+    def __init__(self):
+        self._start = time()
+
+    def end(self):
+        if not lx.eval('user.value mecco_tagger.debugMode ?'):
+            return
+
+        frame = _getframe(1)
+        caller = frame.f_globals['__name__']
+        line = frame.f_lineno
+        elapsed = time() - self._start
+
+        lx.out('Timer: %.4f (%s, line %s)' % (elapsed, caller, line))

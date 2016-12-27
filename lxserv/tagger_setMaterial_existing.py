@@ -49,8 +49,8 @@ class CommandClass(tagger.Commander):
         tagLabel = mask.channel(lx.symbol.sICHAN_MASK_PTYP).get()
         tag = mask.channel(lx.symbol.sICHAN_MASK_PTAG).get()
 
-        args = tagger.util.build_arg_string({
-            tagger.TAGTYPE: tagger.util.i_POLYTAG_to_string(tagLabel),
+        args = tagger.build_arg_string({
+            tagger.TAGTYPE: tagger.convert_to_tagType_string(tagLabel),
             tagger.TAG: tag,
             tagger.SCOPE: connected
         })

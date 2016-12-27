@@ -134,7 +134,7 @@ def add_mask(
         ig.AddLink(mask,item)
 
     if i_POLYTAG:
-        mask.channel(lx.symbol.sICHAN_MASK_PTYP).set(sICHAN_MASK_PTYP(i_POLYTAG))
+        mask.channel(lx.symbol.sICHAN_MASK_PTYP).set(convert_to_sICHAN_MASK_PTYP(i_POLYTAG))
 
     if pTag:
         mask.channel(lx.symbol.sICHAN_MASK_PTAG).set(pTag)
@@ -276,7 +276,7 @@ def get_masks(
 
         for pTag, pTyp in pTags.iteritems():
             if (
-                m.channel(lx.symbol.sICHAN_MASK_PTYP).get() == sICHAN_MASK_PTYP(pTyp)
+                m.channel(lx.symbol.sICHAN_MASK_PTYP).get() == convert_to_sICHAN_MASK_PTYP(pTyp)
                 and m.channel(lx.symbol.sICHAN_MASK_PTAG).get() == pTag
                 ):
 

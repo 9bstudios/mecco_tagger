@@ -23,7 +23,7 @@ def _args_tag():
         }
 
 def select_all_by_tag(tagType, tag):
-    i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
+    i_POLYTAG = tagger.convert_to_iPOLYTAG(tagType)
 
     tags = []
 

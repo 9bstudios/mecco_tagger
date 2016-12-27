@@ -21,7 +21,7 @@ class CommandClass(tagger.Commander):
 
     def commander_execute(self, msg, flags):
         tagType = self.commander_arg_value(0)
-        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
+        i_POLYTAG = tagger.convert_to_iPOLYTAG(tagType)
 
         hitcount = 0
         tagCounter = 0

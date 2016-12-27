@@ -26,7 +26,7 @@ class MeshEditorClass(tagger.MeshEditorClass):
     def mesh_edit_action(self):
         global _island_enumerator
 
-        i_POLYTAG = tagger.util.string_to_i_POLYTAG(self.args['tagType'])
+        i_POLYTAG = tagger.convert_to_iPOLYTAG(self.args['tagType'])
         stringTag = lx.object.StringTag()
         stringTag.set(self.polygon_accessor)
 

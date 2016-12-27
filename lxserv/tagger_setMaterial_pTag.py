@@ -62,7 +62,7 @@ class CommandClass(tagger.Commander):
         if preset == tagger.RANDOM:
             preset = None
 
-        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
+        i_POLYTAG = tagger.convert_to_iPOLYTAG(tagType)
 
         if not pTag:
             if not preset:
@@ -78,7 +78,7 @@ class CommandClass(tagger.Commander):
         existing_masks = tagger.shadertree.get_masks( pTags = { pTag: i_POLYTAG })
 
         # tag the polys
-        args = tagger.util.build_arg_string({
+        args = tagger.build_arg_string({
             tagger.TAGTYPE: tagType,
             tagger.TAG: pTag,
             tagger.SCOPE: connected
@@ -94,7 +94,7 @@ class CommandClass(tagger.Commander):
             pass
 
         elif existing_masks and withExisting == tagger.REMOVE:
-            tagger.util.safe_removeItems(existing_masks, True)
+            tagger.safe_removeItems(existing_masks, True)
 
         elif existing_masks and withExisting == tagger.CONSOLIDATE:
             consolidation_masks = tagger.shadertree.consolidate(pTags = { pTag: i_POLYTAG })

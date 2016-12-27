@@ -15,53 +15,12 @@ def group_selected_and_maskable(name):
     return group
 
 
-
-def get_groups(items=[]):
-    """Returns a list of items of type lx.symbol.sITYPE_GROUP. If a list of items is supplied,
-    resulting list will only return groups containing any of the supplied items."""
-
-    scene = modo.Scene()
-    groups = set()
-
-    if len(items) == 0:
-        return scene.iterItems(lx.symbol.sITYPE_GROUP)
-
-    for group in scene.iterItems(lx.symbol.sITYPE_GROUP):
-        if [i for i in items if i in group.items]:
-            groups.add(group)
-
-    return list(groups)
-
-
-def ptag_replace(layers, pTags, default = DEFAULT_PTAG, i_POLYTAG = lx.symbol.i_POLYTAG_MATERIAL):
-    """Replaces all instances of supplied pTag(s) in suplied layer(s) with a default tag.
-
-    :param layers: modo.item.Item() object or list of objects to search
-    :param pTags: string or list of strings for which to search
-    :param default: string with which to replace matching pTags (optional)
-    """
-
-    if not isinstance(layers,list):
-        layers = [layers]
-
-    if not isinstance(pTags,list):
-        pTags = [pTags]
-
-    for layer in layers:
-        for p in layer.geometry.polygons:
-            if i_POLYTAG == lx.symbol.i_POLYTAG_PICK:
-                tags = p.getTag(i_POLYTAG).split(";")
-                if not ptag in tags:
-                    tags.append(ptag)
-                p.setTag(i_POLYTAG,";".join(tags))
-            else:
-                p.setTag(i_POLYTAG,ptag)
-
-
 def get_layers_by_pTag(pTags,i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL):
     """Returns a list of all mesh layers containing any of the provided pTag(s)
     of type i_POLYTAG, e.g. lx.symbol.i_POLYTAG_MATERIAL.
     """
+
+    timer = DebugTimer()
 
     if not isinstance(pTags,list):
         pTags = [pTags]
@@ -79,11 +38,14 @@ def get_layers_by_pTag(pTags,i_POLYTAG=lx.symbol.i_POLYTAG_MATERIAL):
                 if tag in pTags:
                     mm.add(m)
 
+    timer.end()
     return list(mm)
 
 
 def get_active_layers():
     """Returns a list of all currently active mesh layers (regardless of selection state)."""
+
+    timer = DebugTimer()
 
     lyr_svc = lx.service.Layer ()
     scan = lx.object.LayerScan (lyr_svc.ScanAllocate (lx.symbol.f_LAYERSCAN_ACTIVE))
@@ -92,6 +54,7 @@ def get_active_layers():
         items = [modo.Mesh( scan.MeshItem(i) ) for i in range(itemCount)]
     scan.Apply ()
 
+    timer.end()
     return items
 
 
@@ -99,7 +62,7 @@ def get_active_layers():
 def get_all_masked_tags():
     """see https://gist.github.com/mattcox/6147502"""
 
-    debug_timer_start('get_all_masked_tags')
+    timer = DebugTimer()
 
     ptags = set()
 
@@ -112,7 +75,7 @@ def get_all_masked_tags():
     for i in range (scene.ItemCount(mask_type)):
         mask = scene.ItemByIndex(mask_type, i)
 
-        tagType = i_POLYTAG_to_string(chan_read.String(mask, mask.ChannelLookup(lx.symbol.sICHAN_MASK_PTYP)))
+        tagType = convert_to_tagType_string(chan_read.String(mask, mask.ChannelLookup(lx.symbol.sICHAN_MASK_PTYP)))
         if not tagType:
             tagType = MATERIAL
 
@@ -120,13 +83,15 @@ def get_all_masked_tags():
         if tag:
             ptags.add((tagType, tag))
 
-    debug_timer_end('get_all_masked_tags')
+    timer.end()
     return list(ptags)
 
 
 
 def get_selected_and_maskable():
     """Returns a list of object(s) that can be masked."""
+
+    timer = DebugTimer()
 
     items = modo.Scene().selected
 
@@ -137,6 +102,7 @@ def get_selected_and_maskable():
 
     r = list(r)
 
+    timer.end()
     return r
 
 
@@ -148,6 +114,7 @@ def test_maskable(items):
     :param items: item(s) to test for maskability
     :type items: object or list of objects
     """
+
 
     if not isinstance(items,list):
         items = [items]
@@ -175,4 +142,5 @@ def test_maskable(items):
 
     if len(r) == 1:
         return r[0]
+
     return r

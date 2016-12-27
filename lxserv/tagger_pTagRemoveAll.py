@@ -66,7 +66,7 @@ class CommandClass(tagger.Commander):
         if self.commander_arg_value(0):
             label = []
             label.append(tagger.LABEL_REMOVE_ALL)
-            label.append(tagger.util.i_POLYTAG_to_label(self.commander_arg_value(0)))
+            label.append(tagger.convert_to_tagType_label(self.commander_arg_value(0)))
             label.append(tagger.LABEL_TAGS)
             return " ".join(label)
 
@@ -74,7 +74,7 @@ class CommandClass(tagger.Commander):
         tagType = self.commander_arg_value(0)
         scope = self.commander_arg_value(1)
 
-        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
+        i_POLYTAG = tagger.convert_to_iPOLYTAG(tagType)
         scope_label = tagger.LABEL_SCOPE_SELECTED_ITEMS if scope == tagger.SCOPE_SELECTED_ITEMS else tagger.LABEL_SCOPE_SCENE
 
         safety = modo.dialogs.yesNo(

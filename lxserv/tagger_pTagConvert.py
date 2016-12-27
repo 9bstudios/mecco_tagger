@@ -4,6 +4,27 @@ import lx, lxu.command, lxifc, traceback, modo, tagger
 
 CMD_NAME = tagger.CMD_PTAG_CONVERT
 
+class MeshEditorClass(tagger.MeshEditorClass):
+
+    def mesh_edit_action(self):
+        global global_poly_count
+        global_poly_count = 0
+
+        fromTagType = self.args[0]
+        toTagType = self.args[1]
+
+        stringTag = lx.object.StringTag()
+        stringTag.set(self.polygon_accessor)
+
+        polys = self.get_selected_polys()
+
+        for poly in polys:
+            global_poly_count += 1
+
+            self.polygon_accessor.Select(poly)
+            stringTag.Set(toTagType, stringTag.Get(fromTagType))
+
+
 class CommandClass(tagger.Commander):
     _commander_default_values = []
 
@@ -48,10 +69,10 @@ class CommandClass(tagger.Commander):
             label = []
             label.append(tagger.LABEL_CONVERT)
             if self.commander_arg_value(0):
-                label.append(tagger.util.i_POLYTAG_to_label(self.commander_arg_value(0)))
+                label.append(tagger.convert_to_tagType_label(self.commander_arg_value(0)))
             label.append(tagger.LABEL_TO)
             if self.commander_arg_value(1):
-                label.append(tagger.util.i_POLYTAG_to_label(self.commander_arg_value(1)))
+                label.append(tagger.convert_to_tagType_label(self.commander_arg_value(1)))
             else:
                 label.append("...")
             return " ".join(label)
@@ -60,10 +81,8 @@ class CommandClass(tagger.Commander):
         fromTagType = self.commander_arg_value(0)
         toTagType = self.commander_arg_value(1)
 
-        tagger.selection.convert_tags(
-            tagger.util.string_to_i_POLYTAG(fromTagType),
-            tagger.util.string_to_i_POLYTAG(toTagType)
-            )
+        mesh_editor = MeshEditorClass([fromTagType, toTagType], [lx.symbol.f_MESHEDIT_POL_TAGS])
+        mesh_editor.do_mesh_edit()
 
         notifier = tagger.Notifier()
         notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)

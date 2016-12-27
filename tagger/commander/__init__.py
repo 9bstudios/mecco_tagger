@@ -508,8 +508,13 @@ class Commander(lxu.command.BasicCommand):
         args = self.commander_arguments()
         if index < len(args):
             label = args[index].get(ARG_LABEL)
+
             if not label:
                 label = args[index].get(ARG_NAME)
+
+            elif hasattr(label, '__call__'):
+                label = label()
+
             hints.Label(label)
 
             if ARG_sPresetText in args[index]:

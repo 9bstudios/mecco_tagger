@@ -6,7 +6,7 @@ CMD_NAME = tagger.CMD_SET_EXISTING_POPUP
 def tagsHack():
     tags = tagger.items.get_all_masked_tags()
 
-    tagger.debug_timer_start('tagger_setMaterial_existing_Popup_tagsHack')
+    timer = tagger.DebugTimer()
 
     hackedTags = []
 
@@ -14,11 +14,11 @@ def tagsHack():
         hackedTags.append((None, tagger.LABEL_NONE))
 
     for tag in sorted(tags):
-        tag_internal = "__".join((tag[0], tag[1]))
+        tag_internal = TAGTYPE_SEP.join((tag[0], tag[1]))
         tag_user = "%s (%s)" % (tag[1], tag[0])
         hackedTags.append((tag_internal, tag_user))
 
-    tagger.debug_timer_end('tagger_setMaterial_existing_Popup_tagsHack')
+    timer.end()
     return hackedTags
 
 class CommandClass(tagger.Commander):
@@ -47,10 +47,10 @@ class CommandClass(tagger.Commander):
         if not self.commander_arg_value(0):
             return
 
-        tag = self.commander_arg_value(0).split("__")
+        tag = self.commander_arg_value(0).split(TAGTYPE_SEP)
         connected = self.commander_arg_value(1)
 
-        args = tagger.util.build_arg_string({
+        args = tagger.build_arg_string({
             tagger.TAGTYPE: tag[0],
             tagger.TAG: tag[1],
             tagger.SCOPE: connected

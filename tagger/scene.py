@@ -6,11 +6,11 @@ from var import *
 def add_pTag_to_recent(pTag, tagType):
     old_tag = modo.Scene().sceneItem.getTags().get(SCENE_TAG_RECENT)
     if old_tag:
-        tags_list = old_tag.split(";")
+        tags_list = old_tag.split(TAG_SEP)
     else:
         tags_list = []
 
-    tags_list = [":".join((tagType, pTag))] + tags_list
+    tags_list = [TAGTYPE_SEP.join((tagType, pTag))] + tags_list
 
     # removes duplicates while maintainint list order
     tags_list = [ii for n,ii in enumerate(tags_list) if ii not in tags_list[:n]]
@@ -18,38 +18,39 @@ def add_pTag_to_recent(pTag, tagType):
     if len(tags_list) > SCENE_TAG_RECENT_MAX:
         tags_list = tags_list[:SCENE_TAG_RECENT_MAX]
 
-    modo.Scene().sceneItem.setTag(SCENE_TAG_RECENT, ";".join(tags_list))
+    modo.Scene().sceneItem.setTag(SCENE_TAG_RECENT, TAG_SEP.join(tags_list))
 
 def get_recent_pTags():
     tags = modo.Scene().sceneItem.getTags().get(SCENE_TAG_RECENT)
     if tags:
-        tags = tags.split(";")
-        tags = [tuple(i.split(":")) for i in tags]
+        tags = tags.split(TAG_SEP)
+        tags = [tuple(i.split(TAGTYPE_SEP)) for i in tags]
     return tags
 
 def all_tags_by_type(i_POLYTAG):
-    debug_timer_start('all_tags_by_type')
-    
+    timer = DebugTimer()
+
     tags = set()
     for m in modo.Scene().meshes:
         n = m.geometry.internalMesh.PTagCount(i_POLYTAG)
         for i in range(n):
             tags.add(m.geometry.internalMesh.PTagByIndex(i_POLYTAG, i))
-            
-    debug_timer_end('all_tags_by_type')
+
+    timer.end()
     return sorted(list(tags))
 
 def all_tags():
-    debug_timer_start('all_tags')
-    
+    timer = DebugTimer()
+
     tags = set()
-    for i_POLYTAG in (lx.symbol.i_POLYTAG_MATERIAL, lx.symbol.i_POLYTAG_PICK, lx.symbol.i_POLYTAG_PART):
-        for m in modo.Scene().meshes:
+
+    for m in modo.Scene().meshes:
+        for i_POLYTAG in (lx.symbol.i_POLYTAG_MATERIAL, lx.symbol.i_POLYTAG_PICK, lx.symbol.i_POLYTAG_PART):
             n = m.geometry.internalMesh.PTagCount(i_POLYTAG)
             for i in range(n):
                 tags.add(m.geometry.internalMesh.PTagByIndex(i_POLYTAG, i))
-   
-    debug_timer_end('all_tags')
+
+    timer.end()
     return sorted(list(tags))
 
 def meshes_with_pTag(pTag, i_POLYTAG):
@@ -66,7 +67,7 @@ def meshes_with_pTag(pTag, i_POLYTAG):
     return list(meshes)
 
 def replace_tag(tagType, replaceTag, withTag):
-    i_POLYTAG = util.string_to_i_POLYTAG(tagType)
+    i_POLYTAG = util.convert_to_iPOLYTAG(tagType)
     meshes = meshes_with_pTag(replaceTag, i_POLYTAG)
 
     hitcount = 0

@@ -35,14 +35,14 @@ class CommandClass(tagger.Commander):
                 hitlist.add(m)
 
             if del_unused:
-                i_POLYTAG = tagger.util.string_to_i_POLYTAG(m.channel(lx.symbol.sICHAN_MASK_PTYP).get())
+                i_POLYTAG = tagger.convert_to_iPOLYTAG(m.channel(lx.symbol.sICHAN_MASK_PTYP).get())
 
                 sICHAN_MASK_PTAG = m.channel(lx.symbol.sICHAN_MASK_PTAG).get()
 
                 if (sICHAN_MASK_PTAG and not tagger.items.get_layers_by_pTag(sICHAN_MASK_PTAG,i_POLYTAG)):
                     hitlist.add(m)
 
-        tagger.util.safe_removeItems(hitlist, True)
+        tagger.safe_removeItems(hitlist, True)
 
         modo.dialogs.alert(
             tagger.DIALOGS_CLEANED_UP_SHADERTREE[0],

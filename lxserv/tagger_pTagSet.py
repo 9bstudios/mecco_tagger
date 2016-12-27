@@ -84,7 +84,7 @@ class CommandClass(tagger.Commander):
         label.append(tagger.LABEL_SET)
 
         if self.commander_arg_value(0):
-            label.append(tagger.util.i_POLYTAG_to_label(self.commander_arg_value(0)))
+            label.append(tagger.convert_to_tagType_label(self.commander_arg_value(0)))
 
         label.append(tagger.LABEL_TAG)
 
@@ -102,7 +102,7 @@ class CommandClass(tagger.Commander):
         tag = self.commander_arg_value(1)
         connected = self.commander_arg_value(2, tagger.SCOPE_SELECTED)
 
-        i_POLYTAG = tagger.util.string_to_i_POLYTAG(tagType)
+        i_POLYTAG = tagger.convert_to_iPOLYTAG(tagType)
 
         mesh_editor = MeshEditorClass([i_POLYTAG, tag, connected], [lx.symbol.f_MESHEDIT_POL_TAGS])
         mesh_editor.do_mesh_edit()
