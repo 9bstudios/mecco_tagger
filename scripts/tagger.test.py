@@ -19,258 +19,227 @@ open_scene('testScene')
 lx.eval('select.drop item')
 lx.eval('select.drop channel')
 lx.eval('select.subItem Cube set')
-
-lx.eval('select.polygon add material face m1')
-polys = tagger.selection.get_polys()
-
-
-try:
-    lx.eval('!tagger.setMaterial_pTag test random selected material use')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.setMaterial_auto')
-    lx.eval('!tagger.setMaterial_auto')
-    lx.eval('!tagger.setMaterial_auto')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-lx.eval('select.contract')
-lx.eval('select.contract')
-lx.eval('select.contract')
-lx.eval('select.contract')
-lx.eval('select.contract')
-lx.eval('select.contract')
-lx.eval('select.contract')
-
-try:
-    lx.eval('!tagger.setMaterial_pTag test2 random flood material consolidate')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.setMaterial_pTag test3 random flood material consolidate')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.setMaterial_pTag test4 random connected material consolidate')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.setMaterial_pTagIslands islands material')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-
-lx.eval('select.typeFrom item;pivot;center;edge;polygon;vertex;ptag true')
-
-
-try:
-    lx.eval('!tagger.setMaterial_item')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.setMaterial_group material add random')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-
 lx.eval('select.typeFrom polygon;edge;vertex;item;pivot;center;ptag true')
 
 
 try:
-    lx.eval('!tagger.floodSelectMaterial')
+    lx.eval("tagger.pTagQuickSelectPopup pick seedSel")
 except:
     lx.out(traceback.print_exc())
     errors += 1
-
-try:
-    lx.eval('!tagger.floodSelectPart')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.floodSelectPart')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.floodSelectSelectionSet')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.selectAllByMaterial')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.selectAllByPart')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.selectAllBySelectionSet')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-lx.eval('select.drop polygon')
-
-try:
-    lx.eval('!tagger.pTagCopy')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagPasteMaterial flood')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagPastePart flood')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagPasteSelectionSet flood')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagSet material')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagSet material')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagSet part')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagSet pick')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagConvert material part')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagConvert material pick')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagConvert part material')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagConvert part pick')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagConvert pick material')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagConvert pick part')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagReplace material islands_1 islands_3')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagRemoveUnmasked material')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.shaderTree_cleanup true true')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.shaderTree_maskUnmasked material')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagRemoveAll material')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagRemoveAll part')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-try:
-    lx.eval('!tagger.pTagRemoveAll pick')
-except:
-    lx.out(traceback.print_exc())
-    errors += 1
-
-
-lx.eval('select.typeFrom item;pivot;center;edge;polygon;vertex;ptag true')
 
 
 try:
-    lx.eval('!tagger.setMaterial_itemRemove')
+    lx.eval("tagger.pTagCopy")
 except:
     lx.out(traceback.print_exc())
     errors += 1
 
 
+try:
+    lx.eval("tagger.pTagQuickSelectPopup pick hoopSet")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.pTagPasteMaterial")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.setMaterial_pTagRemove")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+lx.eval("select.drop polygon")
+
+
+try:
+    lx.eval("tagger.pTagQuickSelectPopup pick seedSel")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.floodSelectMaterial")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.setMaterial_pTag test random selected material use")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+lx.eval("select.drop polygon")
+
+
+try:
+    lx.eval("tagger.pTagQuickSelectPopup pick seedSel")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.setMaterial_auto")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.setMaterial_auto")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.selectAllByMaterial test")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.selectAllByPart p4")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+lx.eval("select.drop polygon")
+
+
+try:
+    lx.eval("tagger.pTagQuickSelectPopup pick hoopSet")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.setMaterial_existing_Popup {material:m3}")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.setMaterial_existing_Popup {material:m1}")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.setMaterial_autoQuick /Users/adam/Desktop/kits/mecco_dara/Kits/mecco_Tagger/basics/matte.lxp")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.pTagSet material test flood")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.pTagConvert material pick")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+lx.eval("select.drop polygon")
+
+
+try:
+    lx.eval("tagger.setMaterial_pTagIslands test material")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.shaderTree_cleanup true true")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.pTagQuickSelectPopup pick seedSel")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.floodSelectMaterial")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.pTagSet pick great flood")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.setMaterial_pTagRemove")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+lx.eval("select.drop polygon")
+
+
+try:
+    lx.eval("tagger.shaderTree_maskUnmasked material")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.pTagRemoveUnmasked material")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.pTagRemoveAll material selected_items")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+
+try:
+    lx.eval("tagger.pTagRemoveAll material scene")
+except:
+    lx.out(traceback.print_exc())
+    errors += 1
+
+lx.eval('!scene.closeAll')
+open_scene('testScene')
 
 if not errors:
     lx.out("Found zero errors. Well done, you. Be sure to check the UI buttons.")

@@ -525,6 +525,7 @@ class Commander(lxu.command.BasicCommand):
         if index < len(args):
             arg = args[index]
             hintType = ''
+            arg_data = None
 
             if arg.get(ARG_POPUP) is not None:
                 arg_data = arg.get(ARG_POPUP, [])
@@ -537,6 +538,9 @@ class Commander(lxu.command.BasicCommand):
             elif arg.get(ARG_FCL) is not None:
                 arg_data = arg.get(ARG_FCL, [])
                 hintType = ARG_FCL
+
+            if not arg_data:
+                return
 
             if isinstance(arg_data, (list, tuple)):
                 values = arg_data

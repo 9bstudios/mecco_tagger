@@ -81,6 +81,9 @@ class CommandClass(tagger.Commander):
         fromTagType = self.commander_arg_value(0)
         toTagType = self.commander_arg_value(1)
 
+        fromTagType = tagger.convert_to_iPOLYTAG(fromTagType)
+        toTagType = tagger.convert_to_iPOLYTAG(toTagType)
+
         mesh_editor = MeshEditorClass([fromTagType, toTagType], [lx.symbol.f_MESHEDIT_POL_TAGS])
         mesh_editor.do_mesh_edit()
 
