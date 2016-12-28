@@ -7,13 +7,12 @@ DEBUG = True
 try:
     import presets
     import items
-    import manage
     import shadertree
     import selection
     import scene
     from var import *
     from util import *
-    from debug_performance import *
+    from debug import *
     from notifier import *
     from commander import *
     from PopupClass import *

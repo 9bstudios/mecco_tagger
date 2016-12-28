@@ -1,6 +1,6 @@
 import modo, lx
 import util
-from debug_performance import *
+from debug import *
 from var import *
 
 def add_pTag_to_recent(pTag, tagType):

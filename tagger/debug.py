@@ -20,7 +20,8 @@ class DebugTimer():
         line = frame.f_lineno
         elapsed = time() - self._start
 
-        lx.out('Tagger Debug Timer: %.4f (%s, line %s)' % (elapsed, caller, line))
+        if elapsed > DEBUG_TIMER_THRESHOLD:
+            lx.out('Tagger Debug Timer: %.4f (%s, line %s)' % (elapsed, caller, line))
 
 def debug(string):
     if not lx.eval('user.value mecco_tagger.debugMode ?'):

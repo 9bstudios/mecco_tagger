@@ -3,7 +3,7 @@
 import modo, lx, lxu, selection
 from util import *
 from var import *
-from debug_performance import *
+from debug import *
 
 def group_selected_and_maskable(name):
     scene = modo.Scene()

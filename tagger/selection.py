@@ -1,9 +1,9 @@
 #python
 
-import modo, lx, items, manage
+import modo, lx, items
 from PolysConnectedByTag import *
 from var import *
-from debug_performance import *
+from debug import *
 
 
 def get_mode():

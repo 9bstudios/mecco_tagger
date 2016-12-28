@@ -9,7 +9,7 @@ import lxifc
 import modo
 import traceback
 
-from debug_performance import *
+from debug import *
 
 class PolysConnectedByTag (lxifc.Visitor):
     def __init__ (self, polygon, edge, mark_mode_valid, i_POLYTAG):
