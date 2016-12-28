@@ -524,23 +524,29 @@ class Commander(lxu.command.BasicCommand):
         args = self.commander_arguments()
         if index < len(args):
             arg = args[index]
+            hintType = ''
 
             if arg.get(ARG_POPUP) is not None:
                 arg_data = arg.get(ARG_POPUP, [])
+                hintType = ARG_POPUP
 
             elif arg.get(ARG_sPresetText) is not None:
                 arg_data = arg.get(ARG_sPresetText, [])
+                hintType = ARG_sPresetText
 
             elif arg.get(ARG_FCL) is not None:
                 arg_data = arg.get(ARG_FCL, [])
+                hintType = ARG_FCL
 
             if isinstance(arg_data, (list, tuple)):
                 values = arg_data
-                return PopupClass(values)
-
             elif hasattr(arg_data, '__call__'):
                 values = arg_data()
+
+            if hintType in (ARG_POPUP, ARG_sPresetText):
                 return PopupClass(values)
+            elif hintType == ARG_FCL:
+                return FormCommandListClass(values)
 
     def cmd_DialogInit(self):
         for n, argument in enumerate(self.commander_arguments()):
