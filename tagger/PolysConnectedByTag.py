@@ -9,6 +9,8 @@ import lxifc
 import modo
 import traceback
 
+from debug_performance import *
+
 class PolysConnectedByTag (lxifc.Visitor):
     def __init__ (self, polygon, edge, mark_mode_valid, i_POLYTAG):
         self.polygon = polygon
@@ -67,11 +69,15 @@ class PolysConnectedByTag (lxifc.Visitor):
                                 if edge_polygon_ID not in outer_list and edge_polygon_ID not in inner_list:
                                     self.polygon.Select (edge_polygon_ID)
 
-                                    tagString = self.tag.Get (self.i_POLYTAG)
-                                    if not tagString:
-                                        tagString = ''
+                                    tagStrings = self.tag.Get(self.i_POLYTAG)
+                                    if not tagStrings:
+                                        tagStrings = set()
+                                    elif tagStrings:
+                                        tagStrings = set(tagStrings.split(";"))
 
-                                    if self.polygon.TestMarks (self.mark_mode_valid) and (set(tagString.split(";")).intersection(set(tagValues))):
+                                    # debug("tagStrings: %s, tagValues: %s" % (str(tagStrings), str(tagValues)))
+
+                                    if self.polygon.TestMarks (self.mark_mode_valid) and ((tagStrings.intersection(set(tagValues))) or tagStrings == set(tagValues)):
                                         outer_list.add (edge_polygon_ID)
 
         self.polygonIDs.update (inner_list)

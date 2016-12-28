@@ -44,7 +44,7 @@ def convert_to_tagType_label(tagType):
     elif tagType in (symbol.i_POLYTAG_PICK, 'Selection Set', 'pick'):
         return LABEL_PICK
 
-def sICHAN_MASK_PTYP(tagType):
+def convert_to_sICHAN_MASK_PTYP(tagType):
     if tagType in (symbol.i_POLYTAG_MATERIAL, 'material'):
         return 'Material'
     elif tagType in (symbol.i_POLYTAG_PART, 'part'):

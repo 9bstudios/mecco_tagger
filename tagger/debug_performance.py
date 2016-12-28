@@ -20,4 +20,14 @@ class DebugTimer():
         line = frame.f_lineno
         elapsed = time() - self._start
 
-        lx.out('Timer: %.4f (%s, line %s)' % (elapsed, caller, line))
+        lx.out('Tagger Debug Timer: %.4f (%s, line %s)' % (elapsed, caller, line))
+
+def debug(string):
+    if not lx.eval('user.value mecco_tagger.debugMode ?'):
+        return
+
+    frame = _getframe(1)
+    caller = frame.f_globals['__name__']
+    line = frame.f_lineno
+
+    lx.out('Tagger Debug: %s (%s, line %s)' % (string, caller, line))

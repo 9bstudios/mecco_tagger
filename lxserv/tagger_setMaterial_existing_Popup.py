@@ -14,7 +14,7 @@ def tagsHack():
         hackedTags.append((None, tagger.LABEL_NONE))
 
     for tag in sorted(tags):
-        tag_internal = TAGTYPE_SEP.join((tag[0], tag[1]))
+        tag_internal = tagger.TAGTYPE_SEP.join((tag[0], tag[1]))
         tag_user = "%s (%s)" % (tag[1], tag[0])
         hackedTags.append((tag_internal, tag_user))
 
@@ -47,7 +47,7 @@ class CommandClass(tagger.Commander):
         if not self.commander_arg_value(0):
             return
 
-        tag = self.commander_arg_value(0).split(TAGTYPE_SEP)
+        tag = self.commander_arg_value(0).split(tagger.TAGTYPE_SEP)
         connected = self.commander_arg_value(1)
 
         args = tagger.build_arg_string({
