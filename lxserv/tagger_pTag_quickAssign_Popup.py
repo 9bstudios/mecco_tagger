@@ -72,7 +72,7 @@ class CommandClass(tagger.Commander):
         tagType = self.commander_arg_value(0, tagger.MATERIAL)
         label = tagger.convert_to_tagType_label(tagType)
 
-        return "%s %s" % (tagger.LABEL_ASSIGN_TAG, label)
+        return "%s %s %s" % (tagger.LABEL_ASSIGN_TAG, label, tagger.LABEL_TAG)
     def commander_notifiers(self):
         return [('notifier.editAction',''), ("select.event", "item +ldt"), ("tagger.notifier", "")]
 
