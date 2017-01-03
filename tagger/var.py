@@ -57,6 +57,7 @@ CMD_SET_EXISTING_POPUP = 'tagger.setMaterial_existing_Popup'
 CMD_SHADERTREE_MASK_UNMASKED = 'tagger.shaderTree_maskUnmasked'
 CMD_PTAG_REMOVE_UNMASKED = 'tagger.pTagRemoveUnmasked'
 CMD_SHADERTREE_CLEANUP = 'tagger.shaderTree_cleanup'
+CMD_SHADERTREE_CONSOLIDATE_BY_COLOR = 'tagger.shaderTree_consolidateByColor'
 CMD_NOOP = 'tagger.noop'
 
 GROUPNAME = "group"

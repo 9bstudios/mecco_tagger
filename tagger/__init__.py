@@ -10,6 +10,7 @@ try:
     import shadertree
     import selection
     import scene
+    import colors
     from var import *
     from util import *
     from debug import *
