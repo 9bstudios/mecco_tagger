@@ -21,7 +21,9 @@ def build_arg_string(arg_dict):
     return arg_string
 
 def convert_to_iPOLYTAG(tagType):
-    if tagType.lower() == 'material':
+    if not tagType:
+        return symbol.i_POLYTAG_MATERIAL
+    elif tagType.lower() == 'material':
         return symbol.i_POLYTAG_MATERIAL
     elif tagType.lower() == 'part':
         return symbol.i_POLYTAG_PART

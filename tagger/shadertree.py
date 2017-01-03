@@ -3,28 +3,40 @@
 import modo, lx, util, items
 from var import *
 from util import *
+from debug import *
 
 def do_preset(preset_path, target_mask=None):
     """Drops a material preset, deletes the cruft, and returns the good stuff."""
 
     lx.eval('preset.do {%s}' % preset_path)
+    debug("Did preset.")
 
     preset_group = modo.Scene().groups[-1]
     preset_parent_mask = preset_group.itemGraph('itemGroups').forward()[0]
     preset_contents = preset_parent_mask.children()
 
+    debug("preset_group: %s" % preset_group.name)
+    debug("preset_parent_mask: %s" % preset_parent_mask.name)
+    debug("preset_contents:")
+    for i in preset_contents:
+        debug("- %s" % i.name)
+
     if target_mask:
         preset_parent_mask.setParent(target_mask)
+        debug("Set parent to '%s'" % target_mask.name)
 
     modo.Scene().removeItems(preset_parent_mask)
     modo.Scene().removeItems(preset_group)
+    debug("Removed preset cruft.")
 
     if len(preset_contents) == 1 and preset_contents[0].type == 'mask':
+        debug("Unpacking preset root mask...")
         parent_mask = preset_contents[0]
         preset_contents = parent_mask.children()
         for child in parent_mask.children()[::-1]:
             child.setParent(parent_mask.parent)
         modo.Scene().removeItems(parent_mask)
+        debug("...success")
 
     return preset_contents
 
@@ -74,24 +86,31 @@ def build_material(
         name
     )
 
+    debug("Added mask '%s'" % mask.name)
+
     if parent:
         parent = get_masks(names = parent)[0]
         if parent:
             mask.setParent(parent,parent.childCount())
+            debug("Set parent to '%s'" % parent.name)
 
     if preset:
+        debug("Doing preset '%s' in mask '%s'" % (preset, mask.name))
         preset_contents = do_preset(preset, mask)
 
     elif not preset:
+        debug("No preset specified. Building default material.")
         if(shader):
             sname = ' '.join([name,SHADERNAME]) if name else None
             shdr = add_shader(sname)
             shdr.setParent(mask)
+            debug("Added shader '%s'" % shdr.name)
 
         mname = ' '.join([name,MATNAME]) if name else None
         channels = {lx.symbol.sICHAN_ADVANCEDMATERIAL_DIFFCOL:color}
         mat = add_material(mname,channels)
         mat.setParent(mask)
+        debug("Added material '%s'" % mat.name)
 
     move_to_base_shader(mask)
 

@@ -36,7 +36,6 @@ class CommandClass(tagger.Commander):
 
             if del_unused:
                 i_POLYTAG = tagger.convert_to_iPOLYTAG(m.channel(lx.symbol.sICHAN_MASK_PTYP).get())
-
                 sICHAN_MASK_PTAG = m.channel(lx.symbol.sICHAN_MASK_PTAG).get()
 
                 if (sICHAN_MASK_PTAG and not tagger.items.get_layers_by_pTag(sICHAN_MASK_PTAG,i_POLYTAG)):
@@ -51,5 +50,5 @@ class CommandClass(tagger.Commander):
 
         notifier = tagger.Notifier()
         notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
-        
+
 lx.bless(CommandClass, NAME_CMD)
