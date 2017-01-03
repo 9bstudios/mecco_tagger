@@ -1,0 +1,35 @@
+body {
+  font-family:sans-serif;
+  width:720px;
+  margin:2em auto;
+  color:#333;
+}
+
+h1, h2, h3, h4 {
+  color:#333;
+}
+
+
+
+ul {
+  list-style-type:none;
+  padding-left:0;
+}
+
+li {
+  margin-bottom:4em;
+}
+
+div.definition {
+  background-color:#f5f5f5;
+  padding:1em;
+}
+
+code {
+  color:#c22980;
+  font-size:1.2em;
+}
+
+.tooltip {
+  font-style:italic;
+}
