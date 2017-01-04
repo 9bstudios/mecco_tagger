@@ -86,17 +86,27 @@ class CommandClass(tagger.Commander):
         lx.eval("!" + tagger.CMD_PTAG_SET + args)
 
         # build a new mask if we need one
-        if not existing_masks or (existing_masks and withExisting != tagger.USE):
+        if not existing_masks:
             new_mask = tagger.shadertree.build_material(i_POLYTAG = i_POLYTAG, pTag = pTag, preset = preset)
             tagger.shadertree.move_to_base_shader(new_mask)
 
-        if existing_masks and withExisting == tagger.KEEP:
+        elif existing_masks and withExisting == tagger.USE:
             pass
 
+        elif existing_masks and withExisting == tagger.KEEP:
+            new_mask = tagger.shadertree.build_material(i_POLYTAG = i_POLYTAG, pTag = pTag, preset = preset)
+            tagger.shadertree.move_to_base_shader(new_mask)
+
         elif existing_masks and withExisting == tagger.REMOVE:
+            new_mask = tagger.shadertree.build_material(i_POLYTAG = i_POLYTAG, pTag = pTag, preset = preset)
+            tagger.shadertree.move_to_base_shader(new_mask)
+            
             tagger.safe_removeItems(existing_masks, True)
 
         elif existing_masks and withExisting == tagger.CONSOLIDATE:
+            new_mask = tagger.shadertree.build_material(i_POLYTAG = i_POLYTAG, pTag = pTag, preset = preset)
+            tagger.shadertree.move_to_base_shader(new_mask)
+
             consolidation_masks = tagger.shadertree.consolidate(pTags = { pTag: i_POLYTAG })
             new_mask.setParent(consolidation_masks[pTag])
             tagger.shadertree.move_to_top(new_mask)
