@@ -10,46 +10,35 @@
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
-        <h1>Tagger</h1>
-
-        <p>Tagger is a collection of tools for managing polygon tags and material assignments in MODO.</p>
-
-        <h3>What are pTags?</h3>
-        <p>Materials in MODO are assigned using "polygon tags" (pTags). Each polygon in a mesh is assigned a little chunk of text that--put simplisticly--tell MODO what material mask to use when shading said polygon.</p>
-        <p>Assigning materials this way is very flexible, because each polygon in a mesh can have its own material assignment. It's also inherently heavy and slow, since each and every polygon in the mesh has a little string of text attached to it. For very dense meshes (like CAD imports), this can become prohibitively heavy.</p>
-
-        <h3>Types of pTags</h3>
-        <p>There are three kinds of polygon tags in MODO: material tags, part tags, and pick tags (aka selection sets).</p>
-        <p><strong>Material tags</strong> are typically used for material filtering in the shader tree. A given poly may only have one Material tag at a time.</p>
-        <p><strong>Pick tags</strong> are the internal name for "selection sets", allowing the user to quickly save and recall polygon selections. Pick tags are unique because each tag is actually a semi-colon delimited list of individual tags, allowing a given polygon to have as many pick tags as needed. Since a polygon can have any number of pick tags, they can be very useful for complex layered material filtering.</p>
-        <p><strong>Part tags</strong> are commonly used for storing extra information about polygons, especially during import from a third-party format. In CAD imports, for example, Part tags are used to demark individual CAD faces from the original NURBS data. Most users are unaware this data exists, but it can be invaluable when working with CAD data. A given polygon may only have one Part tag at a time.</p>
+        <h1>Tagger Documentation</h1>
 
         <div id="quicklinks">
-          <h2>Tagger Commands</h2>
+          <h2>Contents</h2>
           <ul>
+            <li><a href="#About">About Tagger<br /></a></li>
             <li><a href="#tagger.pTagConvert">Convert Tag Type<br /><code>tagger.pTagConvert</code></a></li>
             <li><a href="#tagger.setMaterial_auto">Set Material (auto)<br /><code>tagger.setMaterial_auto</code></a></li>
             <li><a href="#tagger.setMaterial_autoRemove">Remove Material (auto)<br /><code>tagger.setMaterial_autoRemove</code></a></li>
-            <li><a href="#tagger.setMaterial_Tag">Set Material (Tag)<br /><code>tagger.setMaterial_Tag</code></a></li>
-            <li><a href="#tagger.setMaterial_TagIslands">Set Material (Tag Islands)<br /><code>tagger.setMaterial_TagIslands</code></a></li>
-            <li><a href="#tagger.removeMaterial_Tag">Remove Material (Tag)<br /><code>tagger.removeMaterial_Tag</code></a></li>
+            <li><a href="#tagger.setMaterial_pTag">Set Material (Tag)<br /><code>tagger.setMaterial_Tag</code></a></li>
+            <li><a href="#tagger.setMaterial_pTagIslands">Set Material (Tag Islands)<br /><code>tagger.setMaterial_TagIslands</code></a></li>
+            <li><a href="#tagger.setMaterial_pTagRemove">Remove Material (Tag)<br /><code>tagger.removeMaterial_Tag</code></a></li>
             <li><a href="#tagger.setMaterial_item">Set Material (Items)<br /><code>tagger.setMaterial_item</code></a></li>
             <li><a href="#tagger.setMaterial_itemRemove">Remove Material (Items)<br /><code>tagger.setMaterial_itemRemove</code></a></li>
             <li><a href="#tagger.setMaterial_group">Set Material (Group)<br /><code>tagger.setMaterial_group</code></a></li>
             <li><a href="#tagger.floodSelectMaterial">Flood Select by Material<br /><code>tagger.floodSelectMaterial</code></a></li>
             <li><a href="#tagger.floodSelectPart">Flood Select by Part<br /><code>tagger.floodSelectPart</code></a></li>
-            <li><a href="#tagger.floodSelectPick">Flood Select by Selection Set<br /><code>tagger.floodSelectPick</code></a></li>
-            <li><a href="#tagger.TagSet">Set Tag<br /><code>tagger.TagSet</code></a></li>
+            <li><a href="#tagger.floodSelectSelectionSet">Flood Select by Selection Set<br /><code>tagger.floodSelectPick</code></a></li>
+            <li><a href="#tagger.pTagSet">Set Tag<br /><code>tagger.TagSet</code></a></li>
             <li><a href="#tagger.pTagCopy">Tag Copy<br /><code>tagger.pTagCopy</code></a></li>
             <li><a href="#tagger.pTagCopyMask">Tag Copy from Mask<br /><code>tagger.pTagCopyMask</code></a></li>
             <li><a href="#tagger.pTagPasteDialog">Paste Tag (Dialog)<br /><code>tagger.pTagPasteDialog</code></a></li>
             <li><a href="#tagger.pTagPasteMaterial">Paste Material Tag<br /><code>tagger.pTagPasteMaterial</code></a></li>
             <li><a href="#tagger.pTagPastePart">Paste Part Tag<br /><code>tagger.pTagPastePart</code></a></li>
             <li><a href="#tagger.pTagPasteSelectionSet">Paste Selection Set<br /><code>tagger.pTagPasteSelectionSet</code></a></li>
-            <li><a href="#tagger.TagInspect">Inspect Tags (debug only)<br /><code>tagger.TagInspect</code></a></li>
-            <li><a href="#tagger.TagRemoveAll">Remove All Tags...<br /><code>tagger.TagRemoveAll</code></a></li>
-            <li><a href="#tagger.TagReplace">Find/Replace Tag<br /><code>tagger.TagReplace</code></a></li>
-            <li><a href="#tagger.TagSelectionFCL">Poly Selection (Commands List)<br /><code>tagger.TagSelectionFCL</code></a></li>
+            <li><a href="#tagger.pTagInspect">Inspect Tags (debug only)<br /><code>tagger.TagInspect</code></a></li>
+            <li><a href="#tagger.pTagRemoveAll">Remove All Tags...<br /><code>tagger.TagRemoveAll</code></a></li>
+            <li><a href="#tagger.pTagReplace">Find/Replace Tag<br /><code>tagger.TagReplace</code></a></li>
+            <li><a href="#tagger.pTagSelectionFCL">Poly Selection (Commands List)<br /><code>tagger.TagSelectionFCL</code></a></li>
             <li><a href="#tagger.selectAllByTagDialog">Select All by Tag (dialog)<br /><code>tagger.selectAllByTagDialog</code></a></li>
             <li><a href="#tagger.selectAllByMaterial">Select All by Material Tag<br /><code>tagger.selectAllByMaterial</code></a></li>
             <li><a href="#tagger.selectAllByPart">Select All by Part Tag<br /><code>tagger.selectAllByPart</code></a></li>
@@ -64,28 +53,46 @@
           </ul>
         </div>
 
+        <h2 id="About">About Tagger</h2>
+        <p>Tagger is a collection of tools for managing polygon tags and material assignments in MODO.</p>
+
+        <h3>What are pTags?</h3>
+        <p>Materials in MODO are assigned using "polygon tags" (pTags). Each polygon in a mesh is assigned a little chunk of text that--put simplisticly--tell MODO what material mask to use when shading said polygon.</p>
+        <p>Assigning materials this way is very flexible, because each polygon in a mesh can have its own material assignment. It's also inherently heavy and slow, since each and every polygon in the mesh has a little string of text attached to it. For very dense meshes (like CAD imports), this can become prohibitively heavy.</p>
+
+        <h3>Types of pTags</h3>
+        <p>There are three kinds of polygon tags in MODO: material tags, part tags, and pick tags (aka selection sets).</p>
+        <p><strong>Material tags</strong> are typically used for material filtering in the shader tree. A given poly may only have one Material tag at a time.</p>
+        <p><strong>Pick tags</strong> are the internal name for "selection sets", allowing the user to quickly save and recall polygon selections. Pick tags are unique because each tag is actually a semi-colon delimited list of individual tags, allowing a given polygon to have as many pick tags as needed. Since a polygon can have any number of pick tags, they can be very useful for complex layered material filtering.</p>
+        <p><strong>Part tags</strong> are commonly used for storing extra information about polygons, especially during import from a third-party format. In CAD imports, for example, Part tags are used to demark individual CAD faces from the original NURBS data. Most users are unaware this data exists, but it can be invaluable when working with CAD data. A given polygon may only have one Part tag at a time.</p>
+
+        <hr />
+
+        <h2>Tagger Commands</h2>
+
         <ul id="commandsList">
           <li>
-            <h2 id="tagger.pTagConvert">Convert Tag Type</h2>
+            <h3 id="tagger.pTagConvert">Convert Tag Type</h3>
             <div class="definition">
               <code>tagger.pTagConvert</code>
               <p class="tooltip">Change a Tag from one type to another, e.g. convert a part tag to a material tag</p>
             </div>
-            <h3>Typical Usecase</h3>
-            <p>Most users will not need this tool.</p>
+            <h4>Typical Usecase</h4>
+            <p>This is an advanced tool for highly specialized applications.</p>
             <p>It is especially valuable when working with imported data, such as CAD data. Material tags imported from CAD may be useful for making selections, but less so for assigning materials. In that case, we can convert Material tags to Selection Sets, thus allowing us to assign new Material tags while maintaining access to the original imported material tags for reference. Or, in other cases, it may be useful to convert Part tags to Material tags or vise-verse, depending on the specifics of the CAD import process.</p>
 
-            <h3>Example</h3>
+            <h4>Example</h4>
             <ol>
               <li>select polygons</li>
               <li>run command</li>
               <li>select tag type to convert from</li>
               <li>select tag type to convert to</li>
+              <li>hit <span class="keystroke">enter</span></li>
             </ol>
             <p>Result: Tags on selected polys are converted.</p>
           </li>
           <li>
-            <h2 id="tagger.setMaterial_auto">Set Material (auto)</h2>
+            <h3 id="tagger.setMaterial_auto">Set Material (auto)</h3>
             <div class="definition">
               <code>tagger.setMaterial_auto</code>
               <p class="tooltip">Set material for polygons if in poly selection mode, or items if in item mode</p>
@@ -93,31 +100,47 @@
             <p>Simply selects the appropriate <code>tagger.setMaterial</code> command based on selection mode.</p>
             <ul>
               <li><strong>Item Mode</strong>: <code>tagger.setMaterial_item</code>.</li>
-              <li><strong>Component Modes</strong>: <code>tagger.setMaterial_Tag</code>.</li>
+              <li><strong>Component Modes</strong>: <code>tagger.setMaterial_pTag</code>.</li>
             </ul>
           </li>
           <li>
-            <h2 id="tagger.setMaterial_autoRemove">Remove Material (auto)</h2>
+            <h3 id="tagger.setMaterial_autoRemove">Remove Material (auto)</h3>
             <div class="definition">
               <code>tagger.setMaterial_autoRemove</code>
               <p class="tooltip">Remove material masks and tags from polygons if in poly selection mode, or item masks if in item mode</p>
             </div>
-            <p>Simply selects the appropriate command based on selection mode.</p>
+            <p>Simply selects the appropriate material removal command based on selection mode.</p>
             <ul>
-              <li><strong>Item Mode</strong>: <code>tagger.setMaterial_item</code>.</li>
-              <li><strong>Component Modes</strong>: <code>tagger.setMaterial_Tag</code>.</li>
+              <li><strong>Item Mode</strong>: <code>tagger.setMaterial_itemRemove</code>.</li>
+              <li><strong>Component Modes</strong>: <code>tagger.setMaterial_pTagRemove</code>.</li>
             </ul>
           </li>
           <li>
-            <h2 id="tagger.setMaterial_Tag">Set Material (Tag)</h2>
+            <h3 id="tagger.setMaterial_pTag">Set Material (Tag)</h3>
             <div class="definition">
               <code>tagger.setMaterial_Tag</code>
               <p class="tooltip">Set material for Tags (materials, parts, or selection sets)</p>
             </div>
-            <p>(TODO)</p>
+            <p>Probably the most common way MODO users assign materials (mapped to <span class="keystroke">M</span> by default).</p>
+            <h4>Example</h4>
+            <ol>
+              <li>select polygons</li>
+              <li>hit <span class="keystroke">M</span> for <em>Material</em></li>
+              <li>type a tag name (or select an existing one from the popup list)</li>
+              <li>hit <span class="keystroke">enter</span></li>
+            </ol>
+            <p>Result: Polys are tagged and, if appropriate, a shader tree mask is created.</p>
+            <h4>Arguments</h4>
+            <ul>
+              <li>Tag</li>
+              <li>Quick Preset</li>
+              <li>Scope</li>
+              <li>Tag Type</li>
+              <li>With Existing</li>
+            </ul>
           </li>
           <li>
-            <h2 id="tagger.setMaterial_TagIslands">Set Material (Tag Islands)</h2>
+            <h3 id="tagger.setMaterial_pTagIslands">Set Material (Tag Islands)</h3>
             <div class="definition">
               <code>tagger.setMaterial_TagIslands</code>
               <p class="tooltip">Set a different material (random color) for each poly island in the active mesh item(s)</p>
@@ -125,7 +148,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.removeMaterial_Tag">Remove Material (Tag)</h2>
+            <h3 id="tagger.setMaterial_pTagRemove">Remove Material (Tag)</h3>
             <div class="definition">
               <code>tagger.removeMaterial_Tag</code>
               <p class="tooltip">Remove material Tags and masks for selected polygons</p>
@@ -133,7 +156,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.setMaterial_item">Set Material (Items)</h2>
+            <h3 id="tagger.setMaterial_item">Set Material (Items)</h3>
             <div class="definition">
               <code>tagger.setMaterial_item</code>
               <p class="tooltip">Set Material using item masks for each selected item</p>
@@ -141,7 +164,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.setMaterial_itemRemove">Remove Material (Items)</h2>
+            <h3 id="tagger.setMaterial_itemRemove">Remove Material (Items)</h3>
             <div class="definition">
               <code>tagger.setMaterial_itemRemove</code>
               <p class="tooltip">Remove all item masks for the seleted item(s)</p>
@@ -149,7 +172,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.setMaterial_group">Set Material (Group)</h2>
+            <h3 id="tagger.setMaterial_group">Set Material (Group)</h3>
             <div class="definition">
               <code>tagger.setMaterial_group</code>
               <p class="tooltip">Create a new group containing the selected items, then Set Material using the newly created group</p>
@@ -157,7 +180,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.floodSelectMaterial">Flood Select by Material</h2>
+            <h3 id="tagger.floodSelectMaterial">Flood Select by Material</h3>
             <div class="definition">
               <code>tagger.floodSelectMaterial</code>
               <p class="tooltip">Flood-select by material tag</p>
@@ -165,7 +188,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.floodSelectPart">Flood Select by Part</h2>
+            <h3 id="tagger.floodSelectPart">Flood Select by Part</h3>
             <div class="definition">
               <code>tagger.floodSelectPart</code>
               <p class="tooltip">Flood-select by part tag</p>
@@ -173,7 +196,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.floodSelectPick">Flood Select by Selection Set</h2>
+            <h3 id="tagger.floodSelectSelectionSet">Flood Select by Selection Set</h3>
             <div class="definition">
               <code>tagger.floodSelectPick</code>
               <p class="tooltip">Flood-select by selection set ("pick") tag</p>
@@ -181,7 +204,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.TagSet">Set Tag</h2>
+            <h3 id="tagger.pTagSet">Set Tag</h3>
             <div class="definition">
               <code>tagger.TagSet</code>
               <p class="tooltip">Set the value of a Tag for selected polys (does not create shader tree masks)</p>
@@ -189,7 +212,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.pTagCopy">Tag Copy</h2>
+            <h3 id="tagger.pTagCopy">Tag Copy</h3>
             <div class="definition">
               <code>tagger.pTagCopy</code>
               <p class="tooltip">Copy and paste Tags from one poly to another</p>
@@ -197,7 +220,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.pTagCopyMask">Tag Copy from Mask</h2>
+            <h3 id="tagger.pTagCopyMask">Tag Copy from Mask</h3>
             <div class="definition">
               <code>tagger.pTagCopyMask</code>
               <p class="tooltip">Copy and paste Tags from a shader tree mask to a poly selection</p>
@@ -205,7 +228,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.pTagPasteDialog">Paste Tag (Dialog)</h2>
+            <h3 id="tagger.pTagPasteDialog">Paste Tag (Dialog)</h3>
             <div class="definition">
               <code>tagger.pTagPasteDialog</code>
               <p class="tooltip">Paste tags with advanced controls</p>
@@ -213,7 +236,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.pTagPasteMaterial">Paste Material Tag</h2>
+            <h3 id="tagger.pTagPasteMaterial">Paste Material Tag</h3>
             <div class="definition">
               <code>tagger.pTagPasteMaterial</code>
               <p class="tooltip">Copy and paste material Tags from one poly to another</p>
@@ -221,7 +244,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.pTagPastePart">Paste Part Tag</h2>
+            <h3 id="tagger.pTagPastePart">Paste Part Tag</h3>
             <div class="definition">
               <code>tagger.pTagPastePart</code>
               <p class="tooltip">Copy and paste part Tags from one poly to another</p>
@@ -229,7 +252,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.pTagPasteSelectionSet">Paste Selection Set</h2>
+            <h3 id="tagger.pTagPasteSelectionSet">Paste Selection Set</h3>
             <div class="definition">
               <code>tagger.pTagPasteSelectionSet</code>
               <p class="tooltip">Copy and paste Selection Set from one poly to another</p>
@@ -237,7 +260,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.TagInspect">Inspect Tags (debug only)</h2>
+            <h3 id="tagger.pTagInspect">Inspect Tags (debug only)</h3>
             <div class="definition">
               <code>tagger.TagInspect</code>
               <p class="tooltip">Throws a quick, ugly dialog listing all of the polytags in the current polygon selection</p>
@@ -245,7 +268,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.TagRemoveAll">Remove All Tags...</h2>
+            <h3 id="tagger.pTagRemoveAll">Remove All Tags...</h3>
             <div class="definition">
               <code>tagger.TagRemoveAll</code>
               <p class="tooltip">Removes all Tags of a given type from the entire scene</p>
@@ -253,7 +276,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.TagReplace">Find/Replace Tag</h2>
+            <h3 id="tagger.pTagReplace">Find/Replace Tag</h3>
             <div class="definition">
               <code>tagger.TagReplace</code>
               <p class="tooltip">Find all instances of a given Tag and replace with another (full scene)</p>
@@ -261,7 +284,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.TagSelectionFCL">Poly Selection (Commands List)</h2>
+            <h3 id="tagger.pTagSelectionFCL">Poly Selection (Commands List)</h3>
             <div class="definition">
               <code>tagger.TagSelectionFCL</code>
               <p class="tooltip">Form Command List of Tags in currently selected polys</p>
@@ -269,7 +292,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.selectAllByTagDialog">Select All by Tag (dialog)</h2>
+            <h3 id="tagger.selectAllByTagDialog">Select All by Tag (dialog)</h3>
             <div class="definition">
               <code>tagger.selectAllByTagDialog</code>
               <p class="tooltip">Select all polys with a given Tag in active mesh(es)</p>
@@ -277,7 +300,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.selectAllByMaterial">Select All by Material Tag</h2>
+            <h3 id="tagger.selectAllByMaterial">Select All by Material Tag</h3>
             <div class="definition">
               <code>tagger.selectAllByMaterial</code>
               <p class="tooltip">Select all polys with a given Tag in active mesh(es)</p>
@@ -285,7 +308,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.selectAllByPart">Select All by Part Tag</h2>
+            <h3 id="tagger.selectAllByPart">Select All by Part Tag</h3>
             <div class="definition">
               <code>tagger.selectAllByPart</code>
               <p class="tooltip">Select all polys with a given Tag in active mesh(es)</p>
@@ -293,7 +316,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.selectAllBySelectionSet">Select All by Selection Set</h2>
+            <h3 id="tagger.selectAllBySelectionSet">Select All by Selection Set</h3>
             <div class="definition">
               <code>tagger.selectAllBySelectionSet</code>
               <p class="tooltip">Select all polys with a given Tag in active mesh(es)</p>
@@ -301,7 +324,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.setMaterial_existing">Tag Polys with Selected Mask</h2>
+            <h3 id="tagger.setMaterial_existing">Tag Polys with Selected Mask</h3>
             <div class="definition">
               <code>tagger.setMaterial_existing</code>
               <p class="tooltip">Read Tag from currently selected shader tree mask and apply it to selected polys</p>
@@ -309,7 +332,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.setMaterial_existing_FCL">Tag Polys with Mask (Commands List)</h2>
+            <h3 id="tagger.setMaterial_existing_FCL">Tag Polys with Mask (Commands List)</h3>
             <div class="definition">
               <code>tagger.setMaterial_existing_FCL</code>
               <p class="tooltip">Form Command List that lists all shader tree masks for quick application to selected polys</p>
@@ -317,7 +340,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.setMaterial_existing_Popup">Tag With Masked (Popup)</h2>
+            <h3 id="tagger.setMaterial_existing_Popup">Tag With Masked (Popup)</h3>
             <div class="definition">
               <code>tagger.setMaterial_existing_Popup</code>
               <p class="tooltip">Popup menu that lists all shader tree masks for quick application to selected polys</p>
@@ -325,7 +348,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.shaderTree_maskUnmasked">Mask Unmasked Tags</h2>
+            <h3 id="tagger.shaderTree_maskUnmasked">Mask Unmasked Tags</h3>
             <div class="definition">
               <code>tagger.shaderTree_maskUnmasked</code>
               <p class="tooltip">Creates shader tree masks for any un-masked Tags of a given type (material, part, or selection set)</p>
@@ -333,7 +356,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.pTagRemoveUnmasked">Remove Unmasked Tags</h2>
+            <h3 id="tagger.pTagRemoveUnmasked">Remove Unmasked Tags</h3>
             <div class="definition">
               <code>tagger.pTagRemoveUnmasked</code>
               <p class="tooltip">Removes all polytags that do not have a corresponding shader tree mask</p>
@@ -341,7 +364,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.shaderTree_cleanup">Cleanup Shader Tree</h2>
+            <h3 id="tagger.shaderTree_cleanup">Cleanup Shader Tree</h3>
             <div class="definition">
               <code>tagger.shaderTree_cleanup</code>
               <p class="tooltip">Delete useless masks from the shader tree</p>
@@ -349,7 +372,7 @@
             <p>(TODO)</p>
           </li>
           <li>
-            <h2 id="tagger.shaderTree_consolidateByColor">Consolidate Masks by Color</h2>
+            <h3 id="tagger.shaderTree_consolidateByColor">Consolidate Masks by Color</h3>
             <div class="definition">
               <code>tagger.shaderTree_consolidateByColor</code>
               <p class="tooltip">Combine all simple material masks with the same diffuse color value.</p>
