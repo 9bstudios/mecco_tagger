@@ -19,19 +19,70 @@
         <p>Assigning materials this way is very flexible, because each polygon in a mesh can have its own material assignment. It's also inherently heavy and slow, since each and every polygon in the mesh has a little string of text attached to it. For very dense meshes (like CAD imports), this can become prohibitively heavy.</p>
 
         <h3>Types of pTags</h3>
-        <p>There are actually three kinds of polygon tags in MODO by default: material tags, part tags, and pick tags (aka selection sets).</p>
-        <p>Material tags are typically used for material filtering in the shader tree. A given poly may only have one Material tag at a time.</p>
-        <p>Pick tags are the internal name for "selection sets", allowing the user to quickly save and recall polygon selections. Pick tags are unique because each tag is actually a semi-colon delimited list of individual tags, allowing a given polygon to have as many pick tags as needed. Since a polygon can have any number of pick tags, they can be very useful for complex layered material filtering.</p>
-        <p>Part tags are commonly used for storing extra information about polygons, especially during import from a third-party format. In CAD imports, for example, Part tags are used to demark individual CAD faces from the original NURBS data. Most users are unaware this data exists, but it can be invaluable when working with CAD data. A given polygon may only have one Part tag at a time.</p>
+        <p>There are three kinds of polygon tags in MODO: material tags, part tags, and pick tags (aka selection sets).</p>
+        <p><strong>Material tags</strong> are typically used for material filtering in the shader tree. A given poly may only have one Material tag at a time.</p>
+        <p><strong>Pick tags</strong> are the internal name for "selection sets", allowing the user to quickly save and recall polygon selections. Pick tags are unique because each tag is actually a semi-colon delimited list of individual tags, allowing a given polygon to have as many pick tags as needed. Since a polygon can have any number of pick tags, they can be very useful for complex layered material filtering.</p>
+        <p><strong>Part tags</strong> are commonly used for storing extra information about polygons, especially during import from a third-party format. In CAD imports, for example, Part tags are used to demark individual CAD faces from the original NURBS data. Most users are unaware this data exists, but it can be invaluable when working with CAD data. A given polygon may only have one Part tag at a time.</p>
 
-        <ul>
+        <div id="quicklinks">
+          <h2>Tagger Commands</h2>
+          <ul>
+            <li><a href="#tagger.pTagConvert">Convert Tag Type<br /><code>tagger.pTagConvert</code></a></li>
+            <li><a href="#tagger.setMaterial_auto">Set Material (auto)<br /><code>tagger.setMaterial_auto</code></a></li>
+            <li><a href="#tagger.setMaterial_autoRemove">Remove Material (auto)<br /><code>tagger.setMaterial_autoRemove</code></a></li>
+            <li><a href="#tagger.setMaterial_Tag">Set Material (Tag)<br /><code>tagger.setMaterial_Tag</code></a></li>
+            <li><a href="#tagger.setMaterial_TagIslands">Set Material (Tag Islands)<br /><code>tagger.setMaterial_TagIslands</code></a></li>
+            <li><a href="#tagger.removeMaterial_Tag">Remove Material (Tag)<br /><code>tagger.removeMaterial_Tag</code></a></li>
+            <li><a href="#tagger.setMaterial_item">Set Material (Items)<br /><code>tagger.setMaterial_item</code></a></li>
+            <li><a href="#tagger.setMaterial_itemRemove">Remove Material (Items)<br /><code>tagger.setMaterial_itemRemove</code></a></li>
+            <li><a href="#tagger.setMaterial_group">Set Material (Group)<br /><code>tagger.setMaterial_group</code></a></li>
+            <li><a href="#tagger.floodSelectMaterial">Flood Select by Material<br /><code>tagger.floodSelectMaterial</code></a></li>
+            <li><a href="#tagger.floodSelectPart">Flood Select by Part<br /><code>tagger.floodSelectPart</code></a></li>
+            <li><a href="#tagger.floodSelectPick">Flood Select by Selection Set<br /><code>tagger.floodSelectPick</code></a></li>
+            <li><a href="#tagger.TagSet">Set Tag<br /><code>tagger.TagSet</code></a></li>
+            <li><a href="#tagger.pTagCopy">Tag Copy<br /><code>tagger.pTagCopy</code></a></li>
+            <li><a href="#tagger.pTagCopyMask">Tag Copy from Mask<br /><code>tagger.pTagCopyMask</code></a></li>
+            <li><a href="#tagger.pTagPasteDialog">Paste Tag (Dialog)<br /><code>tagger.pTagPasteDialog</code></a></li>
+            <li><a href="#tagger.pTagPasteMaterial">Paste Material Tag<br /><code>tagger.pTagPasteMaterial</code></a></li>
+            <li><a href="#tagger.pTagPastePart">Paste Part Tag<br /><code>tagger.pTagPastePart</code></a></li>
+            <li><a href="#tagger.pTagPasteSelectionSet">Paste Selection Set<br /><code>tagger.pTagPasteSelectionSet</code></a></li>
+            <li><a href="#tagger.TagInspect">Inspect Tags (debug only)<br /><code>tagger.TagInspect</code></a></li>
+            <li><a href="#tagger.TagRemoveAll">Remove All Tags...<br /><code>tagger.TagRemoveAll</code></a></li>
+            <li><a href="#tagger.TagReplace">Find/Replace Tag<br /><code>tagger.TagReplace</code></a></li>
+            <li><a href="#tagger.TagSelectionFCL">Poly Selection (Commands List)<br /><code>tagger.TagSelectionFCL</code></a></li>
+            <li><a href="#tagger.selectAllByTagDialog">Select All by Tag (dialog)<br /><code>tagger.selectAllByTagDialog</code></a></li>
+            <li><a href="#tagger.selectAllByMaterial">Select All by Material Tag<br /><code>tagger.selectAllByMaterial</code></a></li>
+            <li><a href="#tagger.selectAllByPart">Select All by Part Tag<br /><code>tagger.selectAllByPart</code></a></li>
+            <li><a href="#tagger.selectAllBySelectionSet">Select All by Selection Set<br /><code>tagger.selectAllBySelectionSet</code></a></li>
+            <li><a href="#tagger.setMaterial_existing">Tag Polys with Selected Mask<br /><code>tagger.setMaterial_existing</code></a></li>
+            <li><a href="#tagger.setMaterial_existing_FCL">Tag Polys with Mask (Commands List)<br /><code>tagger.setMaterial_existing_FCL</code></a></li>
+            <li><a href="#tagger.setMaterial_existing_Popup">Tag With Masked (Popup)<br /><code>tagger.setMaterial_existing_Popup</code></a></li>
+            <li><a href="#tagger.shaderTree_maskUnmasked">Mask Unmasked Tags<br /><code>tagger.shaderTree_maskUnmasked</code></a></li>
+            <li><a href="#tagger.pTagRemoveUnmasked">Remove Unmasked Tags<br /><code>tagger.pTagRemoveUnmasked</code></a></li>
+            <li><a href="#tagger.shaderTree_cleanup">Cleanup Shader Tree<br /><code>tagger.shaderTree_cleanup</code></a></li>
+            <li><a href="#tagger.shaderTree_consolidateByColor">Consolidate Masks by Color<br /><code>tagger.shaderTree_consolidateByColor</code></a></li>
+          </ul>
+        </div>
+
+        <ul id="commandsList">
           <li>
             <h2 id="tagger.pTagConvert">Convert Tag Type</h2>
             <div class="definition">
               <code>tagger.pTagConvert</code>
               <p class="tooltip">Change a Tag from one type to another, e.g. convert a part tag to a material tag</p>
             </div>
-            <p>(TODO)</p>
+            <h3>Typical Usecase</h3>
+            <p>Most users will not need this tool.</p>
+            <p>It is especially valuable when working with imported data, such as CAD data. Material tags imported from CAD may be useful for making selections, but less so for assigning materials. In that case, we can convert Material tags to Selection Sets, thus allowing us to assign new Material tags while maintaining access to the original imported material tags for reference. Or, in other cases, it may be useful to convert Part tags to Material tags or vise-verse, depending on the specifics of the CAD import process.</p>
+
+            <h3>Example</h3>
+            <ol>
+              <li>select polygons</li>
+              <li>run command</li>
+              <li>select tag type to convert from</li>
+              <li>select tag type to convert to</li>
+            </ol>
+            <p>Result: Tags on selected polys are converted.</p>
           </li>
           <li>
             <h2 id="tagger.setMaterial_auto">Set Material (auto)</h2>
@@ -39,7 +90,11 @@
               <code>tagger.setMaterial_auto</code>
               <p class="tooltip">Set material for polygons if in poly selection mode, or items if in item mode</p>
             </div>
-            <p>(TODO)</p>
+            <p>Simply selects the appropriate <code>tagger.setMaterial</code> command based on selection mode.</p>
+            <ul>
+              <li><strong>Item Mode</strong>: <code>tagger.setMaterial_item</code>.</li>
+              <li><strong>Component Modes</strong>: <code>tagger.setMaterial_Tag</code>.</li>
+            </ul>
           </li>
           <li>
             <h2 id="tagger.setMaterial_autoRemove">Remove Material (auto)</h2>
@@ -47,7 +102,11 @@
               <code>tagger.setMaterial_autoRemove</code>
               <p class="tooltip">Remove material masks and tags from polygons if in poly selection mode, or item masks if in item mode</p>
             </div>
-            <p>(TODO)</p>
+            <p>Simply selects the appropriate command based on selection mode.</p>
+            <ul>
+              <li><strong>Item Mode</strong>: <code>tagger.setMaterial_item</code>.</li>
+              <li><strong>Component Modes</strong>: <code>tagger.setMaterial_Tag</code>.</li>
+            </ul>
           </li>
           <li>
             <h2 id="tagger.setMaterial_Tag">Set Material (Tag)</h2>

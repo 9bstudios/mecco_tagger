@@ -9,20 +9,28 @@ h1, h2, h3, h4 {
   color:#333;
 }
 
+a {
+  text-decoration: none;
+  color:inherit;
+}
 
-
-ul {
+ul#commandsList {
   list-style-type:none;
   padding-left:0;
 }
 
-li {
+ul#commandsList li {
   margin-bottom:4em;
+}
+
+ul#commandsList li li {
+  margin-bottom:inherit;;
 }
 
 div.definition {
   background-color:#f5f5f5;
   padding:1em;
+  margin-bottom:1em;
 }
 
 code {
@@ -32,4 +40,20 @@ code {
 
 .tooltip {
   font-style:italic;
+}
+
+#quicklinks {
+  background-color:#f5f5f5;
+  padding:1em 2em;
+  margin:4em 0;
+}
+
+#quicklinks ul {
+  list-style-type:none;
+  padding:0;
+}
+
+#quicklinks ul li {
+  padding:1em;
+  border-top:1px solid #ddd;
 }
