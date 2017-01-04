@@ -8,9 +8,18 @@ from debug import *
 def do_preset(preset_path, target_mask=None):
     """Drops a material preset, deletes the cruft, and returns the good stuff."""
 
-    lx.eval('preset.do {%s}' % preset_path)
+    # preset.do has a habit of arranging things based on selection. To avoid havoc,
+    # we need to drop all texture layer selections before running it, then pick them
+    # back up again.
+    recall_selection = [i for i in modo.Scene().selected if i.superType == 'textureLayer']
+    for i in recall_selection:
+        i.deselect()
 
+    lx.eval('preset.do {%s}' % preset_path)
     debug("Did preset.")
+
+    for i in recall_selection:
+        i.select()
 
     preset_group = modo.Scene().groups[-1]
     preset_parent_mask = preset_group.itemGraph('itemGroups').forward()[0]
