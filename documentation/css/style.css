@@ -17,6 +17,10 @@ h3 {
   #333
 }
 
+hr {
+  margin: 4em 0;
+}
+
 a {
   text-decoration: none;
   color:inherit;
@@ -28,12 +32,12 @@ ul#commandsList {
 }
 
 ul#commandsList li {
-  margin:2em 0;
-  border-top:1px solid #eee;
+  padding:2em 0;
+  border-top:1px solid #ccc;
 }
 
 ul#commandsList li li {
-  margin:inherit;
+  padding:.5em;
   border-top:0;
 }
 
@@ -52,6 +56,7 @@ code {
   padding: .1em .3em 0;
   background-color: rgb(230, 244, 255);
   color: rgb(16, 142, 233);
+  display: inline-block;
 }
 
 .tooltip {
@@ -70,6 +75,14 @@ code {
 }
 
 #quicklinks ul li {
-  padding:1em 0 1em;
+  padding:1em 0;
   border-top:1px solid #ddd;
+}
+
+ul.arguments li {
+  margin-bottom:1em;
+}
+
+ul.arguments li li {
+  margin-bottom:inherit;
 }
