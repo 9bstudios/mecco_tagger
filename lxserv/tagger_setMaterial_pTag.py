@@ -9,7 +9,7 @@ CMD_NAME = tagger.CMD_SET_PTAG
 def material_tags_list():
     return tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL)
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -18,36 +18,41 @@ class CommandClass(tagger.Commander):
                     'name': tagger.TAG,
                     'label': tagger.LABEL_TAG,
                     'datatype': 'string',
-                    'value': "",
+                    'default': "",
                     'flags': [],
-                    'sPresetText': material_tags_list
+                    'values_list_type': 'sPresetText',
+                    'values_list': material_tags_list
                 }, {
                     'name': tagger.PRESET,
                     'label': tagger.LABEL_PRESET,
                     'datatype': 'string',
-                    'value': tagger.RANDOM,
-                    'popup': tagger.presets.presets_popup,
+                    'default': tagger.RANDOM,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.presets.presets_popup,
                     'flags': ['optional', 'query']
                 }, {
                     'name': tagger.SCOPE,
                     'label': tagger.LABEL_SCOPE,
                     'datatype': 'string',
-                    'value': tagger.SCOPE_SELECTED,
-                    'popup': tagger.POPUPS_SCOPE,
+                    'default': tagger.SCOPE_SELECTED,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_SCOPE,
                     'flags': ['optional']
                 }, {
                     'name': tagger.TAGTYPE,
                     'label': tagger.LABEL_TAGTYPE,
                     'datatype': 'string',
-                    'value': tagger.MATERIAL,
-                    'popup': tagger.POPUPS_TAGTYPES,
+                    'default': tagger.MATERIAL,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_TAGTYPES,
                     'flags': ['optional']
                 }, {
                     'name': tagger.WITH_EXISTING,
                     'label': tagger.LABEL_WITH_EXISTING,
                     'datatype': 'string',
-                    'value': tagger.USE,
-                    'popup': tagger.POPUPS_WITH_EXISTING,
+                    'default': tagger.USE,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_WITH_EXISTING,
                     'flags': ['optional']
                 }
             ]
@@ -100,7 +105,7 @@ class CommandClass(tagger.Commander):
         elif existing_masks and withExisting == tagger.REMOVE:
             new_mask = tagger.shadertree.build_material(i_POLYTAG = i_POLYTAG, pTag = pTag, preset = preset)
             tagger.shadertree.move_to_base_shader(new_mask)
-            
+
             tagger.safe_removeItems(existing_masks, True)
 
         elif existing_masks and withExisting == tagger.CONSOLIDATE:

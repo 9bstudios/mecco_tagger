@@ -4,7 +4,7 @@ import lx, lxu.command, lxifc, traceback, modo, tagger
 
 CMD_NAME = tagger.CMD_SHADERTREE_MASK_UNMASKED
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -13,8 +13,9 @@ class CommandClass(tagger.Commander):
                     'name': tagger.TAGTYPE,
                     'label': tagger.LABEL_TAGTYPE,
                     'datatype': 'string',
-                    'value': tagger.MATERIAL,
-                    'popup': tagger.POPUPS_TAGTYPES,
+                    'default': tagger.MATERIAL,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_TAGTYPES,
                     'flags': [],
                 }
             ]

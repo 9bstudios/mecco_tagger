@@ -29,7 +29,7 @@ class PolyTaggerClass (lxifc.Visitor):
             self.tag.Set (self.i_POLYTAG, None)
 
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -38,15 +38,17 @@ class CommandClass(tagger.Commander):
                     'name': tagger.TAGTYPE,
                     'label': tagger.LABEL_TAGTYPE,
                     'datatype': 'string',
-                    'value': tagger.PART,
-                    'popup': tagger.POPUPS_TAGTYPES_WITH_ALL,
+                    'default': tagger.PART,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_TAGTYPES_WITH_ALL,
                     'flags': [],
                 }, {
                     'name': tagger.SCOPE,
                     'label': tagger.LABEL_SCOPE,
                     'datatype': 'string',
-                    'value': tagger.SCOPE_SELECTED_ITEMS,
-                    'popup': tagger.POPUPS_REMOVE_ALL_SCOPE,
+                    'default': tagger.SCOPE_SELECTED_ITEMS,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_REMOVE_ALL_SCOPE,
                     'flags': [],
                 }
             ]

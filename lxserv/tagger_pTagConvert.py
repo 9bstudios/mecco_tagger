@@ -25,7 +25,7 @@ class MeshEditorClass(tagger.MeshEditorClass):
             stringTag.Set(toTagType, stringTag.Get(fromTagType))
 
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -34,15 +34,17 @@ class CommandClass(tagger.Commander):
                     'name': tagger.FROM_TAG_TYPE,
                     'label': tagger.LABEL_FROM_TAGTYPE,
                     'datatype': 'string',
-                    'value': tagger.MATERIAL,
-                    'popup': tagger.POPUPS_TAGTYPES,
+                    'default': tagger.MATERIAL,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_TAGTYPES,
                     'flags': [],
                 }, {
                     'name': tagger.TO_TAG_TYPE,
                     'label': tagger.LABEL_TO_TAGTYPE,
                     'datatype': 'string',
-                    'value': tagger.PICK,
-                    'popup': tagger.POPUPS_TAGTYPES,
+                    'default': tagger.PICK,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_TAGTYPES,
                     'flags': []
                 }
             ]

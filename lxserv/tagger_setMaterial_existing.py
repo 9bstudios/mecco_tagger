@@ -4,7 +4,7 @@ import lx, lxu, modo, tagger, traceback
 
 NAME_CMD = tagger.CMD_SET_EXISTING
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -13,8 +13,9 @@ class CommandClass(tagger.Commander):
                     'name': tagger.SCOPE,
                     'label': tagger.LABEL_TAGTYPE,
                     'datatype': 'string',
-                    'value': tagger.SCOPE_SELECTED,
-                    'popup': tagger.POPUPS_SCOPE,
+                    'default': tagger.SCOPE_SELECTED,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_SCOPE,
                     'flags': ['optional']
                 }
             ]

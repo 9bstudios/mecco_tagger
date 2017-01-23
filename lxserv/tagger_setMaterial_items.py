@@ -4,7 +4,7 @@ import lx, lxu, modo, tagger, traceback
 
 NAME_CMD = tagger.CMD_SET_ITEM
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -13,15 +13,17 @@ class CommandClass(tagger.Commander):
                     'name': tagger.PRESET,
                     'label': tagger.LABEL_PRESET,
                     'datatype': 'string',
-                    'value': tagger.RANDOM,
-                    'popup': tagger.presets.presets_popup(),
+                    'default': tagger.RANDOM,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.presets.presets_popup(),
                     'flags': ['optional']
                 }, {
                     'name': tagger.WITH_EXISTING,
                     'label': tagger.LABEL_WITH_EXISTING,
                     'datatype': 'string',
-                    'value': tagger.KEEP,
-                    'popup': tagger.POPUPS_WITH_EXISTING,
+                    'default': tagger.KEEP,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_WITH_EXISTING,
                     'flags': ['optional']
                 }
             ]
@@ -56,5 +58,5 @@ class CommandClass(tagger.Commander):
 
         notifier = tagger.Notifier()
         notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
-        
+
 lx.bless(CommandClass, NAME_CMD)

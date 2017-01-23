@@ -39,7 +39,7 @@ class MeshEditorClass(tagger.MeshEditorClass):
             stringTag.Set(i_POLYTAG, pTag)
 
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -48,22 +48,25 @@ class CommandClass(tagger.Commander):
                     'name': tagger.TAGTYPE,
                     'label': tagger.LABEL_TAGTYPE,
                     'datatype': 'string',
-                    'value': tagger.MATERIAL,
-                    'popup': tagger.POPUPS_TAGTYPES,
+                    'default': tagger.MATERIAL,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_TAGTYPES,
                     'flags': []
                 }, {
                     'name': tagger.TAG,
                     'label': tagger.LABEL_TAG,
                     'datatype': 'string',
-                    'value': "",
+                    'default': "",
                     'flags': [],
-                    'sPresetText': build_tags_list
+                    'values_list_type': 'sPresetText',
+                    'values_list': build_tags_list
                 }, {
                     'name': tagger.SCOPE,
                     'label': tagger.LABEL_SCOPE,
                     'datatype': 'string',
-                    'value': tagger.SCOPE_SELECTED,
-                    'popup': tagger.POPUPS_SCOPE,
+                    'default': tagger.SCOPE_SELECTED,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_SCOPE,
                     'flags': ['optional']
                 }
             ]

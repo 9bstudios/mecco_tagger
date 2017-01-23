@@ -5,7 +5,7 @@ import lx, lxu, modo, traceback, tagger
 NAME_CMD = tagger.CMD_SHADERTREE_CLEANUP
 
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -14,13 +14,13 @@ class CommandClass(tagger.Commander):
                     'name': tagger.DEL_EMPTY,
                     'label': tagger.LABEL_DELETE_EMPTY_GROUPS,
                     'datatype': 'boolean',
-                    'value': True,
+                    'default': True,
                     'flags': []
                 }, {
                     'name': tagger.DEL_UNUSED,
                     'label': tagger.LABEL_DELETE_UNUSED_GROUPS,
                     'datatype': 'boolean',
-                    'value': True,
+                    'default': True,
                     'flags': []
                 }
             ]

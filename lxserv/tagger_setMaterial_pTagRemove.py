@@ -7,7 +7,7 @@ from os.path import isfile, join, basename, splitext, dirname
 
 CMD_NAME = tagger.CMD_SET_PTAG_REMOVE
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -16,22 +16,25 @@ class CommandClass(tagger.Commander):
                     'name': tagger.TAGTYPE,
                     'label': tagger.LABEL_TAGTYPE,
                     'datatype': 'string',
-                    'value': tagger.MATERIAL,
-                    'popup': tagger.POPUPS_TAGTYPES,
+                    'default': tagger.MATERIAL,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_TAGTYPES,
                     'flags': ['optional']
                 }, {
                     'name': tagger.REMOVE_SCOPE,
                     'label': tagger.LABEL_REMOVE_SCOPE,
                     'datatype': 'string',
-                    'value': tagger.SCOPE_SELECTED,
+                    'default': tagger.SCOPE_SELECTED,
                     'flags': ['optional'],
-                    'sPresetText': tagger.POPUPS_REMOVE_SCOPE
+                    'values_list_type': 'sPresetText',
+                    'values_list': tagger.POPUPS_REMOVE_SCOPE
                 }, {
                     'name': tagger.DELETE_UNUSED_MASKS,
                     'label': tagger.LABEL_DELETE_UNUSED_MASKS,
                     'datatype': 'boolean',
-                    'value': True,
-                    'popup': tagger.POPUPS_SCOPE,
+                    'default': True,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_SCOPE,
                     'flags': ['optional']
                 }
             ]

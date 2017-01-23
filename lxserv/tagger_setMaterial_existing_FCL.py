@@ -42,7 +42,7 @@ def list_commands():
     return fcl
 
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -51,8 +51,9 @@ class CommandClass(tagger.Commander):
                     'name': tagger.QUERY,
                     'label': tagger.LABEL_QUERY,
                     'datatype': 'integer',
-                    'value': '',
-                    'fcl': list_commands,
+                    'default': '',
+                    'values_list_type': 'fcl',
+                    'values_list': list_commands,
                     'flags': ['query'],
                 }
             ]

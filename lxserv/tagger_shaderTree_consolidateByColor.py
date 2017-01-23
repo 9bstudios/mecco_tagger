@@ -6,7 +6,7 @@ CMD_NAME = tagger.CMD_SHADERTREE_CONSOLIDATE_BY_COLOR
 def color_convert(color):
     return [i*256 for i in color]
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_execute(self, msg, flags):

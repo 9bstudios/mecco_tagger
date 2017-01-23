@@ -8,8 +8,9 @@ _scope_popup = {
     'name': tagger.SCOPE,
     'label': tagger.LABEL_SCOPE,
     'datatype': 'string',
-    'value': tagger.SCOPE_SELECTED,
-    'popup': tagger.POPUPS_SCOPE,
+    'default': tagger.SCOPE_SELECTED,
+    'values_list_type': 'popup',
+    'values_list': tagger.POPUPS_SCOPE,
     'flags': ['optional']
 }
 
@@ -41,7 +42,7 @@ def paste(tagType=tagger.MATERIAL, connected=tagger.SCOPE_SELECTED):
 
 
 
-class CopyCommandClass(tagger.Commander):
+class CopyCommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_execute(self, msg, flags):
@@ -55,7 +56,7 @@ class CopyCommandClass(tagger.Commander):
             _clipboard['pick'] = polys[-1].tags()['pick']
 
 
-class CopyMaskCommandClass(tagger.Commander):
+class CopyMaskCommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_execute(self, msg, flags):
@@ -83,7 +84,7 @@ class CopyMaskCommandClass(tagger.Commander):
         _clipboard[tagType] = tag
 
 
-class PasteDialogCommandClass(tagger.Commander):
+class PasteDialogCommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -92,7 +93,7 @@ class PasteDialogCommandClass(tagger.Commander):
                 'name': tagger.TAGTYPE,
                 'label': tagger.LABEL_TAGTYPE,
                 'datatype': 'string',
-                'value': tagger.MATERIAL,
+                'default': tagger.MATERIAL,
                 'popup': tagger.POPUPS_TAGTYPES,
                 'flags': [],
             },
@@ -103,7 +104,7 @@ class PasteDialogCommandClass(tagger.Commander):
         paste(self.commander_arg_value(0), self.commander_arg_value(1))
 
 
-class PasteMaterialCommandClass(tagger.Commander):
+class PasteMaterialCommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -113,7 +114,7 @@ class PasteMaterialCommandClass(tagger.Commander):
         paste(tagger.MATERIAL, self.commander_arg_value(0))
 
 
-class PastePartCommandClass(tagger.Commander):
+class PastePartCommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -123,7 +124,7 @@ class PastePartCommandClass(tagger.Commander):
         paste(tagger.PART, self.commander_arg_value(0))
 
 
-class PastePickCommandClass(tagger.Commander):
+class PastePickCommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):

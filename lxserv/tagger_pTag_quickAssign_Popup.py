@@ -3,7 +3,7 @@ import lx, lxifc, lxu.command, tagger
 
 CMD_NAME = tagger.CMD_PTAG_QUICK_ASSIGN_POPUP
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -12,23 +12,26 @@ class CommandClass(tagger.Commander):
                     'name': tagger.TAGTYPE,
                     'label': tagger.LABEL_TAGTYPE,
                     'datatype': 'string',
-                    'value': tagger.MATERIAL,
-                    'popup': tagger.POPUPS_TAGTYPES,
+                    'default': tagger.MATERIAL,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_TAGTYPES,
                     'flags': []
                 }, {
                     'name': tagger.TAG,
                     'label': self.tag_label,
                     'datatype': 'string',
-                    'value': '',
-                    'popup': self.list_tags,
+                    'default': '',
+                    'values_list_type': 'popup',
+                    'values_list': self.list_tags,
                     'flags': ['query'],
                 }, {
                     'name': tagger.SCOPE,
                     'label': tagger.LABEL_SCOPE,
                     'datatype': 'string',
-                    'value': tagger.SCOPE_SELECTED,
+                    'default': tagger.SCOPE_SELECTED,
                     'flags': ['optional'],
-                    'sPresetText': tagger.POPUPS_SCOPE
+                    'values_list_type': 'sPresetText',
+                    'values_list': tagger.POPUPS_SCOPE
                 }
             ]
 

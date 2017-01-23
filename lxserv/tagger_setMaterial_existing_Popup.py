@@ -21,7 +21,7 @@ def tagsHack():
     timer.end()
     return hackedTags
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -30,16 +30,18 @@ class CommandClass(tagger.Commander):
                     'name': tagger.TAG,
                     'label': tagger.LABEL_TAG_WITH_MASKED,
                     'datatype': 'string',
-                    'value': '',
-                    'popup': tagsHack,
+                    'default': '',
+                    'values_list_type': 'popup',
+                    'values_list': tagsHack,
                     'flags': ['query'],
                 }, {
                     'name': tagger.SCOPE,
                     'label': tagger.LABEL_SCOPE,
                     'datatype': 'string',
-                    'value': tagger.SCOPE_SELECTED,
+                    'default': tagger.SCOPE_SELECTED,
                     'flags': ['optional'],
-                    'sPresetText': tagger.POPUPS_SCOPE
+                    'values_list_type': 'sPresetText',
+                    'values_list': tagger.POPUPS_SCOPE
                 }
             ]
 

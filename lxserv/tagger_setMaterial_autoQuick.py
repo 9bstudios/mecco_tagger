@@ -6,7 +6,7 @@ from os.path import basename, splitext
 
 CMD_NAME = tagger.CMD_SET_AUTO_QUICK
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -15,8 +15,9 @@ class CommandClass(tagger.Commander):
                     'name': tagger.PRESET,
                     'label': tagger.LABEL_PRESET,
                     'datatype': 'string',
-                    'value': tagger.RANDOM,
-                    'popup': tagger.presets.presets_popup(),
+                    'default': tagger.RANDOM,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.presets.presets_popup(),
                     'flags': ['query']
                 }
             ]

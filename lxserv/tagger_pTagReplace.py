@@ -18,7 +18,7 @@ def selected_tag(tagType):
     elif not active:
         return DEFAULTS[1]
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -27,23 +27,26 @@ class CommandClass(tagger.Commander):
                     'name': tagger.TAGTYPE,
                     'label': tagger.LABEL_TAGTYPE,
                     'datatype': 'string',
-                    'value': tagger.MATERIAL,
-                    'popup': tagger.POPUPS_TAGTYPES,
+                    'default': tagger.MATERIAL,
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_TAGTYPES,
                     'flags': [],
                 }, {
                     'name': tagger.REPLACETAG,
                     'label': tagger.LABEL_REPLACE_TAG,
                     'datatype': 'string',
-                    'value': selected_tag(tagger.MATERIAL),
+                    'default': selected_tag(tagger.MATERIAL),
                     'flags': [],
-                    'sPresetText': tagger.scene.all_tags
+                    'values_list_type': 'sPresetText',
+                    'values_list': tagger.scene.all_tags
                 }, {
                     'name': tagger.WITHTAG,
                     'label': tagger.LABEL_WITH_TAG,
                     'datatype': 'string',
-                    'value': "",
+                    'default': "",
                     'flags': ['optional'],
-                    'sPresetText': tagger.scene.all_tags
+                    'values_list_type': 'sPresetText',
+                    'values_list': tagger.scene.all_tags
                 }
             ]
 

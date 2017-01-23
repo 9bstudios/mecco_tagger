@@ -2,7 +2,7 @@
 
 import lx, lxu, modo, tagger, traceback
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -10,7 +10,7 @@ class CommandClass(tagger.Commander):
                 {
                     'name': 'label',
                     'datatype': 'string',
-                    'value': 'blank',
+                    'default': 'blank',
                     'flags': ['optional'],
                 }
             ]

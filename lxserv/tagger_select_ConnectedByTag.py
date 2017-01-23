@@ -46,21 +46,21 @@ def flood_select(i_POLYTAG):
     layer_scan.Apply ()
 
 
-class FloodMaterialCommandClass(tagger.Commander):
+class FloodMaterialCommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_execute(self, msg, flags):
         flood_select(lx.symbol.i_POLYTAG_MATERIAL)
 
 
-class FloodPartCommandClass(tagger.Commander):
+class FloodPartCommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_execute(self, msg, flags):
         flood_select(lx.symbol.i_POLYTAG_PART)
 
 
-class FloodSetCommandClass(tagger.Commander):
+class FloodSetCommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_execute(self, msg, flags):

@@ -7,8 +7,9 @@ def _args_tagType():
         'name': tagger.TAGTYPE,
         'label': tagger.LABEL_TAGTYPE,
         'datatype': 'string',
-        'value': tagger.MATERIAL,
-        'popup': tagger.POPUPS_TAGTYPES,
+        'default': tagger.MATERIAL,
+        'values_list_type': 'popup',
+        'values_list': tagger.POPUPS_TAGTYPES,
         'flags': [],
     }
 
@@ -17,8 +18,9 @@ def _args_tag():
             'name': tagger.TAG,
             'label': tagger.LABEL_TAG,
             'datatype': 'string',
-            'value': '',
-            'sPresetText': tagger.scene.all_tags,
+            'default': '',
+            'values_list_type': 'sPresetText',
+            'values_list': tagger.scene.all_tags,
             'flags': ['optional'],
         }
 
@@ -42,7 +44,7 @@ def select_all_by_tag(tagType, tag):
             lx.eval("select.useSet {%s} select" % tag)
 
 
-class SelAllByDialogCommandClass(tagger.Commander):
+class SelAllByDialogCommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -52,7 +54,7 @@ class SelAllByDialogCommandClass(tagger.Commander):
         select_all_by_tag(self.commander_arg_value(0), self.commander_arg_value(1))
 
 
-class SelAllByMatCommandClass(tagger.Commander):
+class SelAllByMatCommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -66,7 +68,7 @@ class SelAllByMatCommandClass(tagger.Commander):
         select_all_by_tag('material', self.commander_arg_value(0))
 
 
-class SelAllByPartCommandClass(tagger.Commander):
+class SelAllByPartCommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -80,7 +82,7 @@ class SelAllByPartCommandClass(tagger.Commander):
         select_all_by_tag('part', self.commander_arg_value(0))
 
 
-class SelAllBySetCommandClass(tagger.Commander):
+class SelAllBySetCommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):

@@ -45,7 +45,7 @@ class MeshEditorClass(tagger.MeshEditorClass):
                 self.poly_count += 1
 
 
-class CommandClass(tagger.Commander):
+class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
 
     def commander_arguments(self):
@@ -54,16 +54,18 @@ class CommandClass(tagger.Commander):
                     'name': tagger.TAG,
                     'label': tagger.LABEL_TAG,
                     'datatype': 'string',
-                    'value': '',
-                    'sPresetText': tagger.scene.all_tags,
+                    'default': '',
+                    'values_list_type': 'sPresetText',
+                    'values_list': tagger.scene.all_tags,
                     'flags': ['optional'],
                 }, {
                     'name': tagger.TAGTYPE,
                     'label': tagger.LABEL_TAGTYPE,
                     'datatype': 'string',
-                    'value': tagger.MATERIAL,
+                    'default': tagger.MATERIAL,
                     'flags': [],
-                    'popup': tagger.POPUPS_TAGTYPES
+                    'values_list_type': 'popup',
+                    'values_list': tagger.POPUPS_TAGTYPES
                 }
             ]
 
