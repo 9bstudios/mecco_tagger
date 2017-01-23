@@ -50,10 +50,20 @@ class CommandClass(tagger.CommanderClass):
             c["consolidation_mask"] = tagger.shadertree.build_material(pTag = c["pTag"])
             c["consolidation_mask"].children()[0].channel('diffCol').set(c["color"])
 
+            # The material.reassign command expects no textureLayers to be selected.
+            to_restore = [i for i in modo.Scene().selected if i.superType == 'textureLayer']
+            for textureLayer in to_restore:
+	            textureLayer.deselect()
+
             for hit in c["hitlist"]:
                 tagger.safe_removeItems([hit["mask_item"]], True)
                 lx.eval('!material.reassign {%s} %s' % (hit["pTag"], c["pTag"]))
 
+            for textureLayer in to_restore:
+                try:
+                    textureLayer.select()
+                except:
+                    pass
 
 
 lx.bless(CommandClass, CMD_NAME)

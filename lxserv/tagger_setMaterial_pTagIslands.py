@@ -85,7 +85,7 @@ class CommandClass(tagger.CommanderClass):
                 )
             except:
                 pass
-                
+
         else:
             _island_enumerator = 0
             mesh_editor = MeshEditorClass(args, [lx.symbol.f_MESHEDIT_POL_TAGS])
@@ -96,9 +96,9 @@ class CommandClass(tagger.CommanderClass):
                     tagger.DIALOGS_TAGGED_POLY_ISLANDS_COUNT[0],
                     tagger.DIALOGS_TAGGED_POLY_ISLANDS_COUNT[1] % (mesh_editor.poly_count, _island_enumerator)
                     )
-                except:
-                    pass
-                    
+            except:
+                pass
+
         notifier = tagger.Notifier()
         notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
 
