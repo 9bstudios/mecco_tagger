@@ -21,6 +21,7 @@ TAG_SEP = ";"
 
 CMD = 'command'
 CMD_PREFS_SET_USER_PRESETS_PATH = 'tagger.prefsSetUserPresetsPath'
+CMD_PREFS_MATERIAL_TYPE = 'tagger.prefsMaterialType'
 CMD_PTAG_CONVERT = 'tagger.pTagConvert'
 CMD_PTAG_QUICK_ASSIGN_POPUP = 'tagger.pTagQuickAssignPopup'
 CMD_PTAG_QUICK_SELECT_POPUP = 'tagger.pTagQuickSelectPopup'
@@ -69,6 +70,7 @@ GTYP = "GTYP"
 GROUP_TYPES_STANDARD = ''
 GROUP_TYPES_ASSEMBLY = 'assembly'
 
+DEFAULT_MATERIAL_TYPE = 'materialType'
 NAME = 'name'
 MODE = 'mode'
 OPERATION = 'operation'
@@ -112,8 +114,12 @@ TO_TAG_TYPE = 'toTagType'
 DEL_EMPTY = 'delEmpty'
 DEL_UNUSED = 'delUnused'
 NEW_TAG = "newTag"
+MAT_ADVANCED = "advancedMaterial"
+MAT_UNREAL = "unrealShader"
+MAT_UNITY = "unityShader"
 
 # These should probably be pulled from message tables
+LABEL_DEFAULT_MATERIAL_TYPE = "Default Material Type"
 LABEL_NEW_TAG = "(new tag)"
 LABEL_ASSIGN_TAG = "Assign"
 LABEL_SELECT_TAG = "Select by"
@@ -168,6 +174,9 @@ LABEL_NO_TAGS = 'No tags on selected polys'
 LABEL_MAX_POLY = 'Too many to polys'
 LABEL_MAX_FCL = 'Too many tags to list'
 LABEL_NO_MASKS = 'No masks to display'
+LABEL_MAT_ADVANCED = "MODO Material"
+LABEL_MAT_UNREAL = "Unreal Material"
+LABEL_MAT_UNITY = "Unity Material"
 DIALOGS_NO_MASK_SELECTED = ("No Mask Selected", "Select a mask to apply.")
 DIALOGS_TOO_MANY_MASKS = ("Too Many Masks", "Select only one mask to apply.")
 DIALOGS_NO_PTAG_FILTER = ("No pTag Filter", "The selected mask applies to all polygons. No tag to apply.")
@@ -183,6 +192,13 @@ DIALOGS_NOTHING_TO_PASTE = ("Nothing to Paste", "Nothing to paste. Copy a tag be
 DIALOGS_TOO_MANY_ISLANDS = ("Too many islands", "Too many poly islands to mask safely. (Max %s, found %s)")
 DIALOGS_REMOVED_ALL_TAGS = ("Removed tags", "Reset %s tags accross %s polygons in %s items.")
 DIALOGS_CLEANED_UP_SHADERTREE = ("Cleaned up shader tree", "Removed %s items from the shader tree.")
+
+
+POPUPS_MATERIAL_TYPES = [
+        (MAT_ADVANCED, LABEL_MAT_ADVANCED),
+        (MAT_UNREAL, LABEL_MAT_UNREAL),
+        (MAT_UNITY, LABEL_MAT_UNITY)
+    ]
 
 POPUPS_CLIPBOARD = [
         (COPY, LABEL_COPY),
