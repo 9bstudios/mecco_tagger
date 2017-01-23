@@ -78,21 +78,27 @@ class CommandClass(tagger.CommanderClass):
         island_counter.do_mesh_read()
 
         if _island_enumerator > tagger.MAX_PTAG_ISLANDS:
-            modo.dialogs.alert(
-                tagger.DIALOGS_TOO_MANY_ISLANDS[0],
-                tagger.DIALOGS_TOO_MANY_ISLANDS[1] % (tagger.MAX_PTAG_ISLANDS, _island_enumerator)
-            )
-
+            try:
+                modo.dialogs.alert(
+                    tagger.DIALOGS_TOO_MANY_ISLANDS[0],
+                    tagger.DIALOGS_TOO_MANY_ISLANDS[1] % (tagger.MAX_PTAG_ISLANDS, _island_enumerator)
+                )
+            except:
+                pass
+                
         else:
             _island_enumerator = 0
             mesh_editor = MeshEditorClass(args, [lx.symbol.f_MESHEDIT_POL_TAGS])
             mesh_editor.do_mesh_edit()
 
-            modo.dialogs.alert(
-                tagger.DIALOGS_TAGGED_POLY_ISLANDS_COUNT[0],
-                tagger.DIALOGS_TAGGED_POLY_ISLANDS_COUNT[1] % (mesh_editor.poly_count, _island_enumerator)
-                )
-
+            try:
+                modo.dialogs.alert(
+                    tagger.DIALOGS_TAGGED_POLY_ISLANDS_COUNT[0],
+                    tagger.DIALOGS_TAGGED_POLY_ISLANDS_COUNT[1] % (mesh_editor.poly_count, _island_enumerator)
+                    )
+                except:
+                    pass
+                    
         notifier = tagger.Notifier()
         notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
 

@@ -30,10 +30,13 @@ class CommandClass(tagger.CommanderClass):
                 new_mask = tagger.shadertree.build_material(i_POLYTAG = i_POLYTAG, pTag = pTag)
                 counter += 1
 
-        modo.dialogs.alert(
-            tagger.DIALOGS_MASKED_TAGS_COUNT[0],
-            tagger.DIALOGS_MASKED_TAGS_COUNT[1] % counter
-        )
+        try:
+            modo.dialogs.alert(
+                tagger.DIALOGS_MASKED_TAGS_COUNT[0],
+                tagger.DIALOGS_MASKED_TAGS_COUNT[1] % counter
+            )
+        except:
+            pass
 
         notifier = tagger.Notifier()
         notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)

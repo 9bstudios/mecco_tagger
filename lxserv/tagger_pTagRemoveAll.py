@@ -79,10 +79,13 @@ class CommandClass(tagger.CommanderClass):
         i_POLYTAG = tagger.convert_to_iPOLYTAG(tagType)
         scope_label = tagger.LABEL_SCOPE_SELECTED_ITEMS if scope == tagger.SCOPE_SELECTED_ITEMS else tagger.LABEL_SCOPE_SCENE
 
-        safety = modo.dialogs.yesNo(
-            tagger.DIALOGS_REMOVE_ALL_TAGS[0],
-            tagger.DIALOGS_REMOVE_ALL_TAGS[1] % (tagType.title(), scope_label.lower())
-            )
+        try:
+            safety = modo.dialogs.yesNo(
+                tagger.DIALOGS_REMOVE_ALL_TAGS[0],
+                tagger.DIALOGS_REMOVE_ALL_TAGS[1] % (tagType.title(), scope_label.lower())
+                )
+        except:
+            safety = 'yes'
 
         if safety == 'no':
             return

@@ -43,10 +43,13 @@ class CommandClass(tagger.CommanderClass):
 
         tagger.safe_removeItems(hitlist, True)
 
-        modo.dialogs.alert(
-            tagger.DIALOGS_CLEANED_UP_SHADERTREE[0],
-            tagger.DIALOGS_CLEANED_UP_SHADERTREE[1] % len(hitlist)
-        )
+        try:
+            modo.dialogs.alert(
+                tagger.DIALOGS_CLEANED_UP_SHADERTREE[0],
+                tagger.DIALOGS_CLEANED_UP_SHADERTREE[1] % len(hitlist)
+            )
+        except:
+            pass
 
         notifier = tagger.Notifier()
         notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)

@@ -33,7 +33,9 @@ class CommandClass(tagger.CommanderClass):
                 output += ", ".join(tags[tagType]) + "\n"
             else:
                 output += tagger.LABEL_NONE + "\n"
-
-        modo.dialogs.alert(tagger.LABEL_TAGS, output)
+        try:
+            modo.dialogs.alert(tagger.LABEL_TAGS, output)
+        except:
+            pass
 
 lx.bless(CommandClass, CMD_NAME)

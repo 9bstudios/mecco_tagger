@@ -30,21 +30,33 @@ class CommandClass(tagger.CommanderClass):
                 masks.add(i)
 
         if len(masks) < 1:
-            modo.dialogs.alert(tagger.DIALOGS_NO_MASK_SELECTED[0], tagger.DIALOGS_NO_MASK_SELECTED[1])
+            try:
+                modo.dialogs.alert(tagger.DIALOGS_NO_MASK_SELECTED[0], tagger.DIALOGS_NO_MASK_SELECTED[1])
+            except:
+                pass
             return
 
         if len(masks) > 1:
-            modo.dialogs.alert(tagger.DIALOGS_TOO_MANY_MASKS[0], tagger.DIALOGS_TOO_MANY_MASKS[1])
+            try:
+                modo.dialogs.alert(tagger.DIALOGS_TOO_MANY_MASKS[0], tagger.DIALOGS_TOO_MANY_MASKS[1])
+            except:
+                pass
             return
 
         mask = list(masks)[0]
 
         if not mask.channel(lx.symbol.sICHAN_MASK_PTAG).get():
-            modo.dialogs.alert(tagger.DIALOGS_NO_PTAG_FILTER)
+            try:
+                modo.dialogs.alert(tagger.DIALOGS_NO_PTAG_FILTER)
+            except:
+                pass
             return
 
         if mask.channel(lx.symbol.sICHAN_MASK_PTAG).get() == "(none)":
-            modo.dialogs.alert(tagger.DIALOGS_NONE_PTAG_FILTER)
+            try:
+                modo.dialogs.alert(tagger.DIALOGS_NONE_PTAG_FILTER)
+            except:
+                pass
             return
 
         tagLabel = mask.channel(lx.symbol.sICHAN_MASK_PTYP).get()

@@ -29,10 +29,13 @@ def paste(tagType=tagger.MATERIAL, connected=tagger.SCOPE_SELECTED):
     args[tagger.SCOPE] = connected
 
     if not args[tagger.TAG]:
-        modo.dialogs.alert(
-            tagger.DIALOGS_NOTHING_TO_PASTE[0],
-            tagger.DIALOGS_NOTHING_TO_PASTE[1]
-            )
+        try:
+            modo.dialogs.alert(
+                tagger.DIALOGS_NOTHING_TO_PASTE[0],
+                tagger.DIALOGS_NOTHING_TO_PASTE[1]
+                )
+        except:
+            pass
         return
 
     lx.eval("!" + tagger.CMD_PTAG_SET + tagger.build_arg_string(args))
@@ -67,11 +70,17 @@ class CopyMaskCommandClass(tagger.CommanderClass):
                 masks.add(i)
 
         if len(masks) < 1:
-            modo.dialogs.alert(tagger.DIALOGS_NO_MASK_SELECTED)
+            try:
+                modo.dialogs.alert(tagger.DIALOGS_NO_MASK_SELECTED)
+            except:
+                pass
             return
 
         if len(masks) > 1:
-            modo.dialogs.alert(tagger.DIALOGS_TOO_MANY_MASKS)
+            try:
+                modo.dialogs.alert(tagger.DIALOGS_TOO_MANY_MASKS)
+            except:
+                pass
             return
 
         mask = list(masks)[0]
