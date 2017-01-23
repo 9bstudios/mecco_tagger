@@ -7,6 +7,7 @@ class CommandClass(tagger.CommanderClass):
 
     def commander_execute(self, msg, flags):
         target = modo.dialogs.dirBrowse(tagger.LABEL_CHOOSE_FOLDER)
-        lx.eval('user.value mecco_tagger.userPresetsPath {%s}' % target)
+        if target:
+            lx.eval('user.value mecco_tagger.userPresetsPath {%s}' % target)
 
 lx.bless(CommandClass, tagger.CMD_PREFS_SET_USER_PRESETS_PATH)
