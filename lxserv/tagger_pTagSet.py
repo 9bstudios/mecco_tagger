@@ -110,6 +110,8 @@ class CommandClass(tagger.CommanderClass):
         mesh_editor = MeshEditorClass([i_POLYTAG, tag, connected], [lx.symbol.f_MESHEDIT_POL_TAGS])
         mesh_editor.do_mesh_edit()
 
+        tagger.scene.add_pTag_to_recent(tag, tagType)
+
         notifier = tagger.Notifier()
         notifier.Notify(lx.symbol.fCMDNOTIFY_DATATYPE)
 
