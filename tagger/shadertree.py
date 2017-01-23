@@ -127,7 +127,12 @@ def build_material(
             # debug("Added shader '%s'" % shdr.name)
 
         mname = ' '.join([name,MATNAME]) if name else None
-        channels = {lx.symbol.sICHAN_ADVANCEDMATERIAL_DIFFCOL:color}
+        if lx.eval("tagger.prefsMaterialType ?") == MAT_ADVANCED:
+            channels = {lx.symbol.sICHAN_ADVANCEDMATERIAL_DIFFCOL:color}
+        elif lx.eval("tagger.prefsMaterialType ?") == MAT_UNREAL:
+            channels = {"base":color}
+        if lx.eval("tagger.prefsMaterialType ?") == MAT_UNITY:
+            channels = {"albedo":color}
         mat = add_material(mname,channels)
         mat.setParent(mask)
 
@@ -195,7 +200,8 @@ def add_material(name=None,channels={}):
     """Adds a material item to the Shader Tree and sets channel values based on an optional dict."""
 
     scene = modo.scene.current()
-    m = scene.addItem(lx.symbol.sITYPE_ADVANCEDMATERIAL, name)
+
+    m = scene.addItem(lx.eval("tagger.prefsMaterialType ?"), name)
     for k,v in channels.iteritems():
         m.channel(k).set(v)
     return m

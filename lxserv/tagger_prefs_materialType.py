@@ -1,7 +1,25 @@
 
-import lx, lxifc, lxu.command, tagger
+import lx, lxifc, lxu.command, tagger, modo
 
 CMD_NAME = tagger.CMD_PREFS_MATERIAL_TYPE
+
+def material_types_list():
+    types = [
+            (tagger.MAT_ADVANCED, tagger.LABEL_MAT_ADVANCED),
+            (tagger.MAT_UNREAL, tagger.LABEL_MAT_UNREAL),
+            (tagger.MAT_UNITY, tagger.LABEL_MAT_UNITY)
+        ]
+
+    valid_types = []
+
+    for material_type in types:
+        try:
+            modo.Scene().items(material_type[0])
+            valid_types.append(material_type)
+        except LookupError:
+            continue
+
+    return valid_types
 
 class CommandClass(tagger.CommanderClass):
     _commander_default_values = []
@@ -14,7 +32,7 @@ class CommandClass(tagger.CommanderClass):
                     'datatype': 'string',
                     'default': tagger.MAT_ADVANCED,
                     'values_list_type': 'popup',
-                    'values_list': tagger.POPUPS_MATERIAL_TYPES,
+                    'values_list': material_types_list,
                     'flags': ['query']
                 }
             ]

@@ -194,12 +194,6 @@ DIALOGS_REMOVED_ALL_TAGS = ("Removed tags", "Reset %s tags accross %s polygons i
 DIALOGS_CLEANED_UP_SHADERTREE = ("Cleaned up shader tree", "Removed %s items from the shader tree.")
 
 
-POPUPS_MATERIAL_TYPES = [
-        (MAT_ADVANCED, LABEL_MAT_ADVANCED),
-        (MAT_UNREAL, LABEL_MAT_UNREAL),
-        (MAT_UNITY, LABEL_MAT_UNITY)
-    ]
-
 POPUPS_CLIPBOARD = [
         (COPY, LABEL_COPY),
         (PASTE, LABEL_PASTE)
