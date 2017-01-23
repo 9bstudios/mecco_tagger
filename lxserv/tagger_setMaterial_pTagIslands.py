@@ -9,7 +9,7 @@ _island_enumerator = 0
 class IslandCounterClass(tagger.MeshEditorClass):
     island_count = 0
 
-    def mesh_edit_action(self):
+    def mesh_read_action(self):
         global _island_enumerator
 
         islands = self.get_active_polys_by_island()
@@ -26,17 +26,17 @@ class MeshEditorClass(tagger.MeshEditorClass):
     def mesh_edit_action(self):
         global _island_enumerator
 
-        i_POLYTAG = tagger.convert_to_iPOLYTAG(self.args['tagType'])
+        i_POLYTAG = tagger.convert_to_iPOLYTAG(self.args[tagger.TAGTYPE])
         stringTag = lx.object.StringTag()
         stringTag.set(self.polygon_accessor)
 
-        islands = self.get_active_polys_by_island()
+        islands = self.get_selected_polys_by_island()
 
         for i, island in enumerate(islands):
 
             self.island_count += 1
             _island_enumerator += 1
-            pTag = "_".join((self.args['tag'], str(_island_enumerator)))
+            pTag = "_".join((self.args[tagger.TAG], str(_island_enumerator)))
             new_mask = tagger.shadertree.build_material(i_POLYTAG = i_POLYTAG, pTag = pTag)
 
             for poly in island:
@@ -71,14 +71,11 @@ class CommandClass(tagger.CommanderClass):
 
     def commander_execute(self, msg, flags):
         global _island_enumerator
-        args = {
-            'tag': self.commander_arg_value(0),
-            'tagType': self.commander_arg_value(1)
-        }
+        args = self.commander_args()
 
         _island_enumerator = 0
         island_counter = IslandCounterClass(args, [lx.symbol.f_MESHEDIT_POL_TAGS])
-        island_counter.do_mesh_edit()
+        island_counter.do_mesh_read()
 
         if _island_enumerator > tagger.MAX_PTAG_ISLANDS:
             modo.dialogs.alert(
