@@ -30,7 +30,7 @@ class CommandClass(tagger.CommanderClass):
                     'name': tagger.DEFAULT_MATERIAL_TYPE,
                     'label': tagger.LABEL_DEFAULT_MATERIAL_TYPE,
                     'datatype': 'string',
-                    'default': tagger.MAT_ADVANCED,
+                    'default': lx.eval("user.value mecco_tagger.materialType ?"),
                     'values_list_type': 'popup',
                     'values_list': material_types_list,
                     'flags': ['query']
@@ -38,7 +38,8 @@ class CommandClass(tagger.CommanderClass):
             ]
 
     def commander_execute(self, msg, flags):
-        lx.out(tagger.LABEL_DEFAULT_MATERIAL_TYPE, self.commander_arg_value(0))
+        lx.eval("user.value mecco_tagger.materialType %s" % self.commander_arg_value(0))
+        lx.out(tagger.LABEL_DEFAULT_MATERIAL_TYPE, "-", self.commander_arg_value(0))
 
 
 lx.bless(CommandClass, CMD_NAME)

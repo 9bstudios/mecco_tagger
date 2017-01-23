@@ -127,11 +127,11 @@ def build_material(
             # debug("Added shader '%s'" % shdr.name)
 
         mname = ' '.join([name,MATNAME]) if name else None
-        if lx.eval("tagger.prefsMaterialType ?") == MAT_ADVANCED:
+        if lx.eval("user.value mecco_tagger.materialType ?") == MAT_ADVANCED:
             channels = {lx.symbol.sICHAN_ADVANCEDMATERIAL_DIFFCOL:color}
-        elif lx.eval("tagger.prefsMaterialType ?") == MAT_UNREAL:
+        elif lx.eval("user.value mecco_tagger.materialType ?") == MAT_UNREAL:
             channels = {"base":color}
-        if lx.eval("tagger.prefsMaterialType ?") == MAT_UNITY:
+        if lx.eval("user.value mecco_tagger.materialType ?") == MAT_UNITY:
             channels = {"albedo":color}
         mat = add_material(mname,channels)
         mat.setParent(mask)
