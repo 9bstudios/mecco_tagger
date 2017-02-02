@@ -33,7 +33,7 @@ def all_tags_by_type(i_POLYTAG):
     tags = set()
     for m in modo.Scene().meshes:
         n = m.geometry.internalMesh.PTagCount(i_POLYTAG)
-        for i in range(n):
+        for i in xrange(n):
             tags.add(m.geometry.internalMesh.PTagByIndex(i_POLYTAG, i))
 
     timer.end()
