@@ -46,7 +46,7 @@ def paste(tagType=tagger.MATERIAL, connected=tagger.SCOPE_SELECTED):
 
 
 class CopyCommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_execute(self, msg, flags):
         global _clipboard
@@ -60,7 +60,7 @@ class CopyCommandClass(tagger.CommanderClass):
 
 
 class CopyMaskCommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_execute(self, msg, flags):
         masks = set()
@@ -94,7 +94,7 @@ class CopyMaskCommandClass(tagger.CommanderClass):
 
 
 class PasteDialogCommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_arguments(self):
         return [
@@ -114,7 +114,7 @@ class PasteDialogCommandClass(tagger.CommanderClass):
 
 
 class PasteMaterialCommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_arguments(self):
         return [_scope_popup]
@@ -124,7 +124,7 @@ class PasteMaterialCommandClass(tagger.CommanderClass):
 
 
 class PastePartCommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_arguments(self):
         return [_scope_popup]
@@ -134,7 +134,7 @@ class PastePartCommandClass(tagger.CommanderClass):
 
 
 class PastePickCommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_arguments(self):
         return [_scope_popup]

@@ -5,13 +5,11 @@ Commander is a clean, simple wrapper for writing MODO commands with common UI el
 
 To implement a command, just include the commander module and, when creating your command class, extend `commander.CommanderClass` instead of `lxu.command.BasicCommand` as you normally would.
 
-*IMPORTANT* commander has been implemented inside a sub-module within good_kitty. So if you're using good_kitty to implement commander, you'll need to implement your command classes using `good_kitty.CommanderClass` rather than `commander.CommanderClass` as shown below, replacing the string `good_kitty` with the name of your kit. This is to ensure that different versions of commander in different kits do not conflict with one another.
-
 ```python
 import commander
 
 class CommandClass(commander.CommanderClass):
-  _commander_default_values = []
+  #_commander_default_values = []
 
   def commander_execute(self, msg, flags):
     lx.out(' and '.join(['bacon', 'eggs']))
@@ -29,7 +27,7 @@ But it really gets nice when you want to ask the user for something.
 import commander
 
 class CommandClass(commander.CommanderClass):
-  _commander_default_values = []
+  #_commander_default_values = []
 
   def commander_arguments(self):
     return [
@@ -59,7 +57,7 @@ Usually you want to include fancy stuff like popup menus for limiting your user'
 import commander
 
 class CommandClass(commander.CommanderClass):
-  _commander_default_values = []
+  #_commander_default_values = []
 
   def commander_arguments(self):
     return [
@@ -155,7 +153,7 @@ You can even build Form Command Lists (a list of programmatically-generated butt
 
 ```python
 class CommandClass(commander.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_arguments(self):
         return [

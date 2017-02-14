@@ -3,7 +3,7 @@
 import lx, lxu, modo, tagger, traceback
 
 class CommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_execute(self, msg, flags):
         target = modo.dialogs.dirBrowse(tagger.LABEL_CHOOSE_FOLDER)

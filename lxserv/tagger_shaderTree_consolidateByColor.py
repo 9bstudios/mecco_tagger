@@ -7,7 +7,7 @@ def color_convert(color):
     return [i*256 for i in color]
 
 class CommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_execute(self, msg, flags):
         all_masks = modo.Scene().items('mask')

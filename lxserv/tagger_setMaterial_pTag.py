@@ -10,7 +10,7 @@ def material_tags_list():
     return tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL)
 
 class CommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_arguments(self):
         return [

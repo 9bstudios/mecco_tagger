@@ -4,7 +4,7 @@ import lx, lxifc, lxu.command, tagger
 CMD_NAME = tagger.CMD_PTAG_QUICK_SELECT_POPUP
 
 class CommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_arguments(self):
         return [

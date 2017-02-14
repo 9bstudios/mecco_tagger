@@ -45,7 +45,7 @@ def select_all_by_tag(tagType, tag):
 
 
 class SelAllByDialogCommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_arguments(self):
         return [ _args_tagType(), _args_tag() ]
@@ -55,7 +55,7 @@ class SelAllByDialogCommandClass(tagger.CommanderClass):
 
 
 class SelAllByMatCommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_arguments(self):
         return [ _args_tag() ]
@@ -69,7 +69,7 @@ class SelAllByMatCommandClass(tagger.CommanderClass):
 
 
 class SelAllByPartCommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_arguments(self):
         return [ _args_tag() ]
@@ -83,7 +83,7 @@ class SelAllByPartCommandClass(tagger.CommanderClass):
 
 
 class SelAllBySetCommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_arguments(self):
         return [ _args_tag() ]

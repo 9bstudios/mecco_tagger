@@ -59,6 +59,8 @@ class CommanderClass(lxu.command.BasicCommand):
     def __init__(self):
         lxu.command.BasicCommand.__init__(self)
 
+        self.commander_init_default_values()
+
         for n, argument in enumerate(self.commander_arguments()):
 
             if not argument.get(ARG_DATATYPE):
@@ -72,7 +74,7 @@ class CommanderClass(lxu.command.BasicCommand):
                 return lx.symbol.e_FAILED
 
             self.dyna_Add(argument[ARG_NAME], datatype)
-            self._commander_default_values.append(argument.get(ARG_VALUE))
+            self.commander_add_default_value(argument.get(ARG_VALUE))
 
             flags = []
             for flag in argument.get(ARG_FLAGS, []):
@@ -86,6 +88,23 @@ class CommanderClass(lxu.command.BasicCommand):
         self.notifier_tuples = tuple([i for i in self.commander_notifiers()])
         for i in self.notifier_tuples:
             self.notifiers.append(None)
+
+    @classmethod
+    def commander_init_default_values(cls):
+        lx.out(cls.__name__)
+        cls._commander_default_values = []
+
+    @classmethod
+    def commander_add_default_value(cls, value):
+        cls._commander_default_values.append(value)
+
+    @classmethod
+    def commander_set_default_value(cls, index, value):
+        cls._commander_default_values[index] = value
+
+    @classmethod
+    def commander_default_value(cls, index):
+        return cls._commander_default_values[index]
 
     def commander_arguments(self):
         return []
@@ -194,7 +213,7 @@ class CommanderClass(lxu.command.BasicCommand):
                 continue
 
             datatype = argument.get(ARG_DATATYPE, '').lower()
-            default_value = self._commander_default_values[n]
+            default_value = self.commander_default_value(n)
 
             if datatype in sTYPE_STRINGs:
                 self.attr_SetString(n, str(default_value))
@@ -216,7 +235,10 @@ class CommanderClass(lxu.command.BasicCommand):
 
     def basic_Execute(self, msg, flags):
         for n, argument in enumerate(self.commander_arguments()):
-            self._commander_default_values[n] = self.commander_arg_value(n)
+            self.commander_set_default_value(n, self.commander_arg_value(n))
+
+        # for k, v in self.commander_args().iteritems():
+        #     lx.out(k, v)
 
         try:
             self.commander_execute(msg, flags)
@@ -232,7 +254,7 @@ class CommanderClass(lxu.command.BasicCommand):
         if index < len(args):
             is_query = 'query' in args[index].get(ARG_FLAGS, [])
             is_not_fcl = args[index].get(ARG_VALUES_LIST_TYPE) != LIST_TYPE_FCL
-            has_recent_value = self._commander_default_values[index]
+            has_recent_value = self.commander_default_value(index)
 
             if is_query and is_not_fcl and has_recent_value:
                 va.AddString(has_recent_value)

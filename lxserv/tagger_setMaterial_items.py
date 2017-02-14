@@ -5,7 +5,7 @@ import lx, lxu, modo, tagger, traceback
 NAME_CMD = tagger.CMD_SET_ITEM
 
 class CommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_arguments(self):
         return [

@@ -5,7 +5,7 @@ import lx, lxu.command, lxifc, traceback, modo, tagger
 CMD_NAME = tagger.CMD_SHADERTREE_MASK_UNMASKED
 
 class CommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_arguments(self):
         return [

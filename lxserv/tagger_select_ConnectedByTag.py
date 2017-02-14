@@ -47,21 +47,21 @@ def flood_select(i_POLYTAG):
 
 
 class FloodMaterialCommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_execute(self, msg, flags):
         flood_select(lx.symbol.i_POLYTAG_MATERIAL)
 
 
 class FloodPartCommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_execute(self, msg, flags):
         flood_select(lx.symbol.i_POLYTAG_PART)
 
 
 class FloodSetCommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_execute(self, msg, flags):
         flood_select(lx.symbol.i_POLYTAG_PICK)

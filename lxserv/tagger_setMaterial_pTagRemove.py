@@ -8,7 +8,7 @@ from os.path import isfile, join, basename, splitext, dirname
 CMD_NAME = tagger.CMD_SET_PTAG_REMOVE
 
 class CommandClass(tagger.CommanderClass):
-    _commander_default_values = []
+    #_commander_default_values = []
 
     def commander_arguments(self):
         return [
