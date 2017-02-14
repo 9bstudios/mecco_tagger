@@ -5,6 +5,7 @@ import lx, lxu.command, lxifc, traceback, modo, tagger
 CMD_NAME = tagger.CMD_PTAG_SET
 DEFAULTS = [tagger.MATERIAL, '', False]
 
+global_island_count = 0
 global_poly_count = 0
 
 def build_tags_list():
@@ -13,7 +14,10 @@ def build_tags_list():
 class MeshEditorClass(tagger.MeshEditorClass):
 
     def mesh_edit_action(self):
+        global global_island_count
         global global_poly_count
+
+        global_island_count = 0
         global_poly_count = 0
 
         i_POLYTAG = self.args[0]
@@ -24,19 +28,20 @@ class MeshEditorClass(tagger.MeshEditorClass):
         stringTag.set(self.polygon_accessor)
 
         if connected == tagger.SCOPE_SELECTED:
-            polys = self.get_selected_polys()
+            islands = [self.get_selected_polys()]
 
         elif connected == tagger.SCOPE_FLOOD:
-            polys = self.get_selected_polys_by_flood(i_POLYTAG)
+            islands = [self.get_selected_polys_by_flood(i_POLYTAG)]
 
         elif connected == tagger.SCOPE_CONNECTED:
-            polys = self.get_selected_polys_by_island()
+            islands = self.get_selected_polys_by_island()
 
-        for poly in polys:
-            global_poly_count += 1
-
-            self.polygon_accessor.Select(poly)
-            stringTag.Set(i_POLYTAG, pTag)
+        for i, island in enumerate(islands):
+            global_island_count += 1
+            for poly in island:
+                global_poly_count += 1
+                self.polygon_accessor.Select(poly)
+                stringTag.Set(i_POLYTAG, pTag)
 
 
 class CommandClass(tagger.CommanderClass):
