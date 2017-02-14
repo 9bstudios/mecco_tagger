@@ -5,3 +5,4 @@ __author__ = "Adam"
 
 from Commander import *
 from MeshEditor import *
+from Var import *

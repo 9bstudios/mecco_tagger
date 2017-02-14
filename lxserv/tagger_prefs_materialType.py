@@ -22,7 +22,7 @@ def material_types_list():
     return valid_types
 
 class CommandClass(tagger.CommanderClass):
-    #_commander_default_values = []
+    # _commander_default_values = []
 
     def commander_arguments(self):
         return [
