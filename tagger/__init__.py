@@ -19,5 +19,6 @@ try:
     from PopupClass import *
     from PolysConnectedByTag import *
     from PolysByIsland import *
+    from TaggerPresetPaths import *
 except:
     traceback.print_exc()

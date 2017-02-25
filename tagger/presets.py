@@ -2,6 +2,7 @@ import lx
 from os import listdir, sep
 from os.path import isfile, join, basename, splitext, dirname, isdir
 from var import *
+from TaggerPresetPaths import TaggerPresetPaths
 
 def presets_popup():
     popup_list = [(RANDOM, LABEL_RANDOM_COLOR)]
@@ -21,13 +22,7 @@ def first_preset():
         return (None, None)
 
 def list_presets():
-    presets_paths = [
-        "kit_mecco_tagger:basics"
-    ]
-
-    kelvin_presets = lx.eval('user.value mecco_tagger.includeKelvin ?')
-    if kelvin_presets:
-        presets_paths.append("kit_mecco_kelvin:Kelvin/kelvin_materials")
+    presets_paths = TaggerPresetPaths().paths
 
     user_presets = lx.eval('user.value mecco_tagger.userPresetsPath ?')
     if user_presets:
