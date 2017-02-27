@@ -24,7 +24,6 @@ class MeshEditorClass(tagger.MeshEditorClass):
         stringTag.set(self.polygon_accessor)
 
         nPolys = self.mesh.PolygonCount()
-        lx.out("Polygon count ", nPolys)
 
         for eachPoly in xrange(nPolys):
             self.polygon_accessor.SelectByIndex(eachPoly)
