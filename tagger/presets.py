@@ -1,5 +1,6 @@
 import lx
-from os import listdir, sep
+from glob import glob
+from os import listdir, sep, walk
 from os.path import isfile, join, basename, splitext, dirname, isdir
 from var import *
 from TaggerPresetPaths import TaggerPresetPaths
@@ -36,15 +37,7 @@ def list_presets():
         if not isdir(presets_folder):
             continue
 
-        for f in listdir(presets_folder):
-            if f.startswith('.'):
-                continue
-            if splitext(f)[1] != '.lxp':
-                continue
-            if not isfile(join(presets_folder, f)):
-                continue
-
-            raw_presets_list.append(join(presets_folder, f))
+        raw_presets_list.extend([y for x in walk(presets_folder) for y in glob(join(x[0], '*.lxp'))])
 
     if not raw_presets_list:
         return []
