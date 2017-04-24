@@ -7,7 +7,11 @@ from os.path import basename, splitext
 CMD_NAME = tagger.CMD_SET_PTAG
 
 def material_tags_list():
-    return tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL)
+    res = set(tagger.scene.all_tags_by_type(lx.symbol.i_POLYTAG_MATERIAL))
+    for type, tag in tagger.items.get_all_masked_tags():
+        if type == "material":
+            res.add(tag)
+    return list(res)
 
 class CommandClass(tagger.CommanderClass):
     # _commander_default_values = []
