@@ -1,5 +1,6 @@
 import modo, lx
 import util
+import re
 from debug import *
 from var import *
 
@@ -52,6 +53,43 @@ def all_tags():
 
     timer.end()
     return sorted(list(tags))
+def compareRegexp(pattern, str, ignoreCase, regexp):
+    if ignoreCase:
+        if regexp:
+            return re.match(pattern, str, re.IGNORECASE) is not None
+        else:
+            return pattern.lower() == str.lower()
+    else:
+        if regexp:
+            return re.match(pattern, str) is not None
+        else:
+            return pattern == str
+            
+# Replace all leftmost occurrences of 'search' by 'replace'. Function is case sensitive
+def replaceStringCase(string, search, replace):
+    return string.replace(search, replace)
+
+# Replace all leftmost occurrences of regexp pattern 'search' by 'replace'. Function is case sensitive
+def replaceRegexpCase(string, search, replace):
+    pattern = re.compile(search)
+    return pattern.sub(replace, string)
+
+# Replace all leftmost occurrences of 'search' by 'replace'. Function ignores case
+def replaceStringIgnoreCase(string, search, replace):
+    # There is no standard Python function for this. Have to implement it.
+    idx = 0
+    while idx < len(string):
+        pos = string.lower().find(search.lower(), idx)
+        if pos == -1:
+            break
+        string = string[:pos] + replace + string[pos + len(search):]
+  	idx = pos + len(replace)
+    return string
+
+# Replace all leftmost occurrences of regexp pattern 'search' by 'replace'. Function ignores case
+def replaceRegexpIgnoreCase(string, search, replace):
+    pattern = re.compile(search, re.IGNORECASE)
+    return pattern.sub(replace, string)
 
 def meshes_with_pTag(pTag, i_POLYTAG):
     meshes = set()
@@ -66,9 +104,24 @@ def meshes_with_pTag(pTag, i_POLYTAG):
 
     return list(meshes)
 
-def replace_tag(tagType, replaceTag, withTag):
+def meshes_with_pTag_Regexp(pTag, i_POLYTAG, ignoreCase, regexp):
+    meshes = set()
+
+    for m in modo.Scene().meshes:
+        tags = set()
+        n = m.geometry.internalMesh.PTagCount(i_POLYTAG)
+        for i in range(n):
+            tags.add(m.geometry.internalMesh.PTagByIndex(i_POLYTAG, i))
+        for tag in tags:
+            if compareRegexp(pTag, tag, ignoreCase, regexp):
+                meshes.add(m)
+                break
+
+    return list(meshes)
+
+def replace_tag(tagType, replaceTag, withTag, ignoreCase, regexp):
     i_POLYTAG = util.convert_to_iPOLYTAG(tagType)
-    meshes = meshes_with_pTag(replaceTag, i_POLYTAG)
+    meshes = meshes_with_pTag_Regexp(replaceTag, i_POLYTAG, ignoreCase, regexp)
 
     hitcount = 0
     for mesh in meshes:
@@ -77,7 +130,7 @@ def replace_tag(tagType, replaceTag, withTag):
             for poly in geo.polygons:
 
                 if tagType in [MATERIAL, PART]:
-                    if poly.getTag(i_POLYTAG) == replaceTag:
+                    if compareRegexp(replaceTag, poly.getTag(i_POLYTAG), ignoreCase, regexp):
                         hitlist.add(poly)
                         hitcount += 1
 
@@ -86,22 +139,41 @@ def replace_tag(tagType, replaceTag, withTag):
                         continue
 
                     pickTags = set(poly.getTag(i_POLYTAG).split(";"))
-                    if replaceTag in pickTags:
-                        hitlist.add(poly)
-                        hitcount += 1
+                    for tag in pickTags:
+                        if compareRegexp(replaceTag, tag, ignoreCase, regexp):
+                            hitlist.add(poly)
+                            hitcount += 1
+                            break
+
+        # Building replace function based of ignoreCase and regexp flags
+        if ignoreCase:
+            if regexp:
+                replace = replaceRegexpIgnoreCase
+            else:
+                replace = replaceStringIgnoreCase
+        else:
+            if regexp:
+                replace = replaceRegexpCase
+            else:
+                replace = replaceStringCase
 
 
         with mesh.geometry as geo:
             for poly in hitlist:
 
                 if tagType in [MATERIAL, PART]:
-                    poly.setTag(i_POLYTAG, withTag)
+                    poly.setTag(i_POLYTAG, replace(poly.getTag(i_POLYTAG), replaceTag, withTag))
 
                 elif tagType == PICK:
                     pickTags = set(poly.getTag(i_POLYTAG).split(";"))
-                    pickTags.discard(replaceTag)
                     if withTag:
-                        pickTags.add(withTag)
-                    poly.setTag(i_POLYTAG, ";".join(pickTags))
+                        newTags = map(lambda tag: replace(tag, replaceTag, withTag) if compare(replaceTag, tag) else tag, pickTags)
+                    else:
+                        newTags = list()
+                        for tag in pickTags:
+                            if not compareRegexp(replaceTag, tag):
+                                newTags.append(tag)
+
+                    poly.setTag(i_POLYTAG, ";".join(newTags))
 
     return hitcount

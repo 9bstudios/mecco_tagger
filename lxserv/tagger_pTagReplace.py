@@ -47,6 +47,18 @@ class CommandClass(tagger.CommanderClass):
                     'flags': ['optional'],
                     'values_list_type': 'sPresetText',
                     'values_list': tagger.scene.all_tags
+                }, {
+                    'name': tagger.IGNORE_CASE,
+                    'label': tagger.LABEL_IGNORE_CASE,
+                    'datatype': 'boolean',
+                    'value': False,
+                    'flags': ['optional']
+                }, {
+                    'name': tagger.REGEXP,
+                    'label': tagger.LABEL_REGEXP,
+                    'datatype': 'boolean',
+                    'value': False,
+                    'flags': ['optional']
                 }
             ]
 
@@ -54,11 +66,13 @@ class CommandClass(tagger.CommanderClass):
         tagType = self.commander_arg_value(0)
         replaceTag = self.commander_arg_value(1)
         withTag = self.commander_arg_value(2)
+        ignoreCase = self.commander_arg_value(3)
+        regexp = self.commander_arg_value(4)
 
         if not withTag:
             withTag = None
 
-        hitcount = tagger.scene.replace_tag(tagType, replaceTag, withTag)
+        hitcount = tagger.scene.replace_tag(tagType, replaceTag, withTag, ignoreCase, regexp)
 
         if hitcount == 0:
             try:
